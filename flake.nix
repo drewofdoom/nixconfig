@@ -9,7 +9,7 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -51,6 +51,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.drew = {
                 imports = [ ./home-common.nix ./hosts/${hostName}/home.nix ];

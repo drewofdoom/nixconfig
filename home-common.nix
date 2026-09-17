@@ -18,7 +18,7 @@ let
     patches = [
       (pkgs.fetchpatch {
         url = "https://github.com/NixOS/nixpkgs/raw/b1b875982b17dabde9b4a37f3e229e74913e6db3/pkgs/by-name/ya/yabridge/libyabridge-from-nix-profiles.patch";
-        hash = "sha256-BclTYlzWJWL4RfjEI6DsiZorxJ/VCs29EzfUPGKN9j0=";
+        hash = "sha256-Ial9AkHvOfd1zR2uFBNPEKwpv/qgYxycZufEn9dXHl0=";
       })
     ];
   });
@@ -250,8 +250,6 @@ in
     odin2
     dexed
     chow-tape-model
-    airwindows
-    vcv-rack
     cardinal
 
     # Yabridge (Nix-built, no ~/.local/bin binaries)
