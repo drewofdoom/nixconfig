@@ -79,8 +79,26 @@
   users.users."drew" = {
     isNormalUser = true;
     description = "Drew DeVore";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "tailscale" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "tailscale" "scanner" "lp" ];
     shell = pkgs.fish;
+  };
+
+  # -- Networked multifunction (Epson, IPP Everywhere / eSCL) --
+  # CUPS prints driverless over IPP; epson-escpr covers older ESC/P-R
+  # models that don't. sane-airscan is the network scanner backend
+  # (stock SANE is USB-only); avahi provides .local discovery.
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [ epson-escpr ];
+  };
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+  hardware.sane = {
+    enable = true;
+    extraBackends = with pkgs; [ sane-airscan ];
   };
 
   # Persistent passwordless sudo for drew (hostname-independent,

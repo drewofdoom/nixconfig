@@ -229,6 +229,7 @@ in
     fragments
     rustdesk-flutter
     showtime
+    plezy
     mpv
     decibels
     papers

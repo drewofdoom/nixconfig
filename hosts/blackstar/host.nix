@@ -19,4 +19,8 @@
     localNetworkGameTransfers.openFirewall = true;
   };
   programs.gamemode.enable = true;
+
+  # LACT GPU control (RTX 3080) - daemon + UI. The daemon does the
+  # actual clocks/fan/power work; enable it, not just the package.
+  services.lact.enable = true;
 }
