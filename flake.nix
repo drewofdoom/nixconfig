@@ -37,34 +37,46 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations =
-      let
-        mkHost = hostName: nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./configuration.nix
-            ./hosts/${hostName}/host.nix
-            ./hosts/${hostName}/hardware-configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.drew = {
-                imports = [ ./home-common.nix ./hosts/${hostName}/home.nix ];
-              };
-            }
-          ];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }@inputs:
+    {
+      nixosConfigurations =
+        let
+          mkHost =
+            hostName:
+            nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = { inherit inputs; };
+              modules = [
+                ./configuration.nix
+                ./hosts/${hostName}/host.nix
+                ./hosts/${hostName}/hardware-configuration.nix
+                home-manager.nixosModules.home-manager
+                {
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.backupFileExtension = "backup";
+                  home-manager.extraSpecialArgs = { inherit inputs; };
+                  home-manager.users.drew = {
+                    imports = [
+                      ./home-common.nix
+                      ./hosts/${hostName}/home.nix
+                    ];
+                  };
+                }
+              ];
+            };
+        in
+        {
+          shephard = mkHost "shephard";
+          blackstar = mkHost "blackstar";
         };
-      in
-      {
-        shephard = mkHost "shephard";
-        # blackstar = mkHost "blackstar"; # needs hosts/blackstar/hardware-configuration.nix first
-      };
-  };
+    };
 
   nixConfig = {
     extra-substituters = [

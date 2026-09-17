@@ -10,6 +10,9 @@
 
   networking.hostName = "blackstar";
 
+  # Compressed RAM swap; no swap partition (no hibernation).
+  zramSwap.enable = true;
+
   # Steam needs its FHS env, udev rules (controllers) and firewall ports --
   # the package alone won't work.
   programs.steam = {
