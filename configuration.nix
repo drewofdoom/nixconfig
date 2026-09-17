@@ -1,6 +1,11 @@
 # System configuration - Umbriel + Noctalia Greeter + Flatpak
 # Preserves your stock /etc/nixos settings (boot, timezone, locale, user drew).
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -15,6 +20,8 @@
   boot.kernelModules = [ "ntsync" ];
 
   networking.networkmanager.enable = true;
+
+  nix.settings.accept-flake-config = true;
 
   # Tailscale operator access for drew via group + polkit rule
   # (services.tailscale.operator doesn't exist in this NixOS version)
@@ -46,7 +53,10 @@
     variant = "";
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   nix.settings.extra-substituters = [
     "https://noctalia.cachix.org"
     "https://pipewirecontroller-nix.cachix.org"
@@ -74,12 +84,21 @@
   programs.nix-ld.enable = true;
 
   # Umbriel is not in stable nixpkgs; pull it from the unstable input
-  programs.umbriel.package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.umbriel;
+  programs.umbriel.package =
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.umbriel;
 
   users.users."drew" = {
     isNormalUser = true;
     description = "Drew DeVore";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "tailscale" "scanner" "lp" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "video"
+      "audio"
+      "tailscale"
+      "scanner"
+      "lp"
+    ];
     shell = pkgs.fish;
   };
 
@@ -174,9 +193,24 @@
   # Pro-audio realtime privileges for the audio group (drew is a member).
   # Fixes yabridge "low memory locking limit" warning and JACK realtime errors.
   security.pam.loginLimits = [
-    { domain = "@audio"; item = "memlock"; type = "-"; value = "unlimited"; }
-    { domain = "@audio"; item = "rtprio"; type = "-"; value = "95"; }
-    { domain = "@audio"; item = "nice"; type = "-"; value = "-19"; }
+    {
+      domain = "@audio";
+      item = "memlock";
+      type = "-";
+      value = "unlimited";
+    }
+    {
+      domain = "@audio";
+      item = "rtprio";
+      type = "-";
+      value = "95";
+    }
+    {
+      domain = "@audio";
+      item = "nice";
+      type = "-";
+      value = "-19";
+    }
   ];
 
   # -- Auth + secrets (minimal, no full GNOME) --
