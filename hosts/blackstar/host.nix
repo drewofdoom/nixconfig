@@ -3,7 +3,7 @@
 # generated on that machine (nixos-generate-config), then add
 #   blackstar = mkHost "blackstar";
 # to nixosConfigurations.
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [ ../../modules/nvidia.nix ];
@@ -128,7 +128,17 @@
   # Node polls the server outbound -- no inbound firewall ports needed.
   services.tdarr.nodes.blackstar = {
     name = "blackstar";
-    serverURL = "http://192.168.0.27:8266";
+    # Stable's tdarr-node (2.74.01) can't build: its ccextractor dep
+    # (0.94-unstable-2025-05-20) fails with "stray '#'" errors under gcc 15.
+    # Unstable's node (2.86.01, ccextractor 0.96.6) has the fix. Imported
+    # with allowUnfree since the raw flake input doesn't inherit
+    # nixpkgs.config.allowUnfree (tdarr-node is unfree).
+    package =
+      (import inputs.nixpkgs-unstable {
+        system = pkgs.stdenv.hostPlatform.system;
+        config.allowUnfree = true;
+      }).tdarr-node;
+    serverURL = "http://tdarr.bunny-octatonic.ts.net:8266";
     type = "mapped";
     workers.transcodeGPU = 1;
     workers.transcodeCPU = 0;
@@ -138,6 +148,23 @@
   # so files created through the CIFS mount share ownership with the server.
   users.users.tdarr.uid = 911;
   users.groups.tdarr.gid = 911;
+
+  # Tdarr_Node 2.86 uses serverURL only for the initial engine check; all
+  # ongoing API calls go to serverIP:serverPort (default 0.0.0.0:8266 --
+  # the ECONNREFUSED in the logs). The module sets no serverIP, so override
+  # it here. Hostname, not the raw tailnet IP: :8266 is only reachable
+  # through the Tailscale Serve frontend (tdarr.bunny-octatonic.ts.net),
+  # direct-to-IP on 8266 is refused.
+  systemd.services.tdarr-node-blackstar.environment = {
+    serverIP = "tdarr.bunny-octatonic.ts.net";
+    serverPort = "8266";
+  };
+
+  # The node stages transcodes under /temp (mirrors the compose `tdarr_cache:/temp`
+  # volume). The unit's strict sandbox can't write there by default, so create
+  # it and whitelist it.
+  systemd.tmpfiles.rules = [ "d /temp 0750 tdarr tdarr -" ];
+  systemd.services.tdarr-node-blackstar.serviceConfig.ReadWritePaths = [ "/temp" ];
 
   # -- CIFS mount for the server's media share --
   # Credentials live OUTSIDE the repo at /etc/samba/media.credentials (root,
