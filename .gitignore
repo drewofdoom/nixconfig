@@ -1,0 +1,7 @@
+# Nix build artifacts
+result
+result-*
+
+# Editor / OS noise
+.direnv/
+.DS_Store

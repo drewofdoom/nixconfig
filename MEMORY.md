@@ -1,0 +1,41 @@
+# nixconfig durable memory
+
+## Layout
+- `flake.nix` — `mkHost` helper; `nixosConfigurations.shephard` (+ commented `blackstar`).
+- `configuration.nix` — shared system config. `home-common.nix` — shared home.
+- `hosts/<name>/{host.nix, hardware-configuration.nix, home.nix}` — per-host.
+- `modules/nvidia.nix` — open + latest branch (RTX 3080 on blackstar).
+- Compositor settings split out: `umbriel.nix`, `niri.nix` (imported by home-common).
+
+## Key decisions
+- **yabridge is custom**: `yabridge-dev`/`yabridgectl-dev` = nixpkgs package overridden to dev
+  commit `b580a9f` (needed for Wine 11). Pinned; never auto-updates. Stable fallback is
+  plain `yabridge`/`yabridgectl`. NIX_PROFILES patch re-applied from nixpkgs (required
+  for chainloader lib lookup); other nixpkgs patches dropped (don't apply to dev tree).
+- **Bottles removed** (was 6.3G + broken GL presentation through steam-run sandbox).
+  Plain system Wine (`wineWow64Packages.staging`) + `winetricks`. No `WINELOADER` set.
+- **yabridge GUI crash is systemic**: `get_root_window` BadWindow terminate under
+  xwayland-satellite (Umbriel). Works headless/DSP-side; Carla dies the same way.
+  Niri (own Xwayland) is the test bed. Candidate upstream issue at robbert-vdh/yabridge.
+- **DXVK off for FabFilter/Analog Obsession type plugins** (black GUI with DXVK on).
+- **Reaper extensions** (SWS/ReaPack) must be symlinked into `~/.config/REAPER/` via
+  `xdg.configFile` — packages alone are invisible to Reaper.
+- **GTK headerbar buttons**: `gtk-decoration-layout=":"` + dconf `button-layout=""`.
+- **Pro audio baseline**: `@audio` memlock unlimited / rtprio 95 / nice -19, rtkit,
+  PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
+- **Zed is native** (`zed-editor` via `programs.zed-editor` + extensions `nix`, `toml`);
+  FHS dropped. Toolchains via `extraPackages` + home packages.
+- **opencode** comes from stable nixpkgs (1.18.30); Umbriel pulls unstable but doesn't affect it.
+- **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
+- **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
+  `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
+- **Flatpak theming**: adw-gtk3-dark Flatpak theme + ro `xdg-config/gtk-{3,4}.0` overrides;
+  Noctalia GTK templates (`gtk3`, `gtk4`, `niri`) enabled.
+- blackstar (Nvidia 3080) not yet online: needs its `hardware-configuration.nix`, then
+  uncomment its `mkHost` line. Gets Steam/Gamemode/Heroic/ProtonPlus/Protontricks/
+  Gamescope/MangoHud automatically.
+
+## Workflows
+- Validate: `nixos-rebuild build --flake .#shephard` (or detached for long builds).
+- Switch: `nh os switch`. Validate Niri KDL: `niri validate --config <file>`.
+- `yabridgectl sync` after Wine/plugin changes; Reaper VST paths may need store lib dirs added.
