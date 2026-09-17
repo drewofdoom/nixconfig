@@ -212,7 +212,8 @@ in
     papirus-icon-theme
 
     # CLI tools
-    opencode
+    # opencode from unstable -- stable lags (1.15.x); need >= 1.18.0.
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode
     gh
     git
     nil

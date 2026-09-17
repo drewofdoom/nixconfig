@@ -25,7 +25,7 @@
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
 - **Zed is native** (`zed-editor` via `programs.zed-editor` + extensions `nix`, `toml`);
   FHS dropped. Toolchains via `extraPackages` + home packages.
-- **opencode** comes from stable nixpkgs (1.18.30); Umbriel pulls unstable but doesn't affect it.
+- **opencode** comes from nixpkgs-unstable (1.18.30); stable lags at 1.15.x. Same pattern as atuin.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
