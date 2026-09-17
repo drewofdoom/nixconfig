@@ -25,7 +25,12 @@
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
 - **Zed is native** (`zed-editor` via `programs.zed-editor` + extensions `nix`, `toml`);
   FHS dropped. Toolchains via `extraPackages` + home packages.
-- **opencode** comes from nixpkgs-unstable (1.18.30); stable lags at 1.15.x. Same pattern as atuin.
+- **opencode is upstream**, not nixpkgs: both stable (1.15.x) and unstable (1.18.30)
+  builds are unusable (1.18.30 crashes resolving any model, `TypeError err_*` on every
+  prompt). Installed via `https://opencode.ai/install` to `~/.opencode/bin` (on PATH via
+  `home.sessionPath`, autoupdates itself). Zen provider disabled in
+  `~/.config/opencode/opencode.jsonc` (no payment method on workspace);
+  `small_model` = free `openrouter/inclusionai/ling-3.0-flash-vl:free`.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.

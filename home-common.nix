@@ -212,8 +212,11 @@ in
     papirus-icon-theme
 
     # CLI tools
-    # opencode from unstable -- stable lags (1.15.x); need >= 1.18.0.
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode
+    # NOTE: no nixpkgs opencode -- both stable (1.15.x) and unstable (1.18.30)
+    # builds are unusable (unstable crashes resolving any model,
+    # TypeError err_* on every prompt). Upstream binary installed via
+    # https://opencode.ai/install to ~/.opencode/bin (1.18.31+, autoupdates).
+    # See home.sessionPath below.
     gh
     git
     nil
@@ -224,6 +227,7 @@ in
     ripgrep
     fd
     python3
+    uv
     nodejs
     btop
     gping
@@ -302,6 +306,13 @@ in
     XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
   };
+
+  # Upstream opencode binary (see CLI tools note above).
+  # xdarkzx-reaper-mcp installed via uv tool (pipx equiv) to ~/.local/bin — keep on PATH for opencode mcp.
+  home.sessionPath = [
+    "$HOME/.opencode/bin"
+    "$HOME/.local/bin"
+  ];
 
   systemd.user.services.proton-pass-ssh-agent = {
     Unit = {
