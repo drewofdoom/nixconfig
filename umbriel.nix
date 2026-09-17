@@ -183,18 +183,11 @@
           action = "window-toggle-maximize";
           repeat = false;
         };
-        "Mod+Ctrl+F" = "window-cycle-primary-extent";
         "Mod+Shift+F" = {
           action = "window-toggle-fullscreen";
           repeat = false;
         };
-        "Mod+Alt+F" = "window-toggle-fullscreen";
         "Mod+M" = "window-toggle-maximize-to-edges";
-        "Mod+Minus" = "window-modify-primary-extent:-0.05";
-        "Mod+Equal" = "window-modify-primary-extent:0.05";
-        "Mod+R" = "window-cycle-primary-extent";
-        "Mod+Shift+R" = "window-cycle-primary-extent-back";
-        "Mod+Ctrl+R" = "window-cycle-secondary-extent";
 
         # === Floating ===
         "Mod+T" = {
@@ -287,7 +280,6 @@
           action = "cheatsheet-toggle";
           repeat = false;
         };
-        "Mod+Escape" = "shortcuts-inhibit-toggle";
       };
     };
   };
