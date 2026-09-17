@@ -1,8 +1,11 @@
 # Shared Nvidia setup for Wayland compositors (Umbriel/Niri).
 # Open kernel modules + latest driver branch (requires Turing/GTX-16xx or
 # newer; blackstar's RTX 3080 qualifies).
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
+let
+  unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 {
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -11,7 +14,10 @@
     powerManagement.enable = true;
     open = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    # 610.x from unstable: better Wayland/RTX-30 performance. Both channels
+    # are on kernel 7.2.6, so the module ABI matches. Revisit when 26.05
+    # catches up, then drop back to config.boot.kernelPackages.nvidiaPackages.
+    package = unstablePkgs.linuxPackages_latest.nvidiaPackages.latest;
   };
 
   environment.sessionVariables = {
