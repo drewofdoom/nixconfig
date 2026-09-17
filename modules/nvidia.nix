@@ -4,7 +4,11 @@
 { config, pkgs, inputs, ... }:
 
 let
-  unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  # legacyPackages doesn't inherit nixpkgs.config.allowUnfree; import with it.
+  unstablePkgs = import inputs.nixpkgs-unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+    config.allowUnfree = true;
+  };
 in
 {
   services.xserver.videoDrivers = [ "nvidia" ];

@@ -132,6 +132,9 @@ in
 
   programs.atuin = {
     enable = true;
+    # 18.21 wrote history "v2" records to the sync server; stable 18.15.2
+    # can't read them (unknown history version "v2"). Stay on unstable.
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.atuin;
     settings = {
       auto_sync = true;
       sync_frequency = "5m";
