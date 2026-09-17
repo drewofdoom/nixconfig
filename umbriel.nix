@@ -41,14 +41,66 @@
         center_focused = "on_overflow";
       };
       window_rule = [
+        # Default: blur everything (covers Niri's default window-rule background blur).
+        # Corner radius / clipping come from appearance.corner_radius.
         {
           blur = true;
           blur_optimized = false;
         }
+        # Ghostty translucency.
+        {
+          match.app_id = "^com.mitchellh.ghostty$";
+          opacity = 0.95;
+        }
+        # Floating utilities (Niri app-id matches).
+        {
+          match.app_id = "^(org.gnome.DejaDup|Emulator|zenity|xdg-desktop-portal|org.pulseaudio.pavucontrol|dev.noctalia.Noctalia|org.gnome.Decibels)$";
+          default_floating = true;
+        }
+        # Floating dialogs by title (Niri title matches; substring match, no anchors).
+        {
+          match.title = "(Picture in picture|Picture-in-Picture|AppImage Installer|Open File|Select|Choose a wallpaper|Open Folder|Save As|Library|Choose Where to Download|File Operation Progress|Rename|Copy Files|Move Files|Search Files|All Files|Save Project|Sign In)";
+          default_floating = true;
+        }
+        # Zed open dialogs (Niri: app-id + title AND).
+        {
+          match.app_id = "^dev.zed.Zed$";
+          match.title = "Zed —";
+          default_floating = true;
+        }
+        # Darkest Dungeon: never fullscreen, never floating.
+        {
+          match.app_id = "^darkest.bin.x86_64$";
+          default_fullscreen = false;
+          default_floating = false;
+        }
+        # Steam games: always VRR (Niri: variable-refresh-rate).
+        {
+          match.app_id = "^steam_app_";
+          vrr = "always";
+        }
+        # Steam notification toasts: bottom-right, don't steal focus.
+        {
+          match.app_id = "^steam$";
+          match.title = "^notificationtoasts_.+_desktop";
+          default_floating = true;
+          default_position = {
+            x = 10;
+            y = 10;
+            anchor = "bottom_right";
+          };
+          default_focused = false;
+        }
+        # Noctalia shell.
         {
           match.app_id = "^dev.noctalia.Noctalia$";
           default_floating = true;
         }
+        # NOTE, not ported from Niri rules.kdl:
+        # - mpv 1920x1080 / AppManager+Ignition 800px / Telegram 600px fixed
+        #   column widths: Umbriel tiled windows size by fraction
+        #   (default_scrolling_extent), no fixed-px equivalent.
+        # - layer-rule place-within-backdrop for noctalia-backdrop: no equivalent.
       ];
       layer_rule = [
         {
