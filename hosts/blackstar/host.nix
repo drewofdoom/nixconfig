@@ -3,7 +3,7 @@
 # generated on that machine (nixos-generate-config), then add
 #   blackstar = mkHost "blackstar";
 # to nixosConfigurations.
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ../../modules/nvidia.nix ];
@@ -118,4 +118,49 @@
 
   # VBAN uses UDP 6980 by default -- yes, you must open it manually.
   networking.firewall.allowedUDPPorts = [ 6980 ];
+
+  # -- Tdarr node (Blackstar only, mapped) --
+  # Server lives on rosie (compose: internal node `rosie`, serverPort 8266,
+  # auth disabled, so no API key needed). This node gets 1 NVENC GPU worker;
+  # server disk speed is the bottleneck, so no more.
+  # Mapped = node reads/writes the library directly via /mnt/data/media below,
+  # which mirrors the server's paths, so no pathTranslators needed.
+  # Node polls the server outbound -- no inbound firewall ports needed.
+  services.tdarr.nodes.blackstar = {
+    name = "blackstar";
+    serverURL = "http://192.168.0.27:8266";
+    type = "mapped";
+    workers.transcodeGPU = 1;
+    workers.transcodeCPU = 0;
+  };
+
+  # Pin tdarr to uid/gid 911 to match the server container's PUID/PGID=911,
+  # so files created through the CIFS mount share ownership with the server.
+  users.users.tdarr.uid = 911;
+  users.groups.tdarr.gid = 911;
+
+  # -- CIFS mount for the server's media share --
+  # Credentials live OUTSIDE the repo at /etc/samba/media.credentials (root,
+  # mode 0600) -- create it with:
+  #   sudo mkdir -p /etc/samba
+  #   printf 'username=\npassword=\n' | sudo tee /etc/samba/media.credentials
+  #   sudo chmod 0600 /etc/samba/media.credentials
+  # then fill in the values. The SMB user needs read+write on the share --
+  # a mapped node writes transcoded files back to the library.
+  # automount = the share is only connected on first access, and
+  # idle-timeout disconnects it after 60s idle. nofail so a missing
+  # file/share never blocks boot.
+  environment.systemPackages = [ pkgs.cifs-utils ];
+  fileSystems."/mnt/data/media" = {
+    device = "//192.168.0.27/media";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/samba/media.credentials"
+      "uid=911,gid=911"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=60"
+      "nofail"
+      "rw"
+    ];
+  };
 }
