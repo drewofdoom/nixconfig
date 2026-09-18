@@ -125,6 +125,7 @@ in
       alias egrep='ugrep -E'
       alias fgrep='ugrep -F'
       alias rgrep='ugrep -R'
+      alias t='bat --style=plain --paging=never'
     '';
   };
 
@@ -220,7 +221,6 @@ in
     adw-gtk3
     gnome-themes-extra
     papirus-icon-theme
-    papirus-folders
 
     # CLI tools
     # NOTE: no nixpkgs opencode -- unstable (1.18.30) crashes resolving
