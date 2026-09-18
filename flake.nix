@@ -109,15 +109,6 @@
           nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-smoothir.nix
             { };
         ross-vu = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/ross-vu.nix { };
-        # Unfree (proprietary freeware): the raw flake input doesn't inherit
-        # nixpkgs.config.allowUnfree, so instantiate with it explicitly.
-        ross-substance =
-          (import nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          }).callPackage
-            ./proaudio/plugins/ross-substance.nix
-            { };
       };
       nixosConfigurations =
         let
