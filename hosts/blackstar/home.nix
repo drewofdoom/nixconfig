@@ -8,15 +8,24 @@ let
   # `nix flake update` + `nix-update` or manual hash refresh.
   # Uses sdist hash sha256:bc58406b261278727e7c4e649ea99309d8700f9beeb624cafaa3d9231187c245
   # → SRI sha256-vFhAayYSeHJ+fE5knqmTCdhwD5vutiTK+qPZIxGHwkU=
+  mcpSrc = pkgs.fetchurl {
+    url = "https://files.pythonhosted.org/packages/54/23/ea7f5d5fb0b836de6932a91b9f894b04152790055980c1a679b3813a034f/xdarkzx_reaper_mcp-0.7.1.tar.gz";
+    hash = "sha256-vFhAayYSeHJ+fE5knqmTCdhwD5vutiTK+qPZIxGHwkU=";
+  };
+
+  # The Lua bridge REAPER actually runs — upstream doesn't bundle it in the
+  # wheel, it only exists in the sdist under reaper_scripts/. Extract it here
+  # so `nh switch` always leaves a loadable copy in REAPER's Scripts folder.
+  mcpLua = pkgs.runCommand "reaper_mcp_server.lua" { } ''
+    tar xzOf ${mcpSrc} xdarkzx_reaper_mcp-0.7.1/reaper_scripts/reaper_mcp_server.lua > $out
+  '';
+
   xdarkzx-reaper-mcp = pkgs.python3Packages.buildPythonApplication rec {
     pname = "xdarkzx-reaper-mcp";
     version = "0.7.1";
     pyproject = true;
 
-    src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/54/23/ea7f5d5fb0b836de6932a91b9f894b04152790055980c1a679b3813a034f/xdarkzx_reaper_mcp-0.7.1.tar.gz";
-      hash = "sha256-vFhAayYSeHJ+fE5knqmTCdhwD5vutiTK+qPZIxGHwkU=";
-    };
+    src = mcpSrc;
 
     build-system = with pkgs.python3Packages; [ hatchling ];
 
@@ -64,23 +73,39 @@ in
   # yabridge-bottles-wineloader, pinned to a commit (upstream is an
   # unversioned script). Refresh: bump `rev` below + new hash from
   # `nix-prefetch-url <raw-url> | nix hash convert --to sri`.
+  # Upstream ships `#!/bin/bash`, which doesn't exist on NixOS — the yabridge
+  # chainloader execs this via WINELOADER and dies with "bad interpreter",
+  # so every bridged plugin fails to scan (verified 2026-09-18: all 14
+  # FabFilters SIGABRT'd the REAPER scan subprocess). Rewrite the shebang
+  # to the store bash at install time.
   home.file.".local/bin/wineloader.sh" = {
-    source = pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/microfortnight/yabridge-bottles-wineloader/fa162125a51eb4a08f0100f972782b61b6efbb88/wineloader.sh";
-      hash = "sha256-STnZ/tHs/+PgNa1OIbMIb6TPqix1emkMJKOXH/2IkGw=";
-    };
+    source = pkgs.runCommand "wineloader.sh" {} ''
+      sed '1s|.*|#!${pkgs.bash}/bin/bash|' ${pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/microfortnight/yabridge-bottles-wineloader/fa162125a51eb4a08f0100f972782b61b6efbb88/wineloader.sh";
+        hash = "sha256-STnZ/tHs/+PgNa1OIbMIb6TPqix1emkMJKOXH/2IkGw=";
+      }} > $out
+    '';
     executable = true;
   };
 
-  # WINELOADER must be visible inside Reaper's (GUI) environment, not just
-  # shells -- hence both sessionVariables and environment.d. After switching,
-  # verify with:
+  # WINELOADER: plain system wine, NOT wineloader.sh. Bottles is now a prefix
+  # manager only — installed plugin files + registry/licenses live in the
+  # proaudio-fabfilter bottle, which yabridge auto-detects as its prefix.
+  # The bottle's own runners (kron4ek TkG) cannot boot Windows processes on
+  # NixOS: their 32-bit loader needs /lib/ld-linux.so.2, which doesn't exist
+  # outside FHS distros (verified 2026-09-18: every bridged scan died with
+  # "could not open", then SIGABRT). nixpkgs wine-wow64 hosts all (64-bit)
+  # bridged plugins fine with the bottle as prefix. wineloader.sh stays
+  # installed above for manual/Bottles use.
+  # Must be visible inside Reaper's (GUI) environment, not just shells --
+  # hence both sessionVariables and environment.d. After switching, verify
+  # with:
   #   tr '\0' '\n' < /proc/$(pgrep -f '/reaper$' | head -1)/environ | grep -E '^(WINELOADER|PATH)='
-  # and confirm `wine`/`yq` resolve there. Reaper must be (re)started after
-  # login for the variables to be present.
-  home.sessionVariables.WINELOADER = "${config.home.homeDirectory}/.local/bin/wineloader.sh";
+  # and confirm `wine` resolves there. Reaper must be restarted after
+  # switching for the new value to take effect (env is read at launch).
+  home.sessionVariables.WINELOADER = "wine";
   xdg.configFile."environment.d/wineloader.conf".text = ''
-    WINELOADER=${config.home.homeDirectory}/.local/bin/wineloader.sh
+    WINELOADER=wine
   '';
 
   # -- REAPER Daemon bridge (blackstar only) --
@@ -134,6 +159,11 @@ JSON
       echo "syncReaperDaemon: input missing bridge/reaper_agent_bridge.lua — skip" >&2
     fi
   '';
+
+  # xDarkzx MCP Lua bridge — upstream only ships this inside the sdist
+  # (reaper_scripts/reaper_mcp_server.lua), never in the wheel. Manage it
+  # here so Actions > Load ReaScript always has a file to point at.
+  xdg.configFile."REAPER/Scripts/reaper_mcp_server.lua".source = mcpLua;
 
   # Ensure REAPER auto-loads the bridge on every launch, declarative version
   # of `python3 setup/install.py`. The managed block is idempotent — matches

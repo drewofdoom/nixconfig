@@ -289,6 +289,7 @@
     xwayland-satellite
     unar
     file-roller
+    vulkan-tools
   ];
 
   system.stateVersion = "26.05";
