@@ -45,6 +45,67 @@
       ...
     }@inputs:
     {
+      # GitHub-release audio plugins (see audio-plugins/). One line per
+      # plugin; update with `nix-update <name> --flake` from the repo root.
+      packages.x86_64-linux = {
+        zl-equalizer = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/zl-equalizer.nix { };
+        zl-splitter = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/zl-splitter.nix { };
+        # Disabled until first stable release (upstream is prereleases-only):
+        # zl-spectrum-equalizer = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/zl-spectrum-equalizer.nix { };
+        zl-compressor =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/zl-compressor.nix
+            { };
+        dusk-4k-eq = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-4k-eq.nix { };
+        dusk-4k-eq-2 = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-4k-eq-2.nix { };
+        dusk-chord-analyzer =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-chord-analyzer.nix
+            { };
+        duskverb = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/duskverb.nix { };
+        dusk-multi-comp =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-multi-comp.nix
+            { };
+        dusk-multi-q = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-multi-q.nix { };
+        dusk-spectrum-analyzer =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-spectrum-analyzer.nix
+            { };
+        dusk-sunset-circuits =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-sunset-circuits.nix
+            { };
+        dusk-tape-echo-2 =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-tape-echo-2.nix
+            { };
+        dusk-tapemachine =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-tapemachine.nix
+            { };
+        dusk-tapemachine-2 =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/dusk-tapemachine-2.nix
+            { };
+        brummer-loopino =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/brummer-loopino.nix
+            { };
+        brummer-toneshifteq =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/brummer-toneshifteq.nix
+            { };
+        brummer-neuralrack =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/brummer-neuralrack.nix
+            { };
+        brummer-loadbox =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/brummer-loadbox.nix
+            { };
+        brummer-smoothir =
+          nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/brummer-smoothir.nix
+            { };
+        ross-vu = nixpkgs.legacyPackages.x86_64-linux.callPackage ./audio-plugins/ross-vu.nix { };
+        # Unfree (proprietary freeware): the raw flake input doesn't inherit
+        # nixpkgs.config.allowUnfree, so instantiate with it explicitly.
+        ross-substance =
+          (import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          }).callPackage
+            ./audio-plugins/ross-substance.nix
+            { };
+      };
       nixosConfigurations =
         let
           mkHost =

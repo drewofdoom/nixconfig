@@ -31,6 +31,15 @@
   `home.sessionPath`, autoupdates itself). Zen provider disabled in
   `~/.config/opencode/opencode.jsonc` (no payment method on workspace);
   `small_model` = free `openrouter/inclusionai/ling-3.0-flash-vl:free`.
+- **GitHub audio plugins** live in `audio-plugins/` (one file per plugin, all hosts
+  via home-common): derivation repackages the release asset into
+  `$out/<format>` + `passthru.formats`, flake `packages` exposes it
+  (one line per plugin), `audio-plugins/default.nix` symlinks each format to
+  `~/.<format>/<pname>` and adds standalones to PATH. Updates: single-src
+  files via `nix-update <pname> --flake`; everything (incl. multi-asset
+  brummer files and prefixed-tag dusk monorepo) via
+  `python3 audio-plugins/update.py [--all | <file>...]` (dusk files carry
+  `# update-tag-prefix: <prefix}`).
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.

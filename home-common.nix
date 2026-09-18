@@ -1,6 +1,6 @@
 # Shared Home Manager config for drew - terminal, browser, dev tools, theming.
 # Compositor settings live in umbriel.nix / niri.nix / noctalia.nix.
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
 let
   # Recent yabridge dev build (actions run 30739764611, commit b580a9f).
@@ -40,6 +40,7 @@ in
     ./umbriel.nix
     ./niri.nix
     ./noctalia.nix
+    ./audio-plugins
   ];
 
   home.username = "drew";
@@ -226,6 +227,7 @@ in
     bat
     ripgrep
     fd
+    glib.bin # gio (GIO metadata, e.g. Nautilus custom folder attributes)
     python3
     uv
     nodejs
@@ -313,6 +315,20 @@ in
     "$HOME/.opencode/bin"
     "$HOME/.local/bin"
   ];
+
+  # Papirus "projects" folder icon on ~/Projects (GIO metadata lives in the
+  # binary gvfs-metadata store, so this re-applies it idempotently each switch
+  # instead of a config file). Guarded: a missing session bus never fails activation.
+  home.activation.projectsFolderIcon = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    GIO="${pkgs.glib.bin}/bin/gio"
+    dir="$HOME/Projects"
+    if [ -d "$dir" ]; then
+      curIcon=$("$GIO" info -a metadata::custom-icon-name "$dir" 2>/dev/null | sed -n 's/^  metadata::custom-icon-name: //p')
+      if [ "$curIcon" != "folder-projects" ]; then
+        "$GIO" set -t string "$dir" metadata::custom-icon-name folder-projects 2>/dev/null || true
+      fi
+    fi
+  '';
 
   systemd.user.services.proton-pass-ssh-agent = {
     Unit = {

@@ -254,6 +254,11 @@
   # user-scope packages declared in home-common.nix).
   services.flatpak.enable = true;
 
+  # GVFS daemon (notably gvfsd-metadata): without it, `gio set ... metadata::*`
+  # fails with "Setting attribute ... not supported" -- GLib has nowhere to
+  # persist file metadata (Nautilus custom icons/attributes live there).
+  services.gvfs.enable = true;
+
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
