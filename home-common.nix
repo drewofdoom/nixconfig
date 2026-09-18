@@ -223,9 +223,9 @@ in
     papirus-folders
 
     # CLI tools
-    # NOTE: no nixpkgs opencode -- both stable (1.15.x) and unstable (1.18.30)
-    # builds are unusable (unstable crashes resolving any model,
-    # TypeError err_* on every prompt). Upstream binary installed via
+    # NOTE: no nixpkgs opencode -- unstable (1.18.30) crashes resolving
+    # any model (TypeError err_* on every prompt). Stable (1.15.10) exists
+    # in nixpkgs but is older than upstream. Upstream binary installed via
     # https://opencode.ai/install to ~/.opencode/bin (1.18.31+, autoupdates).
     # See home.sessionPath below.
     gh

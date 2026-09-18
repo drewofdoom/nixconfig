@@ -27,12 +27,15 @@
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
 - **Zed is native** (`zed-editor` via `programs.zed-editor` + extensions `nix`, `toml`);
   FHS dropped. Toolchains via `extraPackages` + home packages.
-- **opencode is upstream**, not nixpkgs: both stable (1.15.x) and unstable (1.18.30)
-  builds are unusable (1.18.30 crashes resolving any model, `TypeError err_*` on every
-  prompt). Installed via `https://opencode.ai/install` to `~/.opencode/bin` (on PATH via
+- **opencode is upstream**, not nixpkgs: both stable (1.15.x) and unstable
+  (1.18.30) builds were unusable (1.18.30 crashes resolving any model,
+  `TypeError err_*` on every prompt). Installed via
+  `https://opencode.ai/install` to `~/.opencode/bin` (on PATH via
   `home.sessionPath`, autoupdates itself). Zen provider disabled in
-  `~/.config/opencode/opencode.jsonc` (no payment method on workspace);
-  `small_model` = free `openrouter/inclusionai/ling-3.0-flash-vl:free`.
+  `~/.config/opencode/opencode.jsonc` (no payment method on workspace).
+  Model override previously pinned to
+  `openrouter/inclusionai/ling-3.0-flash-vl:free` on blackstar — removed
+  since the issue was the package, not the model.
 - **Pro audio** lives in `proaudio/` (all hosts via home-common):
   `proaudio/default.nix` = REAPER + SWS/ReaPack extensions;
   `proaudio/plugins/` = GitHub plugins (one file per plugin) + nixpkgs

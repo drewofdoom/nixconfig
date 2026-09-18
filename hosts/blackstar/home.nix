@@ -1,6 +1,12 @@
 # blackstar-only home config (gaming machine).
 # Also owns the podcast REAPER MCPs — only on blackstar, not shephard/common.
-{ config, pkgs, inputs, lib, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 
 let
   # xdarkzx-reaper-mcp 0.7.1 — declarative replacement for `uv tool install
@@ -72,46 +78,46 @@ in
   # activation rsyncs the input's tracked files into the clone, preserving
   # runtime dirs + .git.
   home.activation.syncReaperDaemon = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    REPO="$HOME/Projects/reaper-daemon"
-    SRC="${inputs.reaper-daemon}"
-    if [ -e "$SRC/bridge/reaper_agent_bridge.lua" ]; then
-      if [ -d "$REPO/.git" ]; then
-        # Update existing clone: rsync tracked files, keep runtime state + git + bridge_config (managed separately)
-        $VERBOSE_ECHO "syncReaperDaemon: syncing $SRC -> $REPO"
-        ${pkgs.rsync}/bin/rsync -a --delete --chmod=Du+w,Fu+w \
-          --exclude='.git' --exclude='inbox' --exclude='outbox' \
-          --exclude='processing' --exclude='failed' --exclude='archive' \
-          --exclude='logs' --exclude='__pycache__' \
-          --exclude='bridge/bridge_config.json' \
-          "$SRC"/ "$REPO"/
-        chmod -R u+w "$REPO"
-      elif [ -d "$REPO" ]; then
-        $VERBOSE_ECHO "syncReaperDaemon: $REPO exists but not git — merging in"
-        ${pkgs.rsync}/bin/rsync -a --chmod=Du+w,Fu+w \
-          --exclude='inbox' --exclude='outbox' \
-          --exclude='processing' --exclude='failed' --exclude='archive' \
-          --exclude='logs' --exclude='bridge/bridge_config.json' \
-          "$SRC"/ "$REPO"/
-        chmod -R u+w "$REPO"
-      else
-        $VERBOSE_ECHO "syncReaperDaemon: fresh checkout $SRC -> $REPO"
-        mkdir -p "$(dirname "$REPO")"
-        ${pkgs.rsync}/bin/rsync -a --chmod=Du+w,Fu+w --exclude='bridge/bridge_config.json' "$SRC"/ "$REPO"/
-        chmod -R u+w "$REPO"
-      fi
-      # Ensure bridge_config.json exists with audio/project/preference gates open (mirrors `setup/install.py --allow-disk-writes`)
-      CONFIG="$REPO/bridge/bridge_config.json"
-      if [ ! -f "$CONFIG" ]; then
-        $VERBOSE_ECHO "syncReaperDaemon: creating $CONFIG with disk writes allowed"
-        mkdir -p "$(dirname "$CONFIG")"
-        cat > "$CONFIG" <<'JSON'
-{"bridge_root":"/home/drew/Projects/reaper-daemon","poll_interval_seconds":0.25,"adaptive_poll":true,"allow_audio_writes":true,"allow_project_save":true,"allow_preference_writes":true,"allow_risk_level_3":true}
-JSON
-        chmod u+w "$CONFIG"
-      fi
-    else
-      echo "syncReaperDaemon: input missing bridge/reaper_agent_bridge.lua — skip" >&2
-    fi
+        REPO="$HOME/Projects/reaper-daemon"
+        SRC="${inputs.reaper-daemon}"
+        if [ -e "$SRC/bridge/reaper_agent_bridge.lua" ]; then
+          if [ -d "$REPO/.git" ]; then
+            # Update existing clone: rsync tracked files, keep runtime state + git + bridge_config (managed separately)
+            $VERBOSE_ECHO "syncReaperDaemon: syncing $SRC -> $REPO"
+            ${pkgs.rsync}/bin/rsync -a --delete --chmod=Du+w,Fu+w \
+              --exclude='.git' --exclude='inbox' --exclude='outbox' \
+              --exclude='processing' --exclude='failed' --exclude='archive' \
+              --exclude='logs' --exclude='__pycache__' \
+              --exclude='bridge/bridge_config.json' \
+              "$SRC"/ "$REPO"/
+            chmod -R u+w "$REPO"
+          elif [ -d "$REPO" ]; then
+            $VERBOSE_ECHO "syncReaperDaemon: $REPO exists but not git — merging in"
+            ${pkgs.rsync}/bin/rsync -a --chmod=Du+w,Fu+w \
+              --exclude='inbox' --exclude='outbox' \
+              --exclude='processing' --exclude='failed' --exclude='archive' \
+              --exclude='logs' --exclude='bridge/bridge_config.json' \
+              "$SRC"/ "$REPO"/
+            chmod -R u+w "$REPO"
+          else
+            $VERBOSE_ECHO "syncReaperDaemon: fresh checkout $SRC -> $REPO"
+            mkdir -p "$(dirname "$REPO")"
+            ${pkgs.rsync}/bin/rsync -a --chmod=Du+w,Fu+w --exclude='bridge/bridge_config.json' "$SRC"/ "$REPO"/
+            chmod -R u+w "$REPO"
+          fi
+          # Ensure bridge_config.json exists with audio/project/preference gates open (mirrors `setup/install.py --allow-disk-writes`)
+          CONFIG="$REPO/bridge/bridge_config.json"
+          if [ ! -f "$CONFIG" ]; then
+            $VERBOSE_ECHO "syncReaperDaemon: creating $CONFIG with disk writes allowed"
+            mkdir -p "$(dirname "$CONFIG")"
+            cat > "$CONFIG" <<'JSON'
+    {"bridge_root":"/home/drew/Projects/reaper-daemon","poll_interval_seconds":0.25,"adaptive_poll":true,"allow_audio_writes":true,"allow_project_save":true,"allow_preference_writes":true,"allow_risk_level_3":true}
+    JSON
+            chmod u+w "$CONFIG"
+          fi
+        else
+          echo "syncReaperDaemon: input missing bridge/reaper_agent_bridge.lua — skip" >&2
+        fi
   '';
 
   # xDarkzx MCP Lua bridge — upstream only ships this inside the sdist
@@ -198,7 +204,6 @@ JSON
   # activation keeps pinned to the flake. Shephard keeps the manual file.
   xdg.configFile."opencode/opencode.jsonc".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/config.json";
-    small_model = "openrouter/inclusionai/ling-3.0-flash-vl:free";
     instructions = [ "/home/drew/.config/opencode/REAPER.md" ];
     mcp = {
       reaper = {
@@ -209,7 +214,10 @@ JSON
       };
       "reaper-daemon" = {
         type = "local";
-        command = [ "${pkgs.python3}/bin/python3" "${config.home.homeDirectory}/Projects/reaper-daemon/reaper_mcp.py" ];
+        command = [
+          "${pkgs.python3}/bin/python3"
+          "${config.home.homeDirectory}/Projects/reaper-daemon/reaper_mcp.py"
+        ];
         enabled = true;
       };
     };
