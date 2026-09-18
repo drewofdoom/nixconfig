@@ -1,6 +1,12 @@
 # Shared Home Manager config for drew - terminal, browser, dev tools, theming.
 # Compositor settings live in umbriel.nix / niri.nix / noctalia.nix.
-{ config, pkgs, inputs, lib, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 
 let
   # Recent yabridge dev build (actions run 30739764611, commit b580a9f).
@@ -40,7 +46,7 @@ in
     ./umbriel.nix
     ./niri.nix
     ./noctalia.nix
-    ./audio-plugins
+    ./proaudio
   ];
 
   home.username = "drew";
@@ -153,7 +159,7 @@ in
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "Maple Mono NF";
       font-size = 11;
       theme = "noctalia";
     };
@@ -163,7 +169,10 @@ in
   # Merges into ~/.config/zed/settings.json, your in-app edits are preserved.
   programs.zed-editor = {
     enable = true;
-    extensions = [ "nix" "toml" ];
+    extensions = [
+      "nix"
+      "toml"
+    ];
     extraPackages = with pkgs; [
       nil
       nixd
@@ -211,6 +220,7 @@ in
     adw-gtk3
     gnome-themes-extra
     papirus-icon-theme
+    papirus-folders
 
     # CLI tools
     # NOTE: no nixpkgs opencode -- both stable (1.15.x) and unstable (1.18.30)
@@ -247,22 +257,9 @@ in
     resources
     simple-scan
 
-    # Audio
-    reaper
-    reaper-sws-extension
-    reaper-reapack-extension
-    lsp-plugins
-    surge-xt
-    dragonfly-reverb
-    x42-plugins
-    zam-plugins
-    vital
-    odin2
-    dexed
-    chow-tape-model
-    cardinal
-
-    # Yabridge (Nix-built, no ~/.local/bin binaries)
+    # Yabridge (Nix-built, no ~/.local/bin binaries). Stays here rather than
+    # ./proaudio: it's bridge infrastructure, and the dev override lives in
+    # the let block above.
     yabridge-dev
     yabridgectl-dev
   ];
@@ -289,14 +286,7 @@ in
     ];
   };
 
-  # Reaper only loads extensions from its resource dir -- link the Nix-built
-  # ones in (ReaPack can still write downloaded extensions alongside these).
-  xdg.configFile = {
-    "REAPER/UserPlugins/reaper_sws-x86_64.so".source = "${pkgs.reaper-sws-extension}/UserPlugins/reaper_sws-x86_64.so";
-    "REAPER/UserPlugins/reaper_reapack-x86_64.so".source = "${pkgs.reaper-reapack-extension}/UserPlugins/reaper_reapack-x86_64.so";
-    "REAPER/Scripts/sws_python.py".source = "${pkgs.reaper-sws-extension}/Scripts/sws_python.py";
-    "REAPER/Scripts/sws_python64.py".source = "${pkgs.reaper-sws-extension}/Scripts/sws_python64.py";
-  };
+  # (REAPER extension symlinks live in ./proaudio.)
 
   # -- SSH agent via proton-pass-cli --
   # Uses proton-pass as a drop-in ssh-agent, storing keys in Proton Pass.

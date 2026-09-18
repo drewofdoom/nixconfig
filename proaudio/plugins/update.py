@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Update audio-plugins/<name>.nix to the latest GitHub release.
+"""Update proaudio/plugins/<name>.nix to the latest GitHub release.
 
 Handles both shapes used in this dir:
   - single `src = fetchzip {...}` (ZL-style)
   - `srcs = [ (fetchzip {...}) ... ]` (brummer-style, one asset per format)
 
 Usage:
-  audio-plugins/update.py <plugin-file>...   # e.g. audio-plugins/update.py audio-plugins/brummer-loopino.nix
-  audio-plugins/update.py --all               # all tracked plugin files
+  proaudio/plugins/update.py <plugin-file>...   # e.g. proaudio/plugins/update.py proaudio/plugins/brummer-loopino.nix
+
+  proaudio/plugins/update.py --all               # all tracked plugin files
 
 For each file: reads `version`, asks GitHub for the latest release tag
 (stable only; a leading `v` is stripped), and if newer, rewrites the

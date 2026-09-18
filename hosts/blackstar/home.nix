@@ -1,4 +1,4 @@
-# blackstar-only home config (gaming + yabridge-via-Bottles machine).
+# blackstar-only home config (gaming machine).
 # Also owns the podcast REAPER MCPs — only on blackstar, not shephard/common.
 { config, pkgs, inputs, lib, ... }:
 
@@ -56,57 +56,11 @@ in
     gamescope
     mangohud
 
-    # wineloader.sh dependency (reads the runner from Bottles bottle.yml).
-    yq
-
-    # Podcast REAPER MCP — blackstar only
+    # Podcast REAPER MCP -- blackstar only
     xdarkzx-reaper-mcp
     # keep uv available for ad-hoc pip work, but MCP itself is now declarative
     uv
   ];
-
-  # Bottles via Flatpak (native Bottles was dropped: broken GL presentation
-  # through the steam-run sandbox). The wineloader only reads Bottles' data
-  # dirs + runners, so the sandbox doesn't matter -- matches upstream docs.
-  services.flatpak.packages = [ "com.usebottles.bottles" ];
-
-  # yabridge-bottles-wineloader, pinned to a commit (upstream is an
-  # unversioned script). Refresh: bump `rev` below + new hash from
-  # `nix-prefetch-url <raw-url> | nix hash convert --to sri`.
-  # Upstream ships `#!/bin/bash`, which doesn't exist on NixOS — the yabridge
-  # chainloader execs this via WINELOADER and dies with "bad interpreter",
-  # so every bridged plugin fails to scan (verified 2026-09-18: all 14
-  # FabFilters SIGABRT'd the REAPER scan subprocess). Rewrite the shebang
-  # to the store bash at install time.
-  home.file.".local/bin/wineloader.sh" = {
-    source = pkgs.runCommand "wineloader.sh" {} ''
-      sed '1s|.*|#!${pkgs.bash}/bin/bash|' ${pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/microfortnight/yabridge-bottles-wineloader/fa162125a51eb4a08f0100f972782b61b6efbb88/wineloader.sh";
-        hash = "sha256-STnZ/tHs/+PgNa1OIbMIb6TPqix1emkMJKOXH/2IkGw=";
-      }} > $out
-    '';
-    executable = true;
-  };
-
-  # WINELOADER: plain system wine, NOT wineloader.sh. Bottles is now a prefix
-  # manager only — installed plugin files + registry/licenses live in the
-  # proaudio-fabfilter bottle, which yabridge auto-detects as its prefix.
-  # The bottle's own runners (kron4ek TkG) cannot boot Windows processes on
-  # NixOS: their 32-bit loader needs /lib/ld-linux.so.2, which doesn't exist
-  # outside FHS distros (verified 2026-09-18: every bridged scan died with
-  # "could not open", then SIGABRT). nixpkgs wine-wow64 hosts all (64-bit)
-  # bridged plugins fine with the bottle as prefix. wineloader.sh stays
-  # installed above for manual/Bottles use.
-  # Must be visible inside Reaper's (GUI) environment, not just shells --
-  # hence both sessionVariables and environment.d. After switching, verify
-  # with:
-  #   tr '\0' '\n' < /proc/$(pgrep -f '/reaper$' | head -1)/environ | grep -E '^(WINELOADER|PATH)='
-  # and confirm `wine` resolves there. Reaper must be restarted after
-  # switching for the new value to take effect (env is read at launch).
-  home.sessionVariables.WINELOADER = "wine";
-  xdg.configFile."environment.d/wineloader.conf".text = ''
-    WINELOADER=wine
-  '';
 
   # -- REAPER Daemon bridge (blackstar only) --
   # Upstream has no flake.nix; track it as flake input `reaper-daemon`

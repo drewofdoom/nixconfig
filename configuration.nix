@@ -269,6 +269,8 @@
     noto-fonts
     noto-fonts-color-emoji
     corefonts
+    inter # variable (InterVariable.ttf)
+    maple-mono.NF # Maple Mono Nerd Font build
   ];
 
   environment.systemPackages = with pkgs; [

@@ -2,7 +2,7 @@
 #
 # To add a plugin: copy this file, adjust pname/version/url/asset name,
 # installPhase copies, and passthru.formats, add one line to the `packages`
-# output in flake.nix, and `audio-plugins/default.nix` symlinks it into
+# output in flake.nix, and `proaudio/plugins/default.nix` symlinks it into
 # ~/.clap ~/.vst3 ~/.lv2 ~/.vst ~/.ladspa automatically.
 #
 # Updates: `nix-update <pname> --flake` from the repo root (tracks the
@@ -36,7 +36,7 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   # Formats this derivation installs to $out/<format>. Must match
-  # installPhase; audio-plugins/default.nix symlinks each one into the
+  # installPhase; proaudio/plugins/default.nix symlinks each one into the
   # corresponding ~/ search dir. Subset of: clap vst3 vst2 lv2 ladspa.
   passthru.formats = [
     "lv2"
