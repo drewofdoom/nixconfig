@@ -35,6 +35,11 @@
       url = "github:ArisoN-ext/PipeWireController-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    reaper-daemon = {
+      url = "github:wretcher207/reaper-daemon";
+      flake = false;
+    };
   };
 
   outputs =

@@ -141,6 +141,22 @@
         "type": "github"
       }
     },
+    "reaper-daemon": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789711518,
+        "narHash": "sha256-WKcEjtL5VklXC5MALBmsIZtlKWvAct5AMgogEZW+X8E=",
+        "owner": "wretcher207",
+        "repo": "reaper-daemon",
+        "rev": "8e243fdea225bc171f4ccab6d2118d408752c6b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wretcher207",
+        "repo": "reaper-daemon",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
@@ -150,6 +166,7 @@
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
         "pipewirecontroller": "pipewirecontroller",
+        "reaper-daemon": "reaper-daemon",
         "umbriel": "umbriel",
         "zen-browser": "zen-browser"
       }
