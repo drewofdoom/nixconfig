@@ -12,8 +12,11 @@
   commit `b580a9f` (needed for Wine 11). Pinned; never auto-updates. Stable fallback is
   plain `yabridge`/`yabridgectl`. NIX_PROFILES patch re-applied from nixpkgs (required
   for chainloader lib lookup); other nixpkgs patches dropped (don't apply to dev tree).
-- **Bottles removed** (was 6.3G + broken GL presentation through steam-run sandbox).
-  Plain system Wine (`wineWow64Packages.staging`) + `winetricks`. No `WINELOADER` set.
+- **Bottles is Flatpak-only on blackstar** (native was 6.3G + broken GL through
+  steam-run). `com.usebottles.bottles` + `yq` + pinned
+  `microfortnight/yabridge-bottles-wineloader` (`~/.local/bin/wineloader.sh`,
+  `WINELOADER` via sessionVariables + `environment.d/`) for yabridge VSTs.
+  Plain system Wine + winetricks everywhere else.
 - **yabridge GUI crash is systemic**: `get_root_window` BadWindow terminate under
   xwayland-satellite (Umbriel). Works headless/DSP-side; Carla dies the same way.
   Niri (own Xwayland) is the test bed. Candidate upstream issue at robbert-vdh/yabridge.
