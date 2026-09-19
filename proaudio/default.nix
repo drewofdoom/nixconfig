@@ -20,6 +20,12 @@
   ];
 
   programs.reaper = {
+    enable = true;
+
+    # Native Wayland SWELL (experimental). X11-based plugin windows are
+    # handled by the bundled XWayland bridge.
+    experimental.swell-wayland.enable = true;
+
     packages = with pkgs; [
       freetype
       libpng
@@ -1333,42 +1339,6 @@
           comment = "Main : Ctrl+Insert : Item properties: Normalize items (peak/RMS/LUFS)...";
         }
       ];
-    };
-    layout = {
-      mainWindow = {
-        position = {
-          x = 0;
-          y = 0;
-        };
-        size = {
-          width = 1751;
-          height = 1386;
-        };
-        state = 0;
-      };
-      mixer = {
-        position = {
-          x = 0;
-          y = 0;
-        };
-        size = {
-          width = 0;
-          height = 320;
-        };
-        visible = true;
-        docked = true;
-        maximized = false;
-      };
-      transport = {
-        position = {
-          x = 0;
-          y = 0;
-        };
-        size = {
-          width = 1000;
-          height = 36;
-        };
-      };
     };
   };
 }
