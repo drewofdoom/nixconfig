@@ -37,6 +37,18 @@ let
       hash = "sha256-TiKiyE3GZYCX1+vooHdD03fAhNQPAA1IzTfkG++I7TY=";
     };
   });
+
+  # Papirus with a non-default folder colour. nixpkgs bakes the colour in at
+  # build time via `papirus-folders -t $theme -o -C $color` (see the
+  # papirus-icon-theme derivation), which is the only workable approach on
+  # NixOS: papirus-folders works by rewriting folder.svg symlinks *inside* the
+  # theme, and the store is read-only, so running it at runtime always fails
+  # (its _is_writable/verify_privileges guards can never succeed).
+  # `grey` because it is theme-agnostic -- Noctalia templates restyle the GTK
+  # theme and colours but never the icon theme, so the folder colour is fixed
+  # and must not fight whatever palette is active. The theme *name* is
+  # unchanged (only the folder SVGs differ), so nothing else needs updating.
+  papirus-icon-theme-grey = pkgs.papirus-icon-theme.override { color = "grey"; };
 in
 {
   imports = [
@@ -87,7 +99,7 @@ in
     };
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      package = papirus-icon-theme-grey;
     };
     font = {
       name = "Noto Sans";
@@ -224,7 +236,7 @@ in
     wlr-randr
     adw-gtk3
     gnome-themes-extra
-    papirus-icon-theme
+    papirus-icon-theme-grey
 
     # CLI tools
     # NOTE: no nixpkgs opencode -- unstable (1.18.30) crashes resolving

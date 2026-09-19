@@ -19,8 +19,20 @@
 
   # Steam needs its FHS env, udev rules (controllers) and firewall ports --
   # the package alone won't work.
+  # extraCompatPackages (-> STEAM_EXTRA_COMPAT_TOOLS_PATHS) is the *only*
+  # supported way to get Proton-GE on NixOS. proton-ge-bin deliberately ships
+  # a junk `out` output telling you not to add it to an environment; the real
+  # tool is its `steamcompattool` output, which the steam module points Steam
+  # at via makeSearchPathOutput. Steam then finds the tool through the
+  # compatibilitytool.vdf in that output. Do NOT install it into
+  # environment.systemPackages / home.packages -- that would only put the
+  # breadcrumb text on PATH, not a working tool.
+  # ProtonPlus drops its downloads into ~/.local/share/Steam/compatibilitytools.d,
+  # which Steam reads too but is unmanaged and can go stale (it is currently
+  # empty), so declarative is both more reliable and reproducible.
   programs.steam = {
     enable = true;
+    extraCompatPackages = with pkgs; [ proton-ge-bin ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
