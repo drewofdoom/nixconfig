@@ -29,14 +29,15 @@
     experimental.swell-wayland.enable = true;
 
     theme = {
-      active = "Default_7.0.ReaperThemeZip";
+      active = "Reapertips Theme.ReaperThemeZip";
       packages = [
+        inputs.reaper-flake.packages.${pkgs.system}.reapertips-theme
       ];
     };
 
     swell.colortheme = {
       enable = true;
-      preset = inputs.reaper-flake.packages.${pkgs.system}.realinux-light-swell-theme;
+      preset = inputs.reaper-flake.packages.${pkgs.system}.reapertips-theme;
     };
 
     packages = with pkgs; [

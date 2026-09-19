@@ -32,10 +32,20 @@
   Resource dir is `~/.config/reaper-flake` (not `~/.config/REAPER`); activation
   refuses to run while REAPER is open. No FHS env — the wrapper's
   `LD_LIBRARY_PATH` is the ReaImGui fix.
-- **REAPER MCP + reaper-daemon dropped** (2026-09-18) with the reaper-flake
-  move; `reaper-daemon` flake input removed. The old blackstar wiring
-  (xdarkzx-reaper-mcp, `REAPER/Scripts/__startup.lua`, opencode MCP block) is
-  gone — re-wire against the new declarative setup when needed.
+- **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
+  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.7.1 from
+  PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
+  26.05 lacks it) plus the matching `reaper_mcp_server.lua` (GitHub tag
+  v0.7.1). Both bridges load via flake-native mechanisms — lua files through
+  `programs.reaper.resourceFiles.files`, startup via additive
+  `programs.reaper.lineFiles.files."Scripts/__startup.lua"` (coexists with the
+  flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). Daemon bridge
+  lua is vendored in `proaudio/reaper-lua/` (pure eval forbids absolute
+  paths — re-copy from `~/Projects/reaper-daemon/bridge/` after bridge
+  changes; currently v3.21.0). opencode client config, podcast profile, and
+  `REAPER.md` memory are Nix-managed (`proaudio/opencode/`, deployed to
+  `~/.config/opencode/`). The old blackstar wiring
+  (pipx install, `REAPER/Scripts/__startup.lua` marker blocks) is gone.
 - **ReaSonus Native** (`proaudio/reasonus-native/`, flake package
   `reasonus-native`): control-surface extension for the PreSonus **ioStation
   24c** (FaderPort V2 family). Built from source; upstream's CMake pulls WDL /
