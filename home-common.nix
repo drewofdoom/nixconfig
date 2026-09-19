@@ -286,7 +286,7 @@ in
     ];
   };
 
-  # (REAPER extension symlinks live in ./proaudio.)
+  # (REAPER + extensions are configured declaratively in ./proaudio.)
 
   # -- SSH agent via proton-pass-cli --
   # Uses proton-pass as a drop-in ssh-agent, storing keys in Proton Pass.
@@ -300,7 +300,6 @@ in
   };
 
   # Upstream opencode binary (see CLI tools note above).
-  # xdarkzx-reaper-mcp installed via uv tool (pipx equiv) to ~/.local/bin — keep on PATH for opencode mcp.
   home.sessionPath = [
     "$HOME/.opencode/bin"
     "$HOME/.local/bin"

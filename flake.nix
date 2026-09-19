@@ -36,9 +36,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    reaper-daemon = {
-      url = "github:wretcher207/reaper-daemon";
-      flake = false;
+    # Declarative REAPER packaging + Home Manager config. Ships REAPER, SWS,
+    # a patched ReaPack (managed-package API), themes, and the experimental
+    # native-Wayland SWELL library. See proaudio/default.nix.
+    reaper-flake = {
+      url = "github:9Prestidigitator/reaper-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 

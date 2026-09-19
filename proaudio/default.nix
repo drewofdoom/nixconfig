@@ -1,24 +1,21 @@
-# Pro-audio setup, all hosts: REAPER + extensions.
+# Pro-audio setup, all hosts: REAPER + extensions, declaratively via
+# reaper-flake (github:9Prestidigitator/reaper-flake, input `reaper-flake`).
 # Plugin packages (nixpkgs + GitHub) live in ./plugins.
-{ config, pkgs, ... }:
+#
+# reaper-flake owns REAPER's resource dir (~/.config/reaper-flake by default)
+# and merges only the values declared here, leaving the rest of REAPER's
+# mutable state alone. It also packages REAPER, SWS and a patched ReaPack, so
+# the old nixpkgs reaper-{sws,reapack}-extension symlinks are gone.
+{
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  imports = [ ./plugins ];
-
-  home.packages = with pkgs; [
-    reaper
-    reaper-sws-extension
-    reaper-reapack-extension
+  imports = [
+    ./plugins
+    inputs.reaper-flake.homeModules.reaper
+    ./reaper.nix
   ];
-
-  # Reaper only loads extensions from its resource dir -- link the Nix-built
-  # ones in (ReaPack can still write downloaded extensions alongside these).
-  xdg.configFile = {
-    "REAPER/UserPlugins/reaper_sws-x86_64.so".source =
-      "${pkgs.reaper-sws-extension}/UserPlugins/reaper_sws-x86_64.so";
-    "REAPER/UserPlugins/reaper_reapack-x86_64.so".source =
-      "${pkgs.reaper-reapack-extension}/UserPlugins/reaper_reapack-x86_64.so";
-    "REAPER/Scripts/sws_python.py".source = "${pkgs.reaper-sws-extension}/Scripts/sws_python.py";
-    "REAPER/Scripts/sws_python64.py".source = "${pkgs.reaper-sws-extension}/Scripts/sws_python64.py";
-  };
 }

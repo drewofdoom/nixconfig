@@ -40,7 +40,6 @@ let
 
   # Plugins installed straight from nixpkgs (no repackaging needed).
   nixpkgsPlugins = with pkgs; [
-    lsp-plugins
     surge-xt
     dragonfly-reverb
     x42-plugins

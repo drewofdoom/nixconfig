@@ -1,5 +1,26 @@
 {
   "nodes": {
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "reaper-flake",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788450739,
+        "narHash": "sha256-glZLQlzIn1fXH6PazR2iUmTo7kzzyYSshrWhLS9TqCU=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "31729ca8cbdb4fa927b34e5f4353e6a83f39e993",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -141,19 +162,24 @@
         "type": "github"
       }
     },
-    "reaper-daemon": {
-      "flake": false,
+    "reaper-flake": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1789711518,
-        "narHash": "sha256-WKcEjtL5VklXC5MALBmsIZtlKWvAct5AMgogEZW+X8E=",
-        "owner": "wretcher207",
-        "repo": "reaper-daemon",
-        "rev": "8e243fdea225bc171f4ccab6d2118d408752c6b1",
+        "lastModified": 1789684374,
+        "narHash": "sha256-E5VV9LAVt5JCohhaCBGl+B6RbMNbu+noYE1vlZB1NmU=",
+        "owner": "9Prestidigitator",
+        "repo": "reaper-flake",
+        "rev": "51ee6fca6ffcc2315c0cb3e662f21d36da5a9cf0",
         "type": "github"
       },
       "original": {
-        "owner": "wretcher207",
-        "repo": "reaper-daemon",
+        "owner": "9Prestidigitator",
+        "repo": "reaper-flake",
         "type": "github"
       }
     },
@@ -166,7 +192,7 @@
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
         "pipewirecontroller": "pipewirecontroller",
-        "reaper-daemon": "reaper-daemon",
+        "reaper-flake": "reaper-flake",
         "umbriel": "umbriel",
         "zen-browser": "zen-browser"
       }

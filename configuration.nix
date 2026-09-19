@@ -286,9 +286,9 @@
     nautilus
     proton-pass-cli
     proton-vpn-cli
-    # xwayland-satellite serves both Umbriel and Niri (Niri uses it
-    # instead of plain xwayland).
+    xwayland
     xwayland-satellite
+    xwayland-run
     unar
     file-roller
     vulkan-tools

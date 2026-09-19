@@ -20,8 +20,22 @@
   xwayland-satellite (Umbriel). Works headless/DSP-side; Carla dies the same way.
   Niri (own Xwayland) is the test bed. Candidate upstream issue at robbert-vdh/yabridge.
 - **DXVK off for FabFilter/Analog Obsession type plugins** (black GUI with DXVK on).
-- **Reaper extensions** (SWS/ReaPack) must be symlinked into `~/.config/REAPER/` via
-  `xdg.configFile` — packages alone are invisible to Reaper.
+- **REAPER is declarative via reaper-flake** (input `reaper-flake`,
+  github:9Prestidigitator/reaper-flake, `inputs.nixpkgs.follows = "nixpkgs"`).
+  `proaudio/default.nix` imports its Home Manager module and sets
+  `programs.reaper`: native-Wayland SWELL (`experimental.swell-wayland.enable`),
+  `packages` (freetype/libpng/zlib/fontconfig/libepoxy/gtk3/cairo/glib) for
+  ReaImGui-style dlopen deps, SWS, and ReaPack with ReaImGui + js_ReaScriptAPI
+  declared. The flake ships its own REAPER 7.80, SWS, and a **patched ReaPack
+  1.2.6** (managed-package API: `ReaPack_ExportState`/`QueuePackage`/`IsBusy`)
+  — the old nixpkgs `reaper`/`reaper-{sws,reapack}-extension` symlinks are gone.
+  Resource dir is `~/.config/reaper-flake` (not `~/.config/REAPER`); activation
+  refuses to run while REAPER is open. No FHS env — the wrapper's
+  `LD_LIBRARY_PATH` is the ReaImGui fix.
+- **REAPER MCP + reaper-daemon dropped** (2026-09-18) with the reaper-flake
+  move; `reaper-daemon` flake input removed. The old blackstar wiring
+  (xdarkzx-reaper-mcp, `REAPER/Scripts/__startup.lua`, opencode MCP block) is
+  gone — re-wire against the new declarative setup when needed.
 - **GTK headerbar buttons**: `gtk-decoration-layout=":"` + dconf `button-layout=""`.
 - **Pro audio baseline**: `@audio` memlock unlimited / rtprio 95 / nice -19, rtkit,
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
@@ -37,7 +51,7 @@
   `openrouter/inclusionai/ling-3.0-flash-vl:free` on blackstar — removed
   since the issue was the package, not the model.
 - **Pro audio** lives in `proaudio/` (all hosts via home-common):
-  `proaudio/default.nix` = REAPER + SWS/ReaPack extensions;
+  `proaudio/default.nix` = REAPER via reaper-flake (see above);
   `proaudio/plugins/` = GitHub plugins (one file per plugin) + nixpkgs
   plugin packages. GitHub derivations repackage release assets into
   `$out/<format>` + `passthru.formats`, flake `packages` exposes them
