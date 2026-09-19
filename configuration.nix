@@ -215,22 +215,12 @@
   ];
 
   # -- Auth + secrets (minimal, no full GNOME) --
-  # polkit daemon + Wayland-native agent (autostarted in graphical session).
-  # Noctalia v5 can also act as polkit agent; hyprpolkitagent is the fallback
-  # so pkexec / Flatpak installs / NM edits always prompt.
-  systemd.user.services.hyprpolkitagent = {
-    description = "hyprpolkitagent - Polkit authentication agent";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
+  # polkit daemon (`security.polkit`) + agent. Noctalia v5's native agent is
+  # the agent now (shell.polkit_agent = true in noctalia.nix); it themes the
+  # prompt to match the shell. The previous hyprpolkitagent service was
+  # dropped -- two agents can't both own org.freedesktop.PolicyKit1, and the
+  # loser logs "already registered". If Noctalia is ever disabled, restore a
+  # standalone agent (hyprpolkitagent or polkit_gnome) or auth prompts vanish.
 
   # Secret Service provider for Noctalia (clipboard, calendar creds).
   # libsecret alone is not enough - you need a provider.
@@ -281,7 +271,6 @@
     yq
     git
     bibata-cursors
-    hyprpolkitagent
     gnome-keyring
     libsecret
     nautilus

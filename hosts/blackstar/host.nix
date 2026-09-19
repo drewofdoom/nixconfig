@@ -3,7 +3,11 @@
 # generated on that machine (nixos-generate-config), then add
 #   blackstar = mkHost "blackstar";
 # to nixosConfigurations.
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [ ../../modules/nvidia.nix ];
@@ -163,7 +167,16 @@
   # The node stages transcodes under /temp (mirrors the compose `tdarr_cache:/temp`
   # volume). The unit's strict sandbox can't write there by default, so create
   # it and whitelist it.
-  systemd.tmpfiles.rules = [ "d /temp 0750 tdarr tdarr -" ];
+  systemd.tmpfiles.rules = [
+    "d /temp 0750 tdarr tdarr -"
+    # Audio subvolumes are root-owned; hand them to drew (audio work runs as
+    # the desktop user). tmpfiles runs at boot and adopts the mountpoints each
+    # time, so ownership survives even if a subvol is recreated.
+    "d /home/drew/Audio 0755 drew users -"
+    "d /home/drew/Audio/Archive 0755 drew users -"
+    "d /home/drew/Audio/Assets 0755 drew users -"
+    "d /home/drew/Audio/Workspace 0755 drew users -"
+  ];
   systemd.services.tdarr-node-blackstar.serviceConfig.ReadWritePaths = [ "/temp" ];
 
   # -- CIFS mount for the server's media share --
@@ -190,4 +203,70 @@
       "rw"
     ];
   };
+
+  # -- Dedicated audio volume (nvme1n1p3, 731 GiB, label "audio") --
+  # Created by shrinking the old 930 GiB root partition: p2 is now ~198 GiB
+  # and p3 fills the remainder. Three subvolumes on ONE btrfs filesystem (so
+  # they share the same UUID; the `subvol=` option picks which one mounts).
+  # Mounted under ~/Audio rather than /audio so audio work lives in the home
+  # tree; systemd orders these After=home.mount automatically.
+  #
+  # `archive` + `assets` keep CoW + checksums: both are effectively
+  # write-once and want to be snapshottable (`btrfs send` for backup, and
+  # checksums to catch bit-rot on long-lived archives/sample libraries).
+  # Compression stays OFF everywhere: archive is FLAC and assets are already
+  # compressed or incompressible, so zstd would burn CPU for ~nothing.
+  # `workspace` is scratch/production -- nodatacow/nodatasum avoid
+  # fragmentation + write amplification on large takes, at the cost of not
+  # being snapshottable (nodatacow snapshots are not coherent). Never snapshot
+  # workspace.
+  # No `nofail`: p3 shares a disk with `/`, so a mount failure means something
+  # is seriously wrong and boot should stop rather than hide it.
+  fileSystems."/home/drew/Audio/Archive" = {
+    device = "/dev/disk/by-uuid/a58a58dc-7d07-4904-beaa-52ea4ba2a248";
+    fsType = "btrfs";
+    options = [
+      "subvol=/archive"
+      "noatime"
+    ];
+  };
+  fileSystems."/home/drew/Audio/Assets" = {
+    device = "/dev/disk/by-uuid/a58a58dc-7d07-4904-beaa-52ea4ba2a248";
+    fsType = "btrfs";
+    options = [
+      "subvol=/assets"
+      "noatime"
+    ];
+  };
+  fileSystems."/home/drew/Audio/Workspace" = {
+    device = "/dev/disk/by-uuid/a58a58dc-7d07-4904-beaa-52ea4ba2a248";
+    fsType = "btrfs";
+    options = [
+      "subvol=/workspace"
+      "noatime"
+      "nodatacow"
+      "nodatasum"
+    ];
+  };
+
+  # noatime on the root/home btrfs filesystems: purely a metadata-write
+  # reduction, safe and needs no data rewrite. Deliberately NOT adding
+  # compression here -- /home is 565 GiB and ~535 GiB of that is the Steam
+  # library (already-compressed game archives), so whole-fs compression would
+  # cost CPU on every game write for near-zero saving. Plain assignment (not
+  # mkForce): the generated hardware-configuration.nix sets no options for
+  # these, and list options merge additively -- mkForce would clobber NixOS's
+  # own `x-initrd.mount` on `/`, which root needs to mount in the initrd.
+  fileSystems."/".options = [ "noatime" ];
+  fileSystems."/home".options = [ "noatime" ];
+
+  # zstd:1 on /nix ONLY. The store is hundreds of thousands of small files
+  # (dlopen/exec), and this disk is a DRAM-less SN550 that is weak at random
+  # small reads, so fewer bytes per file is a modest win. zstd:1 is ~1.4 GB/s
+  # on this 5800X -- cheap enough to be near-neutral on bulk reads and worth
+  # it on small-file reads. NOT on `/` (trivial content) and NOT on `/home`
+  # (535 GiB of already-compressed Steam archives). Affects newly written
+  # paths only; existing store paths stay uncompressed until replaced.
+  # Plain assignment so the subvol/x-initrd.mount flags merge additively.
+  fileSystems."/nix".options = [ "compress=zstd:1" ];
 }
