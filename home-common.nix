@@ -256,6 +256,7 @@ in
     loupe
     resources
     simple-scan
+    proton-vpn
 
     # Yabridge (Nix-built, no ~/.local/bin binaries). Stays here rather than
     # ./proaudio: it's bridge infrastructure, and the dev override lives in

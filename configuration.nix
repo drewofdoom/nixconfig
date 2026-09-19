@@ -286,7 +286,6 @@
     libsecret
     nautilus
     proton-pass-cli
-    proton-vpn-cli
     xwayland
     xwayland-satellite
     xwayland-run
