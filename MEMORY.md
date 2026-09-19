@@ -36,6 +36,29 @@
   move; `reaper-daemon` flake input removed. The old blackstar wiring
   (xdarkzx-reaper-mcp, `REAPER/Scripts/__startup.lua`, opencode MCP block) is
   gone — re-wire against the new declarative setup when needed.
+- **ReaSonus Native** (`proaudio/reasonus-native/`, flake package
+  `reasonus-native`): control-surface extension for the PreSonus **ioStation
+  24c** (FaderPort V2 family). Built from source; upstream's CMake pulls WDL /
+  reaper-sdk / GSL / mINI / fmt over the network via FetchContent, so all five
+  are pinned and pre-populated into `lib/` in `postPatch` (the `lib/<name>`
+  layout matters — CMakeLists symlinks `lib/reaper-sdk/WDL -> lib/WDL/WDL`).
+  Linux needs the issue-#29 flags (`-include cstdlib -include cmath -include
+  cstring -include cstdio -DSWELL_DLG_WS_DEFAULT_SCALING=0`), set via
+  `preConfigure` because `cmakeFlags` is word-split. `module.nix` links the
+  `.so` into the resource dir; **`en-US.ini` is copied, not symlinked** — the
+  extension does `std::filesystem::copy` onto it at startup and then writes
+  back, which fails on a read-only store symlink.
+- **ioStation 24c fader calibration** (2026-09-19): the device's unity is at
+  raw **12595** (76.9% of travel), not at the top, so ReaSonus's
+  `raw * 1000 / 16383` mapping made physical unity read **+2.4 dB**. REAPER's
+  0 dB corresponds to raw **11734**. `fader-calibration.py` remaps raw onto the
+  expected range pivoting at unity, applied in **both** `int14ToVol` and
+  `volToNormalized` (they must stay exact inverses or the motorized fader
+  fights REAPER). Measured by a full fader sweep logging raw+vol to
+  `/tmp/reasonus-cal.log` via the `calibrate = true` build variant
+  (`calibrate.py`); 445 distinct values, monotonic, endpoints 0/16383 intact.
+  Note the ioStation has **no physical detent** — unity was eyeballed, so the
+  constant is good to ~0.02 dB, not exact.
 - **GTK headerbar buttons**: `gtk-decoration-layout=":"` + dconf `button-layout=""`.
 - **Pro audio baseline**: `@audio` memlock unlimited / rtprio 95 / nice -19, rtkit,
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).

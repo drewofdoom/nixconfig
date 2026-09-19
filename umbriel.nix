@@ -30,7 +30,7 @@
         enabled = true;
         optimized = true;
         passes = 3;
-        radius = 3;
+        radius = 2;
         noise = 0.02;
         brightness = 0.9;
         contrast = 0.9;
@@ -157,11 +157,11 @@
 
         # === Focus: workspace directional ===
         "Mod+Page_Up" = {
-          action = "workspace-previous";
+          action = "workspace-next";
           cooldown_ms = 250;
         };
         "Mod+Page_Down" = {
-          action = "workspace-next";
+          action = "workspace-previous";
           cooldown_ms = 250;
         };
         "Mod+WheelUp" = {
@@ -182,14 +182,8 @@
         "Mod+MouseForward" = "window-focus-or-output-right";
         "Mod+Home" = "column-focus-first";
         "Mod+End" = "column-focus-last";
-        "Mod+WheelLeft" = {
-          action = "window-focus-left";
-          cooldown_ms = 250;
-        };
-        "Mod+WheelRight" = {
-          action = "window-focus-right";
-          cooldown_ms = 250;
-        };
+        "Mod+WheelLeft" = "layout-scroll-left";
+        "Mod+WheelRight" = "layout-scroll-right";
 
         # === Move: to workspace directly ===
         "Mod+Ctrl+1" = "column-move-to-workspace:1";

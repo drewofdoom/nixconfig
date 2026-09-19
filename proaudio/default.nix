@@ -15,6 +15,7 @@
 {
   imports = [
     ./plugins
+    ./reasonus-native/module.nix
     inputs.reaper-flake.homeModules.reaper
     # ./reaper.nix
   ];
@@ -25,6 +26,17 @@
     # Native Wayland SWELL (experimental). X11-based plugin windows are
     # handled by the bundled XWayland bridge.
     experimental.swell-wayland.enable = true;
+
+    theme = {
+      active = "Default_7.0.ReaperThemeZip";
+      packages = [
+      ];
+    };
+
+    swell.colortheme = {
+      enable = true;
+      preset = inputs.reaper-flake.packages.${pkgs.system}.realinux-light-swell-theme;
+    };
 
     packages = with pkgs; [
       freetype
@@ -243,14 +255,6 @@
             repository = "ReJJ";
             category = "ReSpectrum";
             name = "ReSpectrum.jsfx";
-            version = null;
-            pin = false;
-            enablePrereleases = false;
-          }
-          {
-            repository = "ReaSmoothPlayhead";
-            category = "Extensions";
-            name = "ReaSmoothPlayhead";
             version = null;
             pin = false;
             enablePrereleases = false;

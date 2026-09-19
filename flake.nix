@@ -112,6 +112,7 @@
           nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-smoothir.nix
             { };
         ross-vu = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/ross-vu.nix { };
+        reasonus-native = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/reasonus-native { };
       };
       nixosConfigurations =
         let

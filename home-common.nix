@@ -44,7 +44,7 @@ in
     inputs.umbriel.homeModules.default
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     ./umbriel.nix
-    ./niri.nix
+    # ./niri.nix  # Niri disabled for now; config kept for re-enabling.
     ./noctalia.nix
     ./proaudio
   ];
@@ -148,7 +148,7 @@ in
       sync_frequency = "5m";
       sync_address = "https://api.atuin.sh";
       search_mode = "fuzzy";
-      flags = [ "--disable-up-arrow" ];
+      enter_accept = true;
     };
   };
 
