@@ -166,6 +166,10 @@ in
     };
   };
 
+  programs.yazi = {
+    enable = true;
+  };
+
   # Zed (native, not FHS) + declarative extensions and toolchains.
   # Merges into ~/.config/zed/settings.json, your in-app edits are preserved.
   programs.zed-editor = {
