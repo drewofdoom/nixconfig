@@ -222,12 +222,22 @@
   # workspace.
   # No `nofail`: p3 shares a disk with `/`, so a mount failure means something
   # is seriously wrong and boot should stop rather than hide it.
+  #
+  # `x-gvfs-hide` keeps these out of the Nautilus/GVFS sidebar. They _are_
+  # ordinary fstab mounts already, but gvfs's udisks2 volume monitor shows
+  # everything mounted under $HOME (gvfsudisks2volumemonitor.c
+  # should_show_volume(): the home-dir check returns TRUE), complete with
+  # eject buttons and drive badges. `x-gvfs-hide` is parsed by gvfs straight
+  # out of the fstab options and trumps that check; the kernel and systemd
+  # ignore unknown `x-` options, so it is inert everywhere else. (To force one
+  # _into_ the sidebar elsewhere, `x-gvfs-show`; `x-gvfs-name=` renames it.)
   fileSystems."/home/drew/Audio/Archive" = {
     device = "/dev/disk/by-uuid/a58a58dc-7d07-4904-beaa-52ea4ba2a248";
     fsType = "btrfs";
     options = [
       "subvol=/archive"
       "noatime"
+      "x-gvfs-hide"
     ];
   };
   fileSystems."/home/drew/Audio/Assets" = {
@@ -236,6 +246,7 @@
     options = [
       "subvol=/assets"
       "noatime"
+      "x-gvfs-hide"
     ];
   };
   fileSystems."/home/drew/Audio/Workspace" = {
@@ -246,6 +257,7 @@
       "noatime"
       "nodatacow"
       "nodatasum"
+      "x-gvfs-hide"
     ];
   };
 
