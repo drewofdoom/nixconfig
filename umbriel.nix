@@ -157,11 +157,11 @@
 
         # === Focus: workspace directional ===
         "Mod+Page_Up" = {
-          action = "workspace-next";
+          action = "workspace-previous";
           cooldown_ms = 250;
         };
         "Mod+Page_Down" = {
-          action = "workspace-previous";
+          action = "workspace-next";
           cooldown_ms = 250;
         };
         "Mod+WheelUp" = {
