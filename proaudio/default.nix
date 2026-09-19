@@ -16,6 +16,7 @@
   imports = [
     ./plugins
     ./reasonus-native/module.nix
+    ./reaper-mcp.nix
     inputs.reaper-flake.homeModules.reaper
     # ./reaper.nix
   ];

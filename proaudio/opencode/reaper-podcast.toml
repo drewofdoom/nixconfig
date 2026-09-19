@@ -1,0 +1,21 @@
+# Podcast-admin profile for xDarkzx ReaperMCP.
+# Dialogue/post-production work: items, takes, markers, QC, renders.
+# Drops MIDI/composition/genre-mix machinery to save context.
+name = "podcast-admin"
+include_modules = [
+  "transport_tools",
+  "track_tools",
+  "project_tools",
+  "item_tools",
+  "take_tools",
+  "marker_tools",
+  "selection_tools",
+  "envelope_tools",
+  "send_tools",
+  "fx_tools",
+  "inventory_tools",
+  "analysis_tools",
+  "script_tools",
+  "chops_tools",
+]
+instruction_packs = ["core", "postproduction"]
