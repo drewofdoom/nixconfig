@@ -156,6 +156,7 @@
       }).tdarr-node;
     serverURL = "http://tdarr.bunny-octatonic.ts.net:8266";
     type = "mapped";
+    startPaused = false;
     workers.transcodeGPU = 1;
     workers.transcodeCPU = 0;
   };
