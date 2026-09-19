@@ -26,18 +26,23 @@
 
     # Native Wayland SWELL (experimental). X11-based plugin windows are
     # handled by the bundled XWayland bridge.
+
+    # Craziness - this actually works much better on Umbriel
+    # xwayland-satellite has several bugs that cause plugin windows
+    # to display black screens with yabridge, but using swell-wayland
+    # bypasses xwayland-satellite and spawns a standard Xwayland bridge.
     experimental.swell-wayland.enable = true;
 
     theme = {
       active = "Reapertips Theme.ReaperThemeZip";
       packages = [
-        inputs.reaper-flake.packages.${pkgs.system}.reapertips-theme
+        inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme
       ];
     };
 
     swell.colortheme = {
       enable = true;
-      preset = inputs.reaper-flake.packages.${pkgs.system}.reapertips-theme;
+      preset = inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme;
     };
 
     packages = with pkgs; [
@@ -50,6 +55,13 @@
       cairo
       glib
     ];
+    # Meter rate + media-offline-on-focus-loss are intentionally GUI-owned:
+    # managing raw ini.sections keys wiped unrelated settings on activation,
+    # so these are set in REAPER itself (Prefs > Appearance > Track Control
+    # Panels > Meter update frequency = 60; Prefs > Media > uncheck "Set
+    # media items offline when application is not active"). Do NOT re-add
+    # ini.sections.REAPER.vuupdfreq / .offlineinact here.
+
     preferences = {
       general = {
         filenameAutoIncrement = {

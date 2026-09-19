@@ -279,5 +279,11 @@ on purpose. For composition or measured mix moves, use `reaper-daemon`.
 - Archive method (lossless, keeps handles): integer WAV -> FLAC
   (PCM-verified via framemd5), FLAC -> copy, 32-bit float WAV -> keep WAV.
   Never bounce. Rewrite RPP `FILE "Media/..."` lines only; RPP otherwise
-  byte-identical. Include ONLY RPP-referenced audio. Write
+  byte-identical. **When a FILE line changes container (e.g. `.wav` ->
+  `.flac`), the enclosing `<SOURCE>` type MUST change with it (`<SOURCE
+  WAVE>` -> `<SOURCE FLAC`) — REAPER dispatches its decoder on the SOURCE
+  type, not the file contents, so a stale WAVE-over-FLAC block renders as an
+  empty item even though the audio is fine (hit 5 archives 2026-09-19:
+  LUP 683×2, 684, TL 83/84; fixed + manifests refreshed).**
+  Include ONLY RPP-referenced audio. Write
   `manifest-sha256.txt` (RPP + Media).
