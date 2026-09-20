@@ -49,6 +49,12 @@ let
   # and must not fight whatever palette is active. The theme *name* is
   # unchanged (only the folder SVGs differ), so nothing else needs updating.
   papirus-icon-theme-grey = pkgs.papirus-icon-theme.override { color = "grey"; };
+
+  # Plex/Jellyfin client. Stable 26.05 ships 2.1.0; unstable has 2.20.0, which
+  # is the current upstream release. Same approach as programs.atuin below --
+  # pull just this package from the unstable input rather than the whole set.
+  # Drop this override once 26.05 catches up to >= 2.20.0.
+  plezy = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.plezy;
 in
 {
   imports = [
