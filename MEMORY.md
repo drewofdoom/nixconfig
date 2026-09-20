@@ -32,6 +32,17 @@
   Resource dir is `~/.config/reaper-flake` (not `~/.config/REAPER`); activation
   refuses to run while REAPER is open. No FHS env — the wrapper's
   `LD_LIBRARY_PATH` is the ReaImGui fix.
+- **REAPER DISPLAY pin lives in `programs.reaper.package`** (2026-09-20):
+  Umbriel's xwayland-satellite owns :0 and yabridge plugin windows black-screen
+  through it, so REAPER is pinned to `DISPLAY=":10"` (swell-wayland's own
+  Xwayland). Implemented as a copy of reaper-flake's homeWrappedReaperPackage
+  template (@ rev 51ee6fc) plus one `export DISPLAY` line — re-diff against
+  upstream `modules/default.nix` if the flake rev bumps. A
+  `xdg.desktopEntries.cockos-reaper` Exec override was tried first and does NOT
+  work: duplicate `cockos-reaper.desktop` copies across XDG_DATA_DIRS prefixes
+  mean launchers (Noctalia) can resolve a stock copy without the env. Wrapper
+  scripts here must use `pkgs.writeShellScript` (never an unquoted heredoc —
+  `<<EOF` expands `"$@"` to nothing at build time and ships a broken launcher).
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
   move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.7.1 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
