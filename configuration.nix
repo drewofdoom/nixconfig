@@ -145,8 +145,9 @@
 
   # Niri scrollable compositor alongside Umbriel (session selectable in greeter).
   # programs.niri.enable provides the session, portals and polkit integration.
-  # Disabled for now; config kept in niri.nix + niri/ for re-enabling.
-  programs.niri.enable = false;
+  # Enabled 2026-09-20: REAPER editing happens here (own Xwayland, no
+  # xwayland-satellite); default session stays Umbriel below.
+  programs.niri.enable = true;
 
   # Noctalia v5 shell system-wide + recommended services
   # (NetworkManager, Bluetooth, UPower, power-profiles-daemon)

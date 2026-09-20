@@ -32,17 +32,13 @@
   Resource dir is `~/.config/reaper-flake` (not `~/.config/REAPER`); activation
   refuses to run while REAPER is open. No FHS env — the wrapper's
   `LD_LIBRARY_PATH` is the ReaImGui fix.
-- **REAPER DISPLAY pin: REVERTED, do not retry blindly** (2026-09-20):
-  Umbriel's xwayland-satellite owns :0 and yabridge plugin windows black-screen
-  through it; swell-wayland's own Xwayland (:10) works. Two declarative attempts
-  both failed: (1) `xdg.desktopEntries.cockos-reaper` Exec override — launchers
-  (Noctalia) can resolve a stock `cockos-reaper.desktop` from another
-  XDG_DATA_DIRS prefix, so the env never applied; (2) overriding
-  `programs.reaper.package` with a copy of reaper-flake's config wrapper plus
-  `export DISPLAY=":10"` — broke JACK device connect + ReaPack even after fixing
-  a heredoc-quoting bug, cause undetermined (possibly the override drops
-  something else the module expects from its own `package`). Current workaround:
-  launch REAPER from the terminal with `DISPLAY=:10` pinned manually.
+- **REAPER runs under Niri, not Umbriel** (2026-09-20): swell-wayland's bundled
+  Xwayland bridge starts ok but degrades mid-session, and Umbriel's
+  xwayland-satellite black-screens yabridge windows — so
+  `experimental.swell-wayland.enable = false` (stock X11 SWELL) and Niri
+  re-enabled (`programs.niri.enable`, `./niri.nix` import back on) for editing;
+  greeter default stays Umbriel. Earlier DISPLAY-pin attempts (desktop Exec
+  override, `programs.reaper.package` wrapper) both failed and were reverted.
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
   move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.7.1 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs

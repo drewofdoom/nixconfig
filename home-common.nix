@@ -50,7 +50,7 @@ in
     inputs.umbriel.homeModules.default
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     ./umbriel.nix
-    # ./niri.nix  # Niri disabled for now; config kept for re-enabling.
+    ./niri.nix
     ./noctalia.nix
     ./proaudio
   ];

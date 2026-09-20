@@ -26,26 +26,24 @@
   programs.reaper = {
     enable = true;
 
-    # Native Wayland SWELL (experimental). X11-based plugin windows are
-    # handled by the bundled XWayland bridge.
+    # Stock X11 SWELL (swell-wayland disabled 2026-09-20: its bundled Xwayland
+    # bridge starts ok but degrades and stops working mid-session; and on
+    # Umbriel the xwayland-satellite path black-screens yabridge plugin
+    # windows. REAPER editing happens under Niri, which brings its own
+    # Xwayland — no satellite, no bundled bridge).
+    experimental.swell-wayland.enable = false;
 
-    # Craziness - this actually works much better on Umbriel
-    # xwayland-satellite has several bugs that cause plugin windows
-    # to display black screens with yabridge, but using swell-wayland
-    # bypasses xwayland-satellite and spawns a standard Xwayland bridge.
-    experimental.swell-wayland.enable = true;
+    # theme = {
+    #   active = "Reapertips Theme.ReaperThemeZip";
+    #   packages = [
+    #     inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme
+    #   ];
+    # };
 
-    theme = {
-      active = "Reapertips Theme.ReaperThemeZip";
-      packages = [
-        inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme
-      ];
-    };
-
-    swell.colortheme = {
-      enable = true;
-      preset = inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme;
-    };
+    # swell.colortheme = {
+    #   enable = true;
+    #   preset = inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme;
+    # };
 
     packages = with pkgs; [
       freetype
@@ -155,10 +153,11 @@
       };
       reapack = {
         enable = true;
-        installNewPackagesWhenSynchronizing = true;
+        installNewPackagesWhenSynchronizing = false;
         enablePrereleasesGlobally = false;
         promptToUninstallObsoletePackages = true;
         synchronizeOnActivation = true;
+        addDefaultRepositories = true;
         browser = {
           expandSynonyms = true;
         };
@@ -169,58 +168,10 @@
         };
         repositories = [
           {
-            name = "ReaPack";
-            url = "https://reapack.com/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReaTeam Scripts";
-            url = "https://github.com/ReaTeam/ReaScripts/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReaTeam JSFX";
-            url = "https://github.com/ReaTeam/JSFX/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReaTeam Themes";
-            url = "https://github.com/ReaTeam/Themes/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReaTeam LangPacks";
-            url = "https://github.com/ReaTeam/LangPacks/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReaTeam Extensions";
-            url = "https://github.com/ReaTeam/Extensions/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "MPL Scripts";
-            url = "https://github.com/MichaelPilyavskiy/ReaScripts/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "X-Raym Scripts";
-            url = "https://github.com/X-Raym/REAPER-ReaScripts/raw/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
             name = "BirdBird JSFX";
             url = "https://github.com/Bird-Bird/JSFX/raw/main/index.xml";
             enable = true;
-            installNewPackages = "global";
+            installNewPackages = "always";
           }
           {
             name = "chmaha airwindows JSFX Ports";
@@ -244,7 +195,7 @@
             name = "Saike Tools";
             url = "https://github.com/JoepVanlier/JSFX/raw/master/index.xml";
             enable = true;
-            installNewPackages = "global";
+            installNewPackages = "always";
           }
           {
             name = "StevieKeys JSFX";
@@ -262,23 +213,11 @@
             name = "SonicAnomaly JSFX";
             url = "https://github.com/Sonic-Anomaly/Sonic-Anomaly-JSFX/raw/master/index.xml";
             enable = true;
-            installNewPackages = "global";
+            installNewPackages = "always";
           }
           {
             name = "BirdBird ReaScript Testing";
             url = "https://raw.githubusercontent.com/Bird-Bird/ReaScript_Testing/main/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "ReJJ";
-            url = "https://raw.githubusercontent.com/Justin-Johnson/ReJJ/master/index.xml";
-            enable = true;
-            installNewPackages = "global";
-          }
-          {
-            name = "JSFXClones";
-            url = "https://github.com/JClones/JSFXClones/raw/master/index.xml";
             enable = true;
             installNewPackages = "global";
           }
