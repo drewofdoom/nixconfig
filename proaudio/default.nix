@@ -40,7 +40,7 @@
   xdg.desktopEntries.cockos-reaper = {
     name = "REAPER";
     comment = "REAPER";
-    exec = "env DISPLAY=:10 reaper %F";
+    exec = "env DISPLAY=:12 reaper %F";
     icon = "cockos-reaper";
     categories = [
       "Audio"
