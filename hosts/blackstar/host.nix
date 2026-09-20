@@ -17,6 +17,38 @@
   # Compressed RAM swap; no swap partition (no hibernation).
   zramSwap.enable = true;
 
+  # -- Kernel tuning --
+  # nowatchdog: the NMI watchdog is pure overhead and a latency source; it is
+  # only useful for catching hard lockups on servers. preempt=full: the kernel
+  # is built PREEMPT_DYNAMIC, so this opts into full preemption at boot -- the
+  # single biggest win for REAPER/JACK scheduling latency.
+  boot.kernelParams = [
+    "nowatchdog"
+    "preempt=full"
+  ];
+
+  # zram-specific VM tuning. With a compressed RAM swap device the usual
+  # "avoid swapping" advice inverts: swap-in is cheap (decompress, no disk),
+  # so push pages out eagerly (swappiness 180) and disable swap readahead
+  # (page-cluster 0) -- readahead on zram just decompresses pages you may not
+  # need, and the kernel's default of 3 is tuned for rotating disks.
+  # BBR + fq: BBR is model-based (estimates bottleneck bandwidth/RTT and paces
+  # to match) rather than loss-based like CUBIC, so it holds throughput and
+  # keeps latency down on lossy or congested paths. `fq` is the qdisc that
+  # provides the pacing BBR wants; fq_codel works but paces less smoothly.
+  # Mostly matters for large transfers over a busy uplink -- this box is wired,
+  # so LAN traffic sees little change. Note BBRv1 can be unfair to CUBIC flows
+  # sharing a bottleneck; acceptable on a home network.
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 180;
+    "vm.page-cluster" = 0;
+    "net.ipv4.tcp_congestion_control" = "bbr";
+    "net.core.default_qdisc" = "fq";
+  };
+
+  # Keep /boot from filling with old generations (14 entries currently).
+  boot.loader.systemd-boot.configurationLimit = 10;
+
   # Steam needs its FHS env, udev rules (controllers) and firewall ports --
   # the package alone won't work.
   # extraCompatPackages (-> STEAM_EXTRA_COMPAT_TOOLS_PATHS) is the *only*
@@ -38,6 +70,26 @@
     localNetworkGameTransfers.openFirewall = true;
   };
   programs.gamemode.enable = true;
+
+  # GameMode config (generates /etc/gamemode.ini).
+  # desiredgov=performance is the point of GameMode here: it raises the CPU
+  # governor only while a game is running, then restores whatever was active.
+  # defaultgov is deliberately left unset so exit restores the *current* state
+  # rather than forcing one -- that keeps the Noctalia power toggle (which
+  # drives power-profiles-daemon) authoritative when no game is running.
+  # softrealtime=off: SCHED_ISO is not in upstream kernels, so it is a no-op.
+  # disable_splitlock=1 drops the split-lock mitigation during games (it is a
+  # measurable cost on this 5800X and the risk is irrelevant for a desktop).
+  programs.gamemode.settings = {
+    general = {
+      desiredgov = "performance";
+      softrealtime = "off";
+      renice = 0;
+      ioprio = 0;
+      inhibit_screensaver = 1;
+      disable_splitlock = 1;
+    };
+  };
 
   # LACT GPU control (RTX 3080) - daemon + UI. The daemon does the
   # actual clocks/fan/power work; enable it, not just the package.
