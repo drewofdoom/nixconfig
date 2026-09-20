@@ -32,16 +32,6 @@
       input.mouse = {
         accel_profile = "flat";
       };
-      animation = {
-        windows_in = {
-          style = "slide";
-          curve = "bounce";
-        };
-        windows_out = {
-          style = "slide";
-          curve = "bounce";
-        };
-      };
       appearance = {
         prefer_no_csd = true;
         border_width = 2;
