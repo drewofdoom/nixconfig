@@ -21,6 +21,37 @@
     # ./reaper.nix
   ];
 
+  # REAPER must NOT inherit the session's DISPLAY. Umbriel's xwayland-satellite
+  # owns :0, and inheriting it makes REAPER's X11 plugin windows go through
+  # satellite -- the black-screen yabridge bug. swell-wayland spawns its own
+  # plain Xwayland on :10, so pin DISPLAY there. GDK_BACKEND=wayland is already
+  # set session-wide (see the running REAPER's environ), so it is not repeated
+  # here; REAPER's own window is native Wayland via libSwell either way.
+  #
+  # This overrides the desktop entry shipped by reaper-flake's wrapper. The
+  # stock Exec is `reaper %F`; `env DISPLAY=:10` keeps the wrapper (and thus
+  # -cfgfile and LD_LIBRARY_PATH) intact while forcing the display.
+  xdg.desktopEntries.reaper = {
+    name = "REAPER";
+    comment = "REAPER";
+    exec = "env DISPLAY=:10 reaper %F";
+    icon = "cockos-reaper";
+    categories = [
+      "Audio"
+      "Video"
+      "AudioVideo"
+      "AudioVideoEditing"
+      "Recorder"
+    ];
+    mimeType = [
+      "application/x-reaper-project"
+      "application/x-reaper-project-backup"
+      "application/x-reaper-theme"
+    ];
+    # StartupWMClass has no dedicated option; pass it through `settings`.
+    settings.StartupWMClass = "REAPER";
+  };
+
   programs.reaper = {
     enable = true;
 

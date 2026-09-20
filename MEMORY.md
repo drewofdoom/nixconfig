@@ -1,7 +1,7 @@
 # nixconfig durable memory
 
 ## Layout
-- `flake.nix` — `mkHost` helper; `nixosConfigurations.shephard` (+ commented `blackstar`).
+- `flake.nix` — `mkHost` helper; `nixosConfigurations.shephard` and `blackstar`.
 - `configuration.nix` — shared system config. `home-common.nix` — shared home.
 - `hosts/<name>/{host.nix, hardware-configuration.nix, home.nix}` — per-host.
 - `modules/nvidia.nix` — open + latest branch (RTX 3080 on blackstar).
@@ -99,9 +99,25 @@
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
 - **Flatpak theming**: adw-gtk3-dark Flatpak theme + ro `xdg-config/gtk-{3,4}.0` overrides;
   Noctalia GTK templates (`gtk3`, `gtk4`, `niri`) enabled.
-- blackstar (Nvidia 3080) not yet online: needs its `hardware-configuration.nix`, then
-  uncomment its `mkHost` line. Gets Steam/Gamemode/Heroic/ProtonPlus/Protontricks/
-  Gamescope/MangoHud automatically.
+- blackstar (Nvidia 3080) is online. Gets Steam/Gamemode/Heroic/ProtonPlus/
+  Protontricks/Gamescope/MangoHud automatically.
+- **VA-API needs no manual wiring**: `hardware.nvidia.videoAcceleration` defaults to
+  `true` in nixpkgs and already pulls `nvidia-vaapi-driver` into the graphics driver
+  set. Do NOT add `nvidia-vaapi-driver` to `hardware.graphics.extraPackages` -- it is
+  redundant. Verify with `nix shell nixpkgs#libva-utils -c vainfo` (expect
+  "VA-API NVDEC driver [direct backend]").
+- **REAPER desktop entry pins `DISPLAY=:10`** (`xdg.desktopEntries.reaper` in
+  `proaudio/default.nix`, `exec = "env DISPLAY=:10 reaper %F"`). Umbriel's
+  xwayland-satellite owns `:0`; inheriting it routes REAPER's X11 plugin windows
+  through satellite -- the black-screen yabridge bug. swell-wayland spawns its own
+  plain `Xwayland :10 -rootless`, so `:10` is the safe display. `GDK_BACKEND=wayland`
+  is already set session-wide and is NOT repeated in the entry.
+- **blackstar kernel/VM tuning** (`hosts/blackstar/host.nix`): `nowatchdog` +
+  `preempt=full` (kernel is PREEMPT_DYNAMIC), `vm.swappiness=180` +
+  `vm.page-cluster=0` (zram-appropriate), `bbr` + `fq`, `systemd-boot.configurationLimit=10`.
+  Gamemode sets `desiredgov=performance` but deliberately leaves `defaultgov` unset so
+  exit restores the *current* state -- keeps the Noctalia power toggle (which drives
+  power-profiles-daemon) authoritative when no game runs.
 
 ## Workflows
 - Validate: `nixos-rebuild build --flake .#shephard` (or detached for long builds).

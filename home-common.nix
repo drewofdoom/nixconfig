@@ -247,6 +247,7 @@ in
     bat
     ripgrep
     fd
+    ffmpeg # ffmpeg/ffprobe/ffplay on PATH
     glib.bin # gio (GIO metadata, e.g. Nautilus custom folder attributes)
     python3
     uv
@@ -267,6 +268,7 @@ in
     resources
     simple-scan
     proton-vpn
+    openmeters
 
     # Yabridge (Nix-built, no ~/.local/bin binaries). Stays here rather than
     # ./proaudio: it's bridge infrastructure, and the dev override lives in
