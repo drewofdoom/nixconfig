@@ -23,53 +23,6 @@
     # ./reaper.nix
   ];
 
-  # REAPER must NOT inherit the session's DISPLAY. Umbriel's xwayland-satellite
-  # owns :0, and inheriting it makes REAPER's X11 plugin windows go through
-  # satellite -- the black-screen yabridge bug. swell-wayland spawns its own
-  # plain Xwayland on :10, so pin DISPLAY there. Pinned in
-  # programs.reaper.package (a copy of reaper-flake's homeWrappedReaperPackage
-  # template @ flake rev 51ee6fc, plus one `export DISPLAY` line), NOT in a
-  # desktop Exec override: duplicate cockos-reaper.desktop copies across
-  # XDG_DATA_DIRS prefixes meant launchers (Noctalia) could resolve a stock
-  # copy without the env. If upstream changes their wrapper template, re-diff
-  # against reaper-flake's modules/default.nix.
-  programs.reaper.package =
-    let
-      cfg = config.programs.reaper;
-      runtimeLibraryPath = lib.makeLibraryPath cfg.packages;
-      reaperScript = pkgs.writeShellScript "reaper" ''
-        export DISPLAY=":10"
-        has_cfgfile=0
-        ${lib.optionalString (cfg.packages != [ ]) ''
-          export LD_LIBRARY_PATH=${lib.escapeShellArg runtimeLibraryPath}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-          export DYLD_LIBRARY_PATH=${lib.escapeShellArg runtimeLibraryPath}"''${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
-        ''}
-        for arg in "$@"; do
-          case "$arg" in
-            -cfgfile|--cfgfile|-cfgfile=*|--cfgfile=*)
-              has_cfgfile=1
-              ;;
-          esac
-        done
-        if [ "$has_cfgfile" -eq 1 ]; then
-          exec ${lib.escapeShellArg "${cfg.basePackage}/bin/reaper"} "$@"
-        else
-          exec ${lib.escapeShellArg "${cfg.basePackage}/bin/reaper"} -cfgfile ${lib.escapeShellArg "${cfg.configPath}/reaper.ini"} "$@"
-        fi
-      '';
-    in
-    pkgs.symlinkJoin {
-      name = "reaper-config-wrapper-display-pin";
-      paths = [ cfg.basePackage ];
-      postBuild = ''
-        mkdir -p "$out/bin"
-        rm -f "$out/bin/reaper"
-        cp ${reaperScript} "$out/bin/reaper"
-        chmod +x "$out/bin/reaper"
-      '';
-      meta = cfg.basePackage.meta or { };
-    };
-
   programs.reaper = {
     enable = true;
 

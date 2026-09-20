@@ -32,17 +32,17 @@
   Resource dir is `~/.config/reaper-flake` (not `~/.config/REAPER`); activation
   refuses to run while REAPER is open. No FHS env — the wrapper's
   `LD_LIBRARY_PATH` is the ReaImGui fix.
-- **REAPER DISPLAY pin lives in `programs.reaper.package`** (2026-09-20):
+- **REAPER DISPLAY pin: REVERTED, do not retry blindly** (2026-09-20):
   Umbriel's xwayland-satellite owns :0 and yabridge plugin windows black-screen
-  through it, so REAPER is pinned to `DISPLAY=":10"` (swell-wayland's own
-  Xwayland). Implemented as a copy of reaper-flake's homeWrappedReaperPackage
-  template (@ rev 51ee6fc) plus one `export DISPLAY` line — re-diff against
-  upstream `modules/default.nix` if the flake rev bumps. A
-  `xdg.desktopEntries.cockos-reaper` Exec override was tried first and does NOT
-  work: duplicate `cockos-reaper.desktop` copies across XDG_DATA_DIRS prefixes
-  mean launchers (Noctalia) can resolve a stock copy without the env. Wrapper
-  scripts here must use `pkgs.writeShellScript` (never an unquoted heredoc —
-  `<<EOF` expands `"$@"` to nothing at build time and ships a broken launcher).
+  through it; swell-wayland's own Xwayland (:10) works. Two declarative attempts
+  both failed: (1) `xdg.desktopEntries.cockos-reaper` Exec override — launchers
+  (Noctalia) can resolve a stock `cockos-reaper.desktop` from another
+  XDG_DATA_DIRS prefix, so the env never applied; (2) overriding
+  `programs.reaper.package` with a copy of reaper-flake's config wrapper plus
+  `export DISPLAY=":10"` — broke JACK device connect + ReaPack even after fixing
+  a heredoc-quoting bug, cause undetermined (possibly the override drops
+  something else the module expects from its own `package`). Current workaround:
+  launch REAPER from the terminal with `DISPLAY=:10` pinned manually.
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
   move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.7.1 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
