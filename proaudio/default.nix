@@ -31,7 +31,13 @@
   # This overrides the desktop entry shipped by reaper-flake's wrapper. The
   # stock Exec is `reaper %F`; `env DISPLAY=:10` keeps the wrapper (and thus
   # -cfgfile and LD_LIBRARY_PATH) intact while forcing the display.
-  xdg.desktopEntries.reaper = {
+  #
+  # The ATTRIBUTE KEY is the filename: `cockos-reaper` replaces the package's
+  # `cockos-reaper.desktop`. Home Manager installs these with lib.hiPrio
+  # precisely so they shadow an existing entry. Naming it `reaper` instead
+  # would create a SECOND entry (`reaper.desktop`) alongside the original,
+  # which is what produced two indistinguishable launchers.
+  xdg.desktopEntries.cockos-reaper = {
     name = "REAPER";
     comment = "REAPER";
     exec = "env DISPLAY=:10 reaper %F";
