@@ -38,18 +38,6 @@ let
     };
   });
 
-  # Papirus with a non-default folder colour. nixpkgs bakes the colour in at
-  # build time via `papirus-folders -t $theme -o -C $color` (see the
-  # papirus-icon-theme derivation), which is the only workable approach on
-  # NixOS: papirus-folders works by rewriting folder.svg symlinks *inside* the
-  # theme, and the store is read-only, so running it at runtime always fails
-  # (its _is_writable/verify_privileges guards can never succeed).
-  # `grey` because it is theme-agnostic -- Noctalia templates restyle the GTK
-  # theme and colours but never the icon theme, so the folder colour is fixed
-  # and must not fight whatever palette is active. The theme *name* is
-  # unchanged (only the folder SVGs differ), so nothing else needs updating.
-  papirus-icon-theme-grey = pkgs.papirus-icon-theme.override { color = "grey"; };
-
   # Plex/Jellyfin client. Stable 26.05 ships 2.1.0; unstable has 2.20.0, which
   # is the current upstream release. Same approach as programs.atuin below --
   # pull just this package from the unstable input rather than the whole set.
@@ -105,7 +93,7 @@ in
     };
     iconTheme = {
       name = "Papirus-Dark";
-      package = papirus-icon-theme-grey;
+      package = pkgs.papirus-icon-theme;
     };
     font = {
       name = "Noto Sans";
@@ -242,7 +230,7 @@ in
     wlr-randr
     adw-gtk3
     gnome-themes-extra
-    papirus-icon-theme-grey
+    papirus-icon-theme
 
     # CLI tools
     # NOTE: no nixpkgs opencode -- unstable (1.18.30) crashes resolving

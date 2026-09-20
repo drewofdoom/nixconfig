@@ -102,6 +102,12 @@
     shell = pkgs.fish;
   };
 
+  # Trusted user: lets drew use the flake's nixConfig (extra-substituters /
+  # extra-trusted-public-keys) without the "ignoring untrusted flake
+  # configuration" warning. MUST be nix.settings.trusted-users -- a bare
+  # top-level `trusted-users` is not a NixOS option and is silently ignored.
+  nix.settings.trusted-users = [ "drew" ];
+
   # -- Networked multifunction (Epson, IPP Everywhere / eSCL) --
   # CUPS prints driverless over IPP; epson-escpr covers older ESC/P-R
   # models that don't. sane-airscan is the network scanner backend
