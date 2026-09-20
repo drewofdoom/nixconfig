@@ -1,5 +1,11 @@
 # REAPER durable memory (global)
 
+> **Writing notes back:** This file lives in the nixconfig repo
+> (`proaudio/opencode/REAPER.md`). The agent **cannot write to the
+> destination file** (the live REAPER session/project), so all notes,
+> learned facts, and durable knowledge must be written back into **this
+> file** in nixconfig. Update it after every session.
+
 Two MCP servers are configured. No fixed priority — pick the best tool
 for a stable, reversible outcome per task.
 
@@ -233,6 +239,10 @@ on purpose. For composition or measured mix moves, use `reaper-daemon`.
   all true as of 2026-09-14). `project_save` (xDarkzx) or `save_project`
   (daemon) writes the open `.rpp` live. Use `project_backup` before
   destructive work.
+- SAFETY: Deny a master render if the limiter is not active (enabled,
+  not bypassed) on the master bus. A master render without the limiter
+  can ship uncontrolled peak levels. Check `Bus/Master.RfxChain`
+  (Limiter 3) state before any master/head render.
 - Renders inherit REAPER's Render dialog. xDarkzx `project_export_audio`
   has no channels param. For mono/stem tweaks: daemon
   `get_render_settings` → `set_render_settings` (check `applied` read-back)
