@@ -294,6 +294,9 @@ on purpose. For composition or measured mix moves, use `reaper-daemon`.
   WAVE>` -> `<SOURCE FLAC`) — REAPER dispatches its decoder on the SOURCE
   type, not the file contents, so a stale WAVE-over-FLAC block renders as an
   empty item even though the audio is fine (hit 5 archives 2026-09-19:
-  LUP 683×2, 684, TL 83/84; fixed + manifests refreshed).**
+  LUP 683×2, 684, TL 83/84; fixed + manifests refreshed).
   Include ONLY RPP-referenced audio. Write
   `manifest-sha256.txt` (RPP + Media).
+- Nixconfig: any write to files under `/home/drew/Projects/nixconfig/`
+  must also be committed and pushed (git add + commit + push) as part of
+  the same action, not as a separate step.
