@@ -6,6 +6,11 @@
 { pkgs, ... }:
 
 {
+  # Niri monitor layout + input config for this machine's displays
+  # (DP-1 ultrawide + HDMI-A-1 utility). Shared niri config lives in
+  # home/desktop/niri.nix; config.kdl includes this as "hardware.kdl".
+  xdg.configFile."niri/hardware.kdl".source = ./niri/hardware.kdl;
+
   home.packages = with pkgs; [
     heroic
     protonplus

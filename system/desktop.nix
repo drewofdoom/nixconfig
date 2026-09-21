@@ -20,6 +20,9 @@
   # Umbriel Wayland compositor (provides `umbriel` session + portal)
   programs.umbriel.enable = true;
 
+  # Niri window manager for when Umbriel is not working right
+  programs.niri.enable = true;
+
   # Noctalia v5 shell system-wide + recommended services
   # (NetworkManager, Bluetooth, UPower, power-profiles-daemon)
   programs.noctalia = {

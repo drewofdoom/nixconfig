@@ -1,0 +1,77 @@
+// blackstar hardware configuration for Niri: inputs + monitor layout.
+// Pulled from the hand-written ~/.config/niri/hardware.kdl on blackstar.
+// config.kdl includes this as "hardware.kdl".
+
+// Inputs
+input {
+    keyboard {
+        xkb {
+        }
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+    trackpoint {
+    }
+
+    trackball {
+        // Trackball acceleration
+        accel-speed 0
+        accel-profile "flat"
+    }
+
+    // Focus follows mouse with scroll amount, but doesn't scroll too far
+    // focus-follows-mouse max-scroll-amount="10%"
+}
+
+// Primary Monitor
+output "DP-1" {
+    mode "5120x1440@75.001"
+    // mode "5120x1440@59.977"
+    scale 1
+    position x=0 y=0
+
+    focus-at-startup
+    variable-refresh-rate //on-demand=true
+
+    hot-corners {
+        top-left
+    }
+
+    layout {
+        // Ultrawide column settings for 32:9 aspect ratio
+        default-column-width { proportion 0.3333; }
+        preset-column-widths {
+            proportion 0.33333
+            proportion 0.5
+            proportion 0.66667
+        }
+    }
+}
+
+// Utility Monitor
+output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    scale 1
+
+    // Centered underneath primary display
+    position x=3150 y=1440
+
+    hot-corners {
+        // Disable hot corners on utility monitor
+        off
+    }
+
+    layout {
+        // Standard column settings for 1080p
+        default-column-width { proportion 0.6667; }
+        preset-column-widths {
+            proportion 0.5
+            proportion 0.66667
+            proportion 1.0
+        }
+    }
+}
