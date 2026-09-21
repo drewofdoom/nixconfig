@@ -53,67 +53,33 @@
       ...
     }@inputs:
     {
-      # GitHub-release audio plugins (see proaudio/plugins/). One line per
-      # plugin; update with `nix-update <name> --flake` from the repo root.
-      packages.x86_64-linux = {
-        zl-equalizer =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/zl-equalizer.nix
-            { };
-        zl-splitter =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/zl-splitter.nix
-            { };
-        # Disabled until first stable release (upstream is prereleases-only):
-        # zl-spectrum-equalizer = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/zl-spectrum-equalizer.nix { };
-        zl-compressor =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/zl-compressor.nix
-            { };
-        dusk-4k-eq = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-4k-eq.nix { };
-        dusk-4k-eq-2 =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-4k-eq-2.nix
-            { };
-        dusk-chord-analyzer =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-chord-analyzer.nix
-            { };
-        duskverb = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/duskverb.nix { };
-        dusk-multi-comp =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-multi-comp.nix
-            { };
-        dusk-multi-q =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-multi-q.nix
-            { };
-        dusk-spectrum-analyzer =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-spectrum-analyzer.nix
-            { };
-        dusk-sunset-circuits =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-sunset-circuits.nix
-            { };
-        dusk-tape-echo-2 =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-tape-echo-2.nix
-            { };
-        dusk-tapemachine =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-tapemachine.nix
-            { };
-        dusk-tapemachine-2 =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/dusk-tapemachine-2.nix
-            { };
-        brummer-loopino =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-loopino.nix
-            { };
-        brummer-toneshifteq =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-toneshifteq.nix
-            { };
-        brummer-neuralrack =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-neuralrack.nix
-            { };
-        brummer-loadbox =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-loadbox.nix
-            { };
-        brummer-smoothir =
-          nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/brummer-smoothir.nix
-            { };
-        ross-vu = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/plugins/ross-vu.nix { };
-        reasonus-native = nixpkgs.legacyPackages.x86_64-linux.callPackage ./proaudio/reasonus-native { };
-      };
+      # GitHub-release audio plugins (see proaudio/plugins/). Auto-generated:
+      # every top-level *.nix file in proaudio/plugins (except default.nix)
+      # becomes a package named by its filename stem; directories with
+      # default.nix (e.g. reasonus-native) are listed explicitly below.
+      # Update with `nix-update <name> --flake` from the repo root
+      # (multi-asset files via `python3 proaudio/plugins/update.py`).
+      packages.x86_64-linux =
+        let
+          system = "x86_64-linux";
+          callPkg = nixpkgs.legacyPackages.${system}.callPackage;
+          pluginDir = ./proaudio/plugins;
+          # Disabled until first stable release (upstream is prereleases-only).
+          pluginFiles = builtins.filter (n: n != "default.nix" && n != "zl-spectrum-equalizer.nix") (
+            builtins.attrNames (builtins.readDir pluginDir)
+          );
+          nixFiles = builtins.filter (n: nixpkgs.lib.hasSuffix ".nix" n) pluginFiles;
+          autoPkgs = builtins.listToAttrs (
+            map (f: {
+              name = nixpkgs.lib.removeSuffix ".nix" f;
+              value = callPkg (pluginDir + "/${f}") { };
+            }) nixFiles
+          );
+        in
+        autoPkgs
+        // {
+          reasonus-native = callPkg ./proaudio/reasonus-native { };
+        };
       nixosConfigurations =
         let
           mkHost =
@@ -122,7 +88,7 @@
               system = "x86_64-linux";
               specialArgs = { inherit inputs; };
               modules = [
-                ./configuration.nix
+                ./system
                 ./hosts/${hostName}/host.nix
                 ./hosts/${hostName}/hardware-configuration.nix
                 home-manager.nixosModules.home-manager
@@ -133,7 +99,7 @@
                   home-manager.extraSpecialArgs = { inherit inputs; };
                   home-manager.users.drew = {
                     imports = [
-                      ./home-common.nix
+                      ./home
                       ./hosts/${hostName}/home.nix
                     ];
                   };

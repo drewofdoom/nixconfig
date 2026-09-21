@@ -2,10 +2,13 @@
 
 ## Layout
 - `flake.nix` — `mkHost` helper; `nixosConfigurations.shephard` and `blackstar`.
-- `configuration.nix` — shared system config. `home-common.nix` — shared home.
+- `system/` — shared NixOS modules: `core` (boot/nix/user), `desktop`
+  (umbriel/noctalia/greeter), `hardware` (graphics/audio/polkit), `services`
+  (printing/flatpak/gvfs), `nvidia`.
+- `home/` — shared Home Manager modules: `shell`, `theme`, `apps`, `wine`
+  (wine/yabridge), `flatpak`, `ssh`, `misc`, `desktop/` (umbriel/noctalia).
 - `hosts/<name>/{host.nix, hardware-configuration.nix, home.nix}` — per-host.
-- `modules/nvidia.nix` — open + latest branch (RTX 3080 on blackstar).
-- Compositor settings split out: `umbriel.nix`, `niri.nix` (imported by home-common).
+- `proaudio/` — REAPER + plugins (all hosts via home).
 
 ## Key decisions
 - **yabridge is custom**: `yabridge-dev`/`yabridgectl-dev` = nixpkgs package overridden to dev

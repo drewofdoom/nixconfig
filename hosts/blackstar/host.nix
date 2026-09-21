@@ -1,8 +1,4 @@
-# blackstar-specific settings.
-# NOTE: not wired into flake.nix yet -- drop in the hardware-configuration.nix
-# generated on that machine (nixos-generate-config), then add
-#   blackstar = mkHost "blackstar";
-# to nixosConfigurations.
+# blackstar-specific settings (shared system config lives in ../../system).
 {
   pkgs,
   inputs,
@@ -10,7 +6,7 @@
 }:
 
 {
-  imports = [ ../../modules/nvidia.nix ];
+  imports = [ ../../system/nvidia.nix ];
 
   networking.hostName = "blackstar";
 
