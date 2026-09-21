@@ -1,7 +1,6 @@
 # System configuration - Umbriel + Noctalia Greeter + Flatpak
 # Preserves your stock /etc/nixos settings (boot, timezone, locale, user drew).
 {
-  config,
   pkgs,
   inputs,
   ...

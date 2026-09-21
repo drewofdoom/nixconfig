@@ -9,8 +9,6 @@
 {
   pkgs,
   inputs,
-  config,
-  lib,
   ...
 }:
 

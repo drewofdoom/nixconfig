@@ -212,6 +212,7 @@ in
     inputs.pipewirecontroller.packages.${pkgs.stdenv.hostPlatform.system}.default
     libsecret
     wineWow64Packages.stagingFull
+    winetricks
     dxvk
     dxvk.out
 
@@ -272,6 +273,9 @@ in
     yabridge-dev
     yabridgectl-dev
   ];
+
+  # home-common.nix, alongside wineWow64Packages.stagingFull + winetricks
+  home.file.".local/bin/wine64".source = "${pkgs.wineWow64Packages.stagingFull}/bin/wine";
 
   xdg.enable = true;
 

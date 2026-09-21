@@ -14,15 +14,13 @@
 # - Both bridges are also registered in `programs.reaper.actions.scripts`
 #   so they can be (re)run from REAPER's action list.
 #
-  # Daemon bridge, vendored from the live checkout (pure evaluation forbids
-  # absolute paths). Re-copy after bridge changes:
-  #   cp ~/Projects/reaper-daemon/bridge/{reaper_agent_bridge,json}.lua proaudio/reaper-lua/
-  # Currently at bridge v3.21.0. Disk-write gates stay live in the checkout
-  # at bridge/bridge_config.json (currently all open).
+# Daemon bridge, vendored from the live checkout (pure evaluation forbids
+# absolute paths). Re-copy after bridge changes:
+#   cp ~/Projects/reaper-daemon/bridge/{reaper_agent_bridge,json}.lua proaudio/reaper-lua/
+# Currently at bridge v3.21.0. Disk-write gates stay live in the checkout
+# at bridge/bridge_config.json (currently all open).
 {
-  config,
   pkgs,
-  lib,
   ...
 }:
 
@@ -187,7 +185,8 @@ in
 {
   programs.reaper = {
     resourceFiles.files = {
-      "Scripts/reaper-mcp/reaper_mcp_server.lua" = "${reaper-mcp-lua}/reaper_scripts/reaper_mcp_server.lua";
+      "Scripts/reaper-mcp/reaper_mcp_server.lua" =
+        "${reaper-mcp-lua}/reaper_scripts/reaper_mcp_server.lua";
       "Scripts/reaper-daemon/startup.lua" = daemonStartup;
       "Scripts/reaper-daemon/reaper_agent_bridge.lua" = daemonBridgeFile "reaper_agent_bridge.lua";
       "Scripts/reaper-daemon/json.lua" = daemonBridgeFile "json.lua";
