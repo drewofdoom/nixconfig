@@ -168,6 +168,8 @@
     startPaused = false;
     workers.transcodeGPU = 1;
     workers.transcodeCPU = 0;
+    workers.healthcheckGPU = 0;
+    workers.healthcheckCPU = 0;
   };
 
   # Pin tdarr to uid/gid 911 to match the server container's PUID/PGID=911,
