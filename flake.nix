@@ -53,30 +53,33 @@
       ...
     }@inputs:
     {
-      # GitHub-release audio plugins (see proaudio/plugins/). Auto-generated:
-      # every top-level *.nix file in proaudio/plugins (except default.nix)
-      # becomes a package named by its filename stem; directories with
-      # default.nix (e.g. reasonus-native) are listed explicitly below.
-      # Update with `nix-update <name> --flake` from the repo root
+      # Local packages. Auto-generated: every top-level *.nix file in
+      # proaudio/plugins/ and pkgs/ becomes a package named by its filename
+      # stem (minus default.nix and the disabled zl-spectrum-equalizer);
+      # directories with default.nix (e.g. reasonus-native) are explicit below.
+      # Plugin updates: `nix-update <name> --flake` from the repo root
       # (multi-asset files via `python3 proaudio/plugins/update.py`).
       packages.x86_64-linux =
         let
           system = "x86_64-linux";
           callPkg = nixpkgs.legacyPackages.${system}.callPackage;
-          pluginDir = ./proaudio/plugins;
-          # Disabled until first stable release (upstream is prereleases-only).
-          pluginFiles = builtins.filter (n: n != "default.nix" && n != "zl-spectrum-equalizer.nix") (
-            builtins.attrNames (builtins.readDir pluginDir)
-          );
-          nixFiles = builtins.filter (n: nixpkgs.lib.hasSuffix ".nix" n) pluginFiles;
-          autoPkgs = builtins.listToAttrs (
-            map (f: {
-              name = nixpkgs.lib.removeSuffix ".nix" f;
-              value = callPkg (pluginDir + "/${f}") { };
-            }) nixFiles
-          );
+          autoDir =
+            dir: excludes:
+            let
+              files = builtins.filter (n: !(builtins.elem n excludes)) (
+                builtins.attrNames (builtins.readDir dir)
+              );
+              nixFiles = builtins.filter (n: nixpkgs.lib.hasSuffix ".nix" n) files;
+            in
+            builtins.listToAttrs (
+              map (f: {
+                name = nixpkgs.lib.removeSuffix ".nix" f;
+                value = callPkg (dir + "/${f}") { };
+              }) nixFiles
+            );
         in
-        autoPkgs
+        autoDir ./proaudio/plugins [ "default.nix" "zl-spectrum-equalizer.nix" ]
+        // autoDir ./pkgs [ "default.nix" ]
         // {
           reasonus-native = callPkg ./proaudio/reasonus-native { };
         };

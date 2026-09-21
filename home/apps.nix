@@ -27,6 +27,8 @@ in
     wlr-randr
     # Theme packages kept as fallback (Noctalia templates own active theming;
     # see theme.nix). The Flatpak adw-gtk3-dark theme is a separate flatpak.
+    # adwaita-icon-theme is Conflux's Inherits fallback chain.
+    adwaita-icon-theme
     adw-gtk3
     gnome-themes-extra
     papirus-icon-theme
