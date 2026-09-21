@@ -156,10 +156,6 @@
           action = "overview-toggle";
           repeat = false;
         };
-        "Mod+O" = {
-          action = "overview-toggle";
-          repeat = false;
-        };
         "Mod+C" = "column-center";
         "Mod+Shift+C" = "column-center";
         "Mod+Q" = {
