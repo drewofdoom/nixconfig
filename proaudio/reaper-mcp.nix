@@ -1,7 +1,7 @@
 # REAPER MCP servers, declaratively via reaper-flake mechanisms.
 #
 # Two servers (both load-bearing, see opencode/REAPER.md for the division of
-# labor): xDarkzx `reaper-mcp` (PyPI 0.7.1, with [analysis] extras) and the
+# labor): xDarkzx `reaper-mcp` (PyPI 0.8.1, with [analysis] extras) and the
 # local `reaper-daemon` checkout (stdlib-only `reaper_mcp.py`, referenced live
 # so the working tree stays the source of truth for the Python side).
 #
@@ -42,13 +42,13 @@ let
     doCheck = false;
   };
 
-  # Pinned per MEMORY.md (2026-09-17): xdarkzx-reaper-mcp 0.7.1.
+  # Pinned per MEMORY.md (2026-09-21): xdarkzx-reaper-mcp 0.8.1.
   xdarkzx-reaper-mcp = pkgs.python3Packages.buildPythonApplication rec {
     pname = "xdarkzx-reaper-mcp";
-    version = "0.7.1";
+    version = "0.8.1";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/54/23/ea7f5d5fb0b836de6932a91b9f894b04152790055980c1a679b3813a034f/xdarkzx_reaper_mcp-0.7.1.tar.gz";
-      sha256 = "sha256-vFhAayYSeHJ+fE5knqmTCdhwD5vutiTK+qPZIxGHwkU=";
+      url = "https://files.pythonhosted.org/packages/38/ea/d95e3526561daef391246daa60e035b15296f2433e300afa16a1046b3537/xdarkzx_reaper_mcp-0.8.1.tar.gz";
+      sha256 = "sha256-yEKP72PCIwtFI4Z//MXUKH7Z1kOB04aJqe3Ma2ea+Ws=";
     };
     pyproject = true;
     build-system = with pkgs.python3Packages; [ hatchling ];
@@ -70,8 +70,8 @@ let
   reaper-mcp-lua = pkgs.fetchFromGitHub {
     owner = "xDarkzx";
     repo = "Reaper-MCP";
-    rev = "05c231919c665b517f45e8c07a60c92f09e7d6c1"; # v0.7.1
-    hash = "sha256-rWpbsXoE3oijTpStcFyVuGp/BczxAbDDJbiDtC1jDdA=";
+    rev = "92be0fe468ba22b3df28c9a51ba1d54b2eb2c6b0"; # v0.8.1
+    hash = "sha256-/4le3j/DGFzxyk7qqwBaMilCIlEe5pZcTUatIV3fvJA=";
   };
 
   # Daemon bridge from the vendored copies (see note above).

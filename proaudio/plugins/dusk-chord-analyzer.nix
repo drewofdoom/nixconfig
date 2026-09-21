@@ -11,11 +11,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "dusk-chord-analyzer";
-  version = "1.2.2";
+  version = "1.3.0";
 
   src = fetchzip {
     url = "https://github.com/dusk-audio/dusk-audio-plugins/releases/download/chord-analyzer-v${finalAttrs.version}/chord-analyzer-linux.zip";
-    hash = "sha256-mguMgGC0mLDRHd5RKiU28noheP2FfBJiba2iAViSM1U=";
+    hash = "sha256-mZTloVb0J/kBW+cXqJ0Gefi9pg9+EQDNaEwY0mcBi88=";
     # Asset unpacks flat (format dirs at root, no wrapper dir).
     stripRoot = false;
   };

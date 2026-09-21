@@ -43,10 +43,10 @@
   greeter default stays Umbriel. Earlier DISPLAY-pin attempts (desktop Exec
   override, `programs.reaper.package` wrapper) both failed and were reverted.
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
-  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.7.1 from
+  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.8.1 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
   26.05 lacks it) plus the matching `reaper_mcp_server.lua` (GitHub tag
-  v0.7.1). Both bridges load via flake-native mechanisms — lua files through
+  v0.8.1, updated 2026-09-21). Both bridges load via flake-native mechanisms — lua files through
   `programs.reaper.resourceFiles.files`, startup via additive
   `programs.reaper.lineFiles.files."Scripts/__startup.lua"` (coexists with the
   flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). Daemon bridge
