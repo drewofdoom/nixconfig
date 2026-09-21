@@ -11,7 +11,7 @@
 }:
 
 let
-  conflux-icon-theme = pkgs.callPackage ../../pkgs/conflux-icon-theme.nix { };
+  conflux-icon-theme = pkgs.callPackage ../pkgs/conflux-icon-theme.nix { };
 in
 {
   home.packages = [ conflux-icon-theme ];
