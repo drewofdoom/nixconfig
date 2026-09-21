@@ -9,18 +9,15 @@ input {
         }
     }
 
-    touchpad {
-        tap
-        natural-scroll
-    }
-
-    trackpoint {
-    }
-
     trackball {
         // Trackball acceleration
         accel-speed 0
         accel-profile "flat"
+    }
+
+    tablet {
+        // off
+        map-to-output "HDMI-A-1"
     }
 
     // Focus follows mouse with scroll amount, but doesn't scroll too far
