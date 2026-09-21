@@ -7,8 +7,7 @@
 }:
 
 let
-  # Plezy unstable in order to stay on latest version
-  plezy = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.plezy;
+  # (plezy lives in apps.nix -- it's a graphical app, not a shell tool)
 in
 {
   programs.git = {
@@ -139,6 +138,5 @@ in
     nodejs
     btop
     gping
-    plezy
   ];
 }

@@ -5,6 +5,10 @@
   ...
 }:
 
+let
+  # Plezy unstable in order to stay on latest version
+  plezy = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.plezy;
+in
 {
   home.packages = with pkgs; [
     # Basic apps
@@ -21,6 +25,8 @@
     # GUI stuff
     wl-clipboard
     wlr-randr
+    # Theme packages kept as fallback (Noctalia templates own active theming;
+    # see theme.nix). The Flatpak adw-gtk3-dark theme is a separate flatpak.
     adw-gtk3
     gnome-themes-extra
     papirus-icon-theme
@@ -38,5 +44,6 @@
     simple-scan
     proton-vpn
     openmeters
+    plezy
   ];
 }

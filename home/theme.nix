@@ -1,4 +1,9 @@
-# Theming: cursor, GTK, dconf. Moved verbatim from home-common.nix.
+# Cursor + window-chrome prefs. Noctalia owns all color/icon/font theming
+# (builtin gtk3/gtk4 templates, driven by its theme switcher -- see
+# desktop/noctalia.nix), so Home Manager must NOT set gtk.* themes or
+# org/gnome/desktop/interface: both write the same settings.ini/dconf keys
+# and fight. What stays here is what Noctalia doesn't manage:
+# the Bibata cursor and the empty headerbar button layout.
 { pkgs, ... }:
 
 {
@@ -12,39 +17,12 @@
     x11.enable = true;
   };
 
-  # GTK 3/4 as default theming engine. dconf forces dark preference so
-  # Flatpak + GTK + libadwaita apps follow Noctalia dark mode.
   dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-      gtk-theme = "adw-gtk3-dark";
-      icon-theme = "Papirus-Dark";
-    };
     # No headerbar buttons (Fedora equivalent:
     # `gsettings set org.gnome.desktop.wm.preferences button-layout ''`)
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "";
     };
-  };
-
-  gtk = {
-    enable = true;
-    theme = {
-      name = "adw-gtk3-dark";
-      package = pkgs.adw-gtk3;
-    };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-    font = {
-      name = "Noto Sans";
-      size = 11;
-    };
-    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk3.extraConfig.gtk-decoration-layout = ":";
-    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk4.extraConfig.gtk-decoration-layout = ":";
   };
 
   home.sessionVariables = {
