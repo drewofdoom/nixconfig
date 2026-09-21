@@ -74,6 +74,8 @@ in
       font-family = "Maple Mono NF";
       font-size = 11;
       theme = "noctalia";
+      # Default is precision:1,discrete:3 -- wheel was ~2x too fast.
+      mouse-scroll-multiplier = "precision:1,discrete:1.5";
     };
   };
 
