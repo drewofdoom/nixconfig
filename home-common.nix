@@ -1,7 +1,6 @@
 # Shared Home Manager config for drew - terminal, browser, dev tools, theming.
 # Compositor settings live in umbriel.nix / niri.nix / noctalia.nix.
 {
-  config,
   pkgs,
   inputs,
   lib,
@@ -38,10 +37,7 @@ let
     };
   });
 
-  # Plex/Jellyfin client. Stable 26.05 ships 2.1.0; unstable has 2.20.0, which
-  # is the current upstream release. Same approach as programs.atuin below --
-  # pull just this package from the unstable input rather than the whole set.
-  # Drop this override once 26.05 catches up to >= 2.20.0.
+  # Plezy unstable in order to stay on latest version
   plezy = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.plezy;
 in
 {
@@ -216,7 +212,6 @@ in
     inputs.pipewirecontroller.packages.${pkgs.stdenv.hostPlatform.system}.default
     libsecret
     wineWow64Packages.stagingFull
-    winetricks
     dxvk
     dxvk.out
 
