@@ -1,0 +1,18 @@
+output "eDP-1" {
+    mode "1920x1080@60.012"
+    scale 1.0
+
+    hot-corners {
+        top-left
+    }
+
+    layout {
+        preset-column-widths {
+            proportion 0.33333
+            proportion 0.5
+            proportion 0.66667
+        }
+
+        default-column-width { proportion 1.0; }
+    }
+}
