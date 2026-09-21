@@ -21,7 +21,11 @@
   `~/.var` if ever needed again.
 - **yabridge GUI crash is systemic**: `get_root_window` BadWindow terminate under
   xwayland-satellite (Umbriel). Works headless/DSP-side; Carla dies the same way.
-  Niri (own Xwayland) is the test bed. Candidate upstream issue at robbert-vdh/yabridge.
+  Niri also uses xwayland-satellite (not its own Xwayland) but its smithay-based
+  implementation handles X11 differently than Umbriel's wlroots-based one — Niri
+  was the test bed for whether the crash is compositor-specific. Candidate upstream
+  issue at robbert-vdh/yabridge. **Niri has been removed from nixconfig**; user is
+  staying on Umbriel and accepting xwayland-satellite's current limitations.
 - **DXVK off for FabFilter/Analog Obsession type plugins** (black GUI with DXVK on).
 - **REAPER is declarative via reaper-flake** (input `reaper-flake`,
   github:9Prestidigitator/reaper-flake, `inputs.nixpkgs.follows = "nixpkgs"`).
@@ -42,6 +46,9 @@
   re-enabled (`programs.niri.enable`, `./niri.nix` import back on) for editing;
   greeter default stays Umbriel. Earlier DISPLAY-pin attempts (desktop Exec
   override, `programs.reaper.package` wrapper) both failed and were reverted.
+  **Niri has since been removed from nixconfig entirely. User is staying on Umbriel
+  and not pursuing swell-wayland or other workarounds — just accepting satellite's
+  current limitations and waiting for upstream improvement.**
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
   move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.8.1 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
@@ -108,7 +115,7 @@
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
 - **Flatpak theming**: adw-gtk3-dark Flatpak theme + ro `xdg-config/gtk-{3,4}.0` overrides;
-  Noctalia GTK templates (`gtk3`, `gtk4`, `niri`) enabled.
+  Noctalia GTK templates (`gtk3`, `gtk4`) enabled.
 - blackstar (Nvidia 3080) is online. Gets Steam/Gamemode/Heroic/ProtonPlus/
   Protontricks/Gamescope/MangoHud automatically.
 - **VA-API needs no manual wiring**: `hardware.nvidia.videoAcceleration` defaults to
@@ -131,5 +138,5 @@
 
 ## Workflows
 - Validate: `nixos-rebuild build --flake .#shephard` (or detached for long builds).
-- Switch: `nh os switch`. Validate Niri KDL: `niri validate --config <file>`.
+- Switch: `nh os switch`.
 - `yabridgectl sync` after Wine/plugin changes; Reaper VST paths may need store lib dirs added.
