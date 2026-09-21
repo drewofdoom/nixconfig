@@ -16,7 +16,7 @@ per-host overlays, Noctalia desktop on Umbriel (primary) and Niri.
 - `configuration.nix` / `home-common.nix` — shared system + home config.
 - `hosts/<name>/{host.nix, hardware-configuration.nix, home.nix}` — per-host.
 - `modules/nvidia.nix` — shared Nvidia setup.
-- `umbriel.nix`, `niri.nix`, `noctalia.nix` — compositor/shell settings.
+- `umbriel.nix`, `noctalia.nix` — compositor/shell settings.
 - `MEMORY.md` — decisions and gotchas for future sessions.
 
 ## Usage

@@ -50,7 +50,6 @@ in
     inputs.umbriel.homeModules.default
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     ./umbriel.nix
-    ./niri.nix
     ./noctalia.nix
     ./proaudio
   ];
@@ -218,6 +217,8 @@ in
     libsecret
     wineWow64Packages.stagingFull
     winetricks
+    dxvk
+    dxvk.out
 
     # Chat apps
     telegram-desktop

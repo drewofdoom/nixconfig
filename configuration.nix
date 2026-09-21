@@ -143,12 +143,6 @@
   # Umbriel Wayland compositor (provides `umbriel` session + portal)
   programs.umbriel.enable = true;
 
-  # Niri scrollable compositor alongside Umbriel (session selectable in greeter).
-  # programs.niri.enable provides the session, portals and polkit integration.
-  # Enabled 2026-09-20: REAPER editing happens here (own Xwayland, no
-  # xwayland-satellite); default session stays Umbriel below.
-  programs.niri.enable = true;
-
   # Noctalia v5 shell system-wide + recommended services
   # (NetworkManager, Bluetooth, UPower, power-profiles-daemon)
   programs.noctalia = {
@@ -191,6 +185,11 @@
     extraConfig = ''
       polkit.addRule(function(action, subject) {
         if (action.id == "org.tailscale.ipn.Native" && subject.isInGroup("tailscale")) {
+          return polkit.Result.YES;
+        }
+      });
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.RealtimePolicy" && subject.isInGroup("audio")) {
           return polkit.Result.YES;
         }
       });
@@ -282,9 +281,7 @@
     libsecret
     nautilus
     proton-pass-cli
-    xwayland
     xwayland-satellite
-    xwayland-run
     unar
     file-roller
     vulkan-tools
