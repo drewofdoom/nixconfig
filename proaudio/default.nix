@@ -24,24 +24,7 @@
   programs.reaper = {
     enable = true;
 
-    # Stock X11 SWELL (swell-wayland disabled 2026-09-20: its bundled Xwayland
-    # bridge starts ok but degrades and stops working mid-session; and on
-    # Umbriel the xwayland-satellite path black-screens yabridge plugin
-    # windows. REAPER editing happens under Niri, which brings its own
-    # Xwayland — no satellite, no bundled bridge).
     experimental.swell-wayland.enable = false;
-
-    # theme = {
-    #   active = "Reapertips Theme.ReaperThemeZip";
-    #   packages = [
-    #     inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme
-    #   ];
-    # };
-
-    # swell.colortheme = {
-    #   enable = true;
-    #   preset = inputs.reaper-flake.packages.${pkgs.stdenv.hostPlatform.system}.reapertips-theme;
-    # };
 
     packages = with pkgs; [
       freetype

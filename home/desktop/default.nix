@@ -5,6 +5,5 @@
   imports = [
     ./umbriel.nix
     ./noctalia.nix
-    ./niri.nix
   ];
 }

@@ -1,7 +1,12 @@
-# Shared Nvidia setup for Wayland compositors (Umbriel/Niri).
+# Shared Nvidia setup for Wayland compositors (Umbriel).
 # Open kernel modules + latest driver branch (requires Turing/GTX-16xx or
 # newer; blackstar's RTX 3080 qualifies).
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   # legacyPackages doesn't inherit nixpkgs.config.allowUnfree; import with it.

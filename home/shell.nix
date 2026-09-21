@@ -6,9 +6,6 @@
   ...
 }:
 
-let
-  # (plezy lives in apps.nix -- it's a graphical app, not a shell tool)
-in
 {
   programs.git = {
     enable = true;
@@ -129,6 +126,7 @@ in
     nil
     nixd
     eza
+    fzf
     ugrep
     bat
     ripgrep
@@ -140,5 +138,6 @@ in
     nodejs
     btop
     gping
+    nix-search-tv
   ];
 }

@@ -52,8 +52,7 @@
         center_focused = "on_overflow";
       };
       window_rule = [
-        # Default: blur everything (covers Niri's default window-rule background blur).
-        # Corner radius / clipping come from appearance.corner_radius.
+        # blurrrrr
         {
           blur = true;
           blur_optimized = false;
@@ -63,17 +62,17 @@
           match.app_id = "^com.mitchellh.ghostty$";
           opacity = 0.95;
         }
-        # Floating utilities (Niri app-id matches).
+        # Floating utilities
         {
           match.app_id = "^(org.gnome.DejaDup|Emulator|zenity|xdg-desktop-portal|org.pulseaudio.pavucontrol|dev.noctalia.Noctalia|org.gnome.Decibels)$";
           default_floating = true;
         }
-        # Floating dialogs by title (Niri title matches; substring match, no anchors).
+        # Floating dialogs by title
         {
           match.title = "(Picture in picture|Picture-in-Picture|AppImage Installer|Open File|Select|Choose a wallpaper|Open Folder|Save As|Library|Choose Where to Download|File Operation Progress|Rename|Copy Files|Move Files|Search Files|All Files|Save Project|Sign In)";
           default_floating = true;
         }
-        # Zed open dialogs (Niri: app-id + title AND).
+        # Zed open dialogs
         {
           match.app_id = "^dev.zed.Zed$";
           match.title = "Zed —";
@@ -126,11 +125,6 @@
           default_focused = false;
         }
 
-        # NOTE, not ported from Niri rules.kdl:
-        # - mpv 1920x1080 / AppManager+Ignition 800px / Telegram 600px fixed
-        #   column widths: Umbriel tiled windows size by fraction
-        #   (default_scrolling_extent), no fixed-px equivalent.
-        # - layer-rule place-within-backdrop for noctalia-backdrop: no equivalent.
       ];
       layer_rule = [
         {
@@ -199,7 +193,7 @@
           cooldown_ms = 250;
         };
 
-        # === Focus: window directional (Niri ...-or-monitor-... -> ...-or-output-...) ===
+        # === Focus: window directional ===
         "Mod+Up" = "window-focus-or-output-up";
         "Mod+Down" = "window-focus-or-output-down";
         "Mod+Left" = "window-focus-or-output-left";
@@ -267,7 +261,7 @@
           repeat = false;
         };
         "Mod+Shift+T" = "window-focus-switch-floating";
-        # Niri's toggle-column-tabbed-display has no Umbriel equivalent; Mod+W left unbound.
+
         # === Power (monitors) ===
         "Mod+Shift+P" = "dpms-off";
 
