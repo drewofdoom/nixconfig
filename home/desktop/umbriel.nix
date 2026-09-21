@@ -208,8 +208,8 @@
         "Mod+MouseForward" = "window-focus-or-output-right";
         "Mod+Home" = "column-focus-first";
         "Mod+End" = "column-focus-last";
-        "Mod+WheelLeft" = "layout-scroll-left";
-        "Mod+WheelRight" = "layout-scroll-right";
+        "Mod+WheelLeft" = "window-focus-or-output-left";
+        "Mod+WheelRight" = "window-focus-or-output-right";
 
         # === Move: to workspace directly ===
         "Mod+Ctrl+1" = "column-move-to-workspace:1";
