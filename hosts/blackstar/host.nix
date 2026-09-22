@@ -64,7 +64,23 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    gamescopeSession.enable = true;
+    gamescopeSession = {
+      enable = true;
+      env = {
+        ENABLE_GAMESCOPE_WSI = "1";
+        DXVK_HDR = "1";
+        SDL_VIDEODRIVER = "x11";
+      };
+      args = [
+        "--prefer-output DP-1"
+        "--output-width 3840"
+        "--output-height 1080"
+        "--adaptive-sync"
+        "-r 60"
+        "-e"
+        "--steam"
+      ];
+    };
   };
   programs.gamescope = {
     enable = true;

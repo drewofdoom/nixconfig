@@ -1,11 +1,15 @@
 # Core system settings: boot, networking, nix, user, sudo.
 # Moved verbatim from configuration.nix.
-{ pkgs, ... }:
+{
+  pkgs,
+  ...
+}:
 
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
+  # boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelModules = [ "ntsync" ];
 
   networking.networkmanager.enable = true;

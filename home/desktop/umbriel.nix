@@ -17,7 +17,10 @@
         xwayland = true;
         show_cheatsheet = false;
       };
-      include.files = [ "noctalia.toml" ];
+      include.optional.files = [
+        "noctalia.toml"
+        "outputs.toml"
+      ];
       input = {
         keyboard.layout = "us";
         touchpad = {

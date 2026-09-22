@@ -14,25 +14,35 @@
   ];
 
   programs.umbriel.settings = {
-    output = {
-      DP-1 = {
-        mode = "5120x1440@75";
-        position = [
-          0
-          0
-        ];
-        scale = 1.0;
-        vrr = "fullscreen";
-        hdr = "auto";
-      };
-      HDMI-A-1 = {
-        mode = "1920x1080@60.000";
-        position = [
-          3150
-          1440
-        ];
-        scale = 1.0;
-      };
-    };
+    window_rule = [
+      {
+        match.app_id = "^gamescope";
+        vrr = "always";
+        hdr = "fullscreen";
+      }
+      {
+        match.app_id = "^steam_app_";
+        vrr = "always";
+      }
+      {
+        match.xdg_tag = "^proton-game$";
+        vrr = "always";
+      }
+      {
+        match.content_type = "game";
+        vrr = "always";
+      }
+      {
+        match.app_id = "^steam$";
+        match.title = "^notificationtoasts_.+_desktop";
+        default_floating = true;
+        default_position = {
+          x = 10;
+          y = 10;
+          anchor = "bottom_right";
+        };
+        default_focused = false;
+      }
+    ];
   };
 }

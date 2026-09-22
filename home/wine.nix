@@ -3,7 +3,6 @@
 # override lives in the let block below.
 {
   pkgs,
-  inputs,
   ...
 }:
 

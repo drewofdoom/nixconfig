@@ -7,7 +7,6 @@
 # Adding a GitHub plugin = new file in this dir + one line in flake.nix
 # `packages`. Adding a nixpkgs plugin = one line in `nixpkgsPlugins` below.
 {
-  config,
   pkgs,
   lib,
   inputs,
@@ -48,7 +47,7 @@ let
     odin2
     dexed
     chow-tape-model
-    cardinal
+    # cardinal
   ];
 in
 {

@@ -1,6 +1,6 @@
 # Hardware + realtime: graphics, audio, polkit, keyring.
 # Moved verbatim from configuration.nix.
-{ pkgs, ... }:
+{ ... }:
 
 {
   # Intel Mesa graphics with 32-bit support (Wine/DXVK needs both).
