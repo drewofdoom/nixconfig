@@ -21,10 +21,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/clap $out/lv2 $out/vst3 $out/bin
-    cp "$src/"*.clap $out/clap/
-    cp -r "$src/"*.lv2 $out/lv2/
-    cp -r "$src/"*.vst3 $out/vst3/
+    mkdir -p $out/lib/clap $out/lib/lv2 $out/lib/vst3 $out/bin
+    cp "$src/"*.clap $out/lib/clap/
+    cp -r "$src/"*.lv2 $out/lib/lv2/
+    cp -r "$src/"*.vst3 $out/lib/vst3/
     cp "$src/ROSSVU" $out/bin/
     runHook postInstall
   '';

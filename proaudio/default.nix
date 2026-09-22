@@ -11,7 +11,42 @@
   inputs,
   ...
 }:
+let
+  # Existing per‑user plugin directories (kept unchanged).
+  # Nix-managed plugins install to $out/lib/<format> and appear in
+  # ~/.nix-profile/lib/<format> (via home.packages), which is already
+  # listed below — no extra search paths needed.
+  userPluginPaths = {
+    clap = [
+      "/etc/profiles/per-user/drew/lib/clap"
+      "~/.nix-profile/lib/clap"
+      "/run/current-system/sw/lib/clap"
+      "/usr/local/lib/clap"
+      "/usr/lib/clap"
+      "~/.clap"
+      "%CLAP_PATH%"
+    ];
+    lv2 = [
+      "/etc/profiles/per-user/drew/lib/lv2"
+      "~/.nix-profile/lib/lv2"
+      "/run/current-system/sw/lib/lv2"
+      "/usr/lib/lv2"
+      "/usr/local/lib/lv2"
+      "~/.lv2"
+    ];
+    vst = [
+      "/etc/profiles/per-user/drew/lib/vst"
+      "/etc/profiles/per-user/drew/lib/vst3"
+      "~/.nix-profile/lib/vst"
+      "~/.nix-profile/lib/vst3"
+      "/run/current-system/sw/lib/vst"
+      "/run/current-system/sw/lib/vst3"
+      "~/.vst"
+      "~/.vst3"
+    ];
+  };
 
+in
 {
   imports = [
     ./plugins
@@ -53,38 +88,14 @@
       };
       plugIns = {
         clap = {
-          searchPaths = [
-            "/etc/profiles/per-user/drew/lib/clap"
-            "~/.nix-profile/lib/clap"
-            "/run/current-system/sw/lib/clap"
-            "/usr/local/lib/clap"
-            "/usr/lib/clap"
-            "~/.clap"
-            "%CLAP_PATH%"
-          ];
+          searchPaths = userPluginPaths.clap;
         };
         lv2 = {
-          searchPaths = [
-            "/etc/profiles/per-user/drew/lib/lv2"
-            "~/.nix-profile/lib/lv2"
-            "/run/current-system/sw/lib/lv2"
-            "/usr/lib/lv2"
-            "/usr/local/lib/lv2"
-            "~/.lv2"
-          ];
+          searchPaths = userPluginPaths.lv2;
         };
         preservePinMappingsWhenLoadingPresets = false;
         vst = {
-          searchPaths = [
-            "/etc/profiles/per-user/drew/lib/vst"
-            "/etc/profiles/per-user/drew/lib/vst3"
-            "~/.nix-profile/lib/vst"
-            "~/.nix-profile/lib/vst3"
-            "/run/current-system/sw/lib/vst"
-            "/run/current-system/sw/lib/vst3"
-            "~/.vst"
-            "~/.vst3"
-          ];
+          searchPaths = userPluginPaths.vst;
         };
       };
       editingBehavior = {

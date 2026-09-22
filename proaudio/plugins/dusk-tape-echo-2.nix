@@ -21,12 +21,12 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/clap
-    cp "$src/CLAP/"*.clap $out/clap/
-    mkdir -p $out/lv2
-    cp -r "$src/LV2/"*.lv2 $out/lv2/
-    mkdir -p $out/vst3
-    cp -r "$src/VST3/"*.vst3 $out/vst3/
+    mkdir -p $out/lib/clap
+    cp "$src/CLAP/"*.clap $out/lib/clap/
+    mkdir -p $out/lib/lv2
+    cp -r "$src/LV2/"*.lv2 $out/lib/lv2/
+    mkdir -p $out/lib/vst3
+    cp -r "$src/VST3/"*.vst3 $out/lib/vst3/
     runHook postInstall
   '';
 

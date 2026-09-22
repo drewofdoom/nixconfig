@@ -34,10 +34,10 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
     mkdir -p work
     for a in $srcs; do cp -r "$a/"* work/; done
-    mkdir -p $out/clap $out/bin
+    mkdir -p $out/lib/clap $out/bin
     for f in work/*; do
       case "$f" in
-        *.clap) cp "$f" $out/clap/ ;;
+        *.clap) cp "$f" $out/lib/clap/ ;;
         *)
           if [ -f "$f" ] && [ -x "$f" ]; then cp "$f" $out/bin/; fi
           ;;

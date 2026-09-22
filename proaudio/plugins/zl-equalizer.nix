@@ -28,9 +28,9 @@ stdenv.mkDerivation (finalAttrs: {
   # This release ships LV2 + VST3 bundles and a standalone binary (no CLAP).
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/lv2 $out/vst3 $out/bin
-    cp -r "$src/LV2/"*.lv2 $out/lv2/
-    cp -r "$src/VST3/"*.vst3 $out/vst3/
+    mkdir -p $out/lib/lv2 $out/lib/vst3 $out/bin
+    cp -r "$src/LV2/"*.lv2 $out/lib/lv2/
+    cp -r "$src/VST3/"*.vst3 $out/lib/vst3/
     cp "$src/Standalone/"* $out/bin/
     runHook postInstall
   '';

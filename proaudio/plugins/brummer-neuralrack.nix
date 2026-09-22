@@ -53,13 +53,13 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
     mkdir -p work
     for a in $srcs; do cp -r "$a/"* work/; done
-    mkdir -p $out/clap $out/lv2 $out/vst2 $out/vst3 $out/bin
+    mkdir -p $out/lib/clap $out/lib/lv2 $out/lib/vst $out/lib/vst3 $out/bin
     for f in work/*; do
       case "$f" in
-        *.clap) cp "$f" $out/clap/ ;;
-        *.lv2) cp -r "$f" $out/lv2/ ;;
-        *.vst3) cp -r "$f" $out/vst3/ ;;
-        *.so) cp "$f" $out/vst2/ ;;
+        *.clap) cp "$f" $out/lib/clap/ ;;
+        *.lv2) cp -r "$f" $out/lib/lv2/ ;;
+        *.vst3) cp -r "$f" $out/lib/vst3/ ;;
+        *.so) cp "$f" $out/lib/vst/ ;;
         *)
           if [ -f "$f" ] && [ -x "$f" ]; then cp "$f" $out/bin/; fi
           ;;
