@@ -14,11 +14,9 @@
   ];
 
   programs.umbriel.settings = {
-    # VRR enabled globally: the RTX 3080 + DP connection handles it silently,
-    # and the AOC panel has no known flicker issues at typical gaming framerates.
-    # The old per-app rules are replaced by a single output-level VRR default.
-    # Without `vrr = "always"`, Umbriel uses "adaptive" by default on capable
-    # displays, but the output must specifically opt in or out in the config.
+    # VRR is set per-output — there is no top-level vrr option.
+    # DP-1 gets VRR (gaming on the ultrawide); HDMI-A-1 does not (secondary monitor).
+
     output = {
       "DP-1" = {
         mode = "5120x1440@75";
@@ -27,6 +25,7 @@
           0
         ];
         hdr = "auto";
+        sdr_white = 400;
         vrr = "always";
       };
       "HDMI-A-1" = {
@@ -36,6 +35,7 @@
           1440
         ];
         hdr = "auto";
+        sdr_white = 400;
         vrr = "disabled";
       };
     };
