@@ -59,7 +59,7 @@ in
   programs.reaper = {
     enable = true;
 
-    experimental.swell-wayland.enable = true;
+    experimental.swell-wayland.enable = false;
 
     packages = with pkgs; [
       freetype
