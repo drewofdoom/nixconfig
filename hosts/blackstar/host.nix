@@ -75,22 +75,13 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
+    # Gamescope session disabled: the monitor's HDR is poor, and the session
+    # auto-enables HDR (via ENABLE_GAMESCOPE_WSI/DXVK_HDR defaults) causing
+    # corruption on toggle. Use `gamescope -W 3840 -H 1080 -r 60 -- %command%`
+    # as a per-game launch option in Steam instead, which scales 3840x1080 up
+    # to the panel's native 5120x1440 without touching HDR or leaving Umbriel.
     gamescopeSession = {
-      enable = true;
-      env = {
-        ENABLE_GAMESCOPE_WSI = "1";
-        DXVK_HDR = "1";
-        SDL_VIDEODRIVER = "x11";
-      };
-      args = [
-        "--prefer-output DP-1"
-        "--output-width 3840"
-        "--output-height 1080"
-        "--adaptive-sync"
-        "-r 60"
-        "-e"
-        "--steam"
-      ];
+      enable = false;
     };
   };
   programs.gamescope = {
