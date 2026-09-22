@@ -68,7 +68,7 @@
   };
   programs.gamescope = {
     enable = true;
-    # capSysNice = true;
+    # capSysNice = true; # BROKEN https://github.com/NixOS/nixpkgs/issues/351516
   };
   programs.gamemode.enable = true;
 
