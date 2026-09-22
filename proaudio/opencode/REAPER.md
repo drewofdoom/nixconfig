@@ -61,6 +61,17 @@ for a stable, reversible outcome per task.
   treat her like Wes (bleed: measure floor, expect a hot trim).
   Stored chain: `Guest/Angela Fisher.RfxChain` exists; prefer a
   freshly measured floor over assumptions.
+- **Audio paths (2026-09-22):** audio lives on its own btrfs
+  partition mounted at `~/Audio` (workspace subvol at
+  `~/Audio/Workspace`, archive subvol at `~/Audio/Archive`,
+  assets subvol at `~/Audio/Assets`). Active episodes land in
+  `~/Audio/Workspace/Podcasts/<Show> <episode>/` (e.g.
+  `The Launch 85/`) with source FLACs at top level, `Media/`
+  for rendered wavs, `Backups/`, `Render/`, `Stems/`, `peaks/`,
+  `manifest-sha256.txt`. Archived episodes go to
+  `~/Audio/Archive/Podcasts/<Show>/<Show> <episode>/`. Session
+  trigger zip is in `~/Downloads`, unzipped into the workspace
+  episode folder.
 
 ## Podcast profile (xDarkzx)
 `~/.config/opencode/reaper-podcast.toml` includes only: transport, track,
