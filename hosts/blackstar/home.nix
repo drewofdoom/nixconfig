@@ -23,6 +23,7 @@
         ];
         scale = 1.0;
         vrr = "fullscreen";
+        hdr = "auto";
       };
       HDMI-A-1 = {
         mode = "1920x1080@60.000";
