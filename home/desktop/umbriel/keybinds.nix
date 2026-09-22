@@ -21,11 +21,11 @@
       action = "window-close";
       repeat = false;
     };
-    "Mod+grave" = {
+    "Mod+S" = {
       action = "scratchpad-toggle";
       repeat = false;
     };
-    "Mod+Ctrl+grave" = "window-toggle-scratchpad";
+    "Mod+Ctrl+S" = "window-toggle-scratchpad";
     "Mod+BracketLeft" = "window-consume-or-expel-left";
     "Mod+BracketRight" = "window-consume-or-expel-right";
 
@@ -131,7 +131,6 @@
     "Mod+Shift+P" = "dpms-off";
 
     # === Noctalia shell ===
-    "Mod+S" = "spawn:noctalia msg panel-toggle control-center";
     "Alt+Tab" = "spawn:noctalia msg window-switcher";
 
     # === Audio (allow when locked) ===
