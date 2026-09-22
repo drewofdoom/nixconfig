@@ -7,10 +7,10 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # Stable LTS (6.12): stable's 595 driver doesn't build against 7.2
-  # (gcc-15 strncpy error, 2026-09-22). Revisit linuxPackages_zen once the
-  # driver is fixed -- Zen is the right kernel for this box (REAPER/audio).
-  boot.kernelPackages = pkgs.linuxPackages;
+  # Zen 7.2.6 (matches unstable's Zen version, so the unstable 615 driver
+  # below passes the kernel-version check). Revisit if Zen moves and the
+  # driver doesn't follow -- fall back to pkgs.linuxPackages (6.12 LTS).
+  boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelModules = [ "ntsync" ];
 
   networking.networkmanager.enable = true;
