@@ -157,30 +157,6 @@ let
     end
   '';
 
-  opencodeJsonc = pkgs.writeText "opencode.jsonc" (
-    builtins.toJSON {
-      "$schema" = "https://opencode.ai/config.json";
-      instructions = [ "/home/drew/.config/opencode/REAPER.md" ];
-      mcp = {
-        reaper = {
-          type = "local";
-          command = [ "${xdarkzx-reaper-mcp}/bin/reaper-mcp" ];
-          enabled = true;
-          environment = {
-            REAPER_MCP_PROFILE_FILE = "/home/drew/.config/opencode/reaper-podcast.toml";
-          };
-        };
-        reaper-daemon = {
-          type = "local";
-          command = [
-            "python3"
-            "/home/drew/Projects/reaper-daemon/reaper_mcp.py"
-          ];
-          enabled = true;
-        };
-      };
-    }
-  );
 in
 {
   programs.reaper = {
@@ -210,13 +186,4 @@ in
   };
 
   home.packages = [ xdarkzx-reaper-mcp ];
-
-  # opencode client config + podcast profile + durable memory, all Nix-managed.
-  # (Existing ~/.config/opencode/* files are backed up via
-  # home-manager.backupFileExtension on first switch.)
-  xdg.configFile = {
-    "opencode/opencode.jsonc".source = opencodeJsonc;
-    "opencode/reaper-podcast.toml".source = ./opencode/reaper-podcast.toml;
-    "opencode/REAPER.md".source = ./opencode/REAPER.md;
-  };
 }
