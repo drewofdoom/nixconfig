@@ -33,6 +33,17 @@ in
     gnome-themes-extra
     papirus-icon-theme
 
+    # Audio / media tools
+    flac
+    mediainfo
+    sox
+    pv
+
+    # Archive / system utilities
+    unzip
+    zip
+    lsof
+
     # Desktop
     sone
     fragments
