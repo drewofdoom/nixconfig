@@ -22,6 +22,7 @@
         "outputs.toml"
       ];
       input = {
+        window_drag_toggle = "floating";
         keyboard.layout = "us";
         touchpad = {
           tap = true;
