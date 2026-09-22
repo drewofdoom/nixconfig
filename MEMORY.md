@@ -129,6 +129,12 @@
   through satellite -- the black-screen yabridge bug. swell-wayland spawns its own
   plain `Xwayland :10 -rootless`, so `:10` is the safe display. `GDK_BACKEND=wayland`
   is already set session-wide and is NOT repeated in the entry.
+- **blackstar on stable kernel + driver** (2026-09-22): `boot.kernelPackages =
+  pkgs.linuxPackages` (6.12 LTS) + `nvidiaPackages.stable` (595). Stable's 595
+  doesn't compile against 7.2/gets gcc-15 `strncpy` errors, and Zen on 26.05 is
+  also 7.2.6 so it would hit the same failure. **Revisit `linuxPackages_zen`
+  once the driver is fixed** — Zen's PREEMPT/interactivity tuning is the right
+  fit for REAPER-at-low-latency on this box (5800X + RTX 3080).
 - **blackstar kernel/VM tuning** (`hosts/blackstar/host.nix`): `nowatchdog` +
   `preempt=full` (kernel is PREEMPT_DYNAMIC), `vm.swappiness=180` +
   `vm.page-cluster=0` (zram-appropriate), `bbr` + `fq`, `systemd-boot.configurationLimit=10`.

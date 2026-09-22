@@ -1,5 +1,4 @@
 # Core system settings: boot, networking, nix, user, sudo.
-# Moved verbatim from configuration.nix.
 {
   pkgs,
   ...
@@ -8,8 +7,10 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # Stable LTS (6.12): stable's 595 driver doesn't build against 7.2
+  # (gcc-15 strncpy error, 2026-09-22). Revisit linuxPackages_zen once the
+  # driver is fixed -- Zen is the right kernel for this box (REAPER/audio).
   boot.kernelPackages = pkgs.linuxPackages;
-  # boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelModules = [ "ntsync" ];
 
   networking.networkmanager.enable = true;

@@ -1,5 +1,5 @@
 # Shared Nvidia setup for Wayland compositors (Umbriel).
-# Open kernel modules + latest driver branch (requires Turing/GTX-16xx or
+# Open kernel modules + stable driver branch (requires Turing/GTX-16xx or
 # newer; blackstar's RTX 3080 qualifies).
 {
   config,

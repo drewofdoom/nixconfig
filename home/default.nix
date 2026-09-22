@@ -1,4 +1,4 @@
-# Shared Home Manager config for drew (replaces home-common.nix).
+# Shared Home Manager config for drew.
 # Thin aggregator: per-area modules below + proaudio.
 {
   inputs,
