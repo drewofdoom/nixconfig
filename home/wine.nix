@@ -40,7 +40,7 @@ in
   home.packages = with pkgs; [
     wineWow64Packages.stagingFull
     winetricks
-    dxvk
+    dxvk.out
     yabridge-dev
     yabridgectl-dev
   ];
