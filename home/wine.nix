@@ -41,10 +41,11 @@ in
     wineWow64Packages.stagingFull
     winetricks
     dxvk
-    dxvk.out
     yabridge-dev
     yabridgectl-dev
   ];
 
-  home.file.".local/bin/wine64".source = "${pkgs.wineWow64Packages.stagingFull}/bin/wine";
+  # winetricks needs wine64 on PATH; ~/.local/bin is more reliably in scope
+  # than the Nix profile path depending on how it's invoked.
+  home.file.".local/bin/wine64".source = "${pkgs.wineWow64Packages.stagingFull}/bin/wine64";
 }

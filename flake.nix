@@ -57,8 +57,9 @@
       # proaudio/plugins/ and pkgs/ becomes a package named by its filename
       # stem (minus default.nix and the disabled zl-spectrum-equalizer);
       # directories with default.nix (e.g. reasonus-native) are explicit below.
-      # Plugin updates: `nix-update <name> --flake` from the repo root
-      # (multi-asset files via `python3 proaudio/plugins/update.py`).
+      # Plugin updates: `python3 proaudio/plugins/update.py --all` from the
+      # repo root. Handles both single-asset and multi-asset files, including
+      # monorepo tag prefixes (see `# update-tag-prefix:` directives).
       packages.x86_64-linux =
         let
           system = "x86_64-linux";
@@ -78,7 +79,10 @@
               }) nixFiles
             );
         in
-        autoDir ./proaudio/plugins [ "default.nix" "zl-spectrum-equalizer.nix" ]
+        autoDir ./proaudio/plugins [
+          "default.nix"
+          "zl-spectrum-equalizer.nix"
+        ]
         // autoDir ./pkgs [ "default.nix" ]
         // {
           reasonus-native = callPkg ./proaudio/reasonus-native { };
@@ -116,14 +120,5 @@
         };
     };
 
-  nixConfig = {
-    extra-substituters = [
-      "https://noctalia.cachix.org"
-      "https://pipewirecontroller-nix.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-      "pipewirecontroller-nix.cachix.org-1:wY/tr9Hxc0kvGW2zgh2DUjQI+LqLBCQ7bm9Wkr3dgdc="
-    ];
-  };
+  nixConfig = { };
 }

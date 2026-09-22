@@ -11,7 +11,14 @@
   networking.hostName = "blackstar";
 
   # Compressed RAM swap; no swap partition (no hibernation).
-  zramSwap.enable = true;
+  # zstd: fast compression + decompression on Zen 3 (hardware-accelerated
+  # via the kernel zstd module). 25% of 32 GiB = 8 GiB backing, which with
+  # zstd's ~3:1 ratio provides ~24 GiB effective swap before any pressure.
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;
+  };
 
   # -- Kernel tuning --
   # nowatchdog: the NMI watchdog is pure overhead and a latency source; it is
@@ -21,13 +28,17 @@
   boot.kernelParams = [
     "nowatchdog"
     "preempt=full"
+    # Disable speculative-execution mitigations on this desktop-only machine.
+    # Safe when no untrusted code runs; recovers 2-8% throughput on Zen 3.
+    "mitigations=off"
   ];
 
   # zram-specific VM tuning. With a compressed RAM swap device the usual
   # "avoid swapping" advice inverts: swap-in is cheap (decompress, no disk),
-  # so push pages out eagerly (swappiness 180) and disable swap readahead
-  # (page-cluster 0) -- readahead on zram just decompresses pages you may not
-  # need, and the kernel's default of 3 is tuned for rotating disks.
+  # so a moderate swappiness (10) lets zram absorb infrequent cold pages
+  # without being too eager. page-cluster 0 disables swap readahead --
+  # readahead on zram just decompresses pages you may not need, and the
+  # kernel's default of 3 is tuned for rotating disks.
   # BBR + fq: BBR is model-based (estimates bottleneck bandwidth/RTT and paces
   # to match) rather than loss-based like CUBIC, so it holds throughput and
   # keeps latency down on lossy or congested paths. `fq` is the qdisc that

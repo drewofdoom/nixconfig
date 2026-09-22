@@ -31,5 +31,5 @@ let
   ];
 in
 {
-  home.packages = plugins ++ nixpkgsPlugins ++ [ pkgs.nix-update ];
+  home.packages = plugins ++ nixpkgsPlugins;
 }
