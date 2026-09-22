@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  programs.umbriel.layer_rule = [
+  programs.umbriel.settings.layer_rule = [
     {
       match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$";
       blur = true;

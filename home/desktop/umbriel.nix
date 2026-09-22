@@ -17,14 +17,6 @@
         xwayland = true;
         show_cheatsheet = false;
       };
-      # Native Wayland Wine/Proton. Verified working on this box: games run
-      # through winewayland.so and set the `proton-game` tag plus
-      # content_type=game, which is what the VRR rules below key off. Without
-      # this they go through winex11.so -> xwayland-satellite instead.
-      # Umbriel captures [environment] at startup only -- restart Umbriel and
-      # fully quit/relaunch Steam for a change to take effect, and run
-      # `systemctl --user unset-environment PROTON_ENABLE_WAYLAND` if removed.
-      environment.PROTON_ENABLE_WAYLAND = "1";
       include.files = [ "noctalia.toml" ];
       input = {
         keyboard.layout = "us";

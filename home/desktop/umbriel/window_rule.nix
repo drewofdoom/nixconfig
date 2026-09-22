@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  programs.umbriel.window_rule = [
+  programs.umbriel.settings.window_rule = [
     # Ghostty translucency.
     {
       match.app_id = "^com.mitchellh.ghostty$";
