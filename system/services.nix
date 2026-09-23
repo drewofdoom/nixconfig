@@ -42,6 +42,7 @@
     nautilus
     proton-pass-cli
     xwayland-satellite
+    xwayland-run
     unar
     file-roller
     vulkan-tools
