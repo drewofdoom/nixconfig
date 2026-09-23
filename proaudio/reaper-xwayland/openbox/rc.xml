@@ -144,14 +144,26 @@
     <hideDelay>200</hideDelay>
   </menu>
   <!-- REAPER positions its own windows at top-left (USPosition); force them
-       centered instead. Class verified via xwininfo ("REAPER" "REAPER"). -->
+       centered instead. Class verified via xwininfo ("REAPER" "REAPER").
+       The main window opens maximized (WM-maximized, NOT fullscreen — REAPER's
+       own fullscreen bypasses the WM and breaks under Xwayland). -->
   <applications>
+    <!-- All REAPER windows (main + floating FX/plugin dialogs): REAPER
+         positions its own windows at top-left (USPosition); force them
+         centered instead. Class verified via xwininfo ("REAPER" "REAPER"). -->
     <application class="REAPER">
       <position force="yes">
         <x>center</x>
         <y>center</y>
       </position>
       <focus>yes</focus>
+    </application>
+    <!-- Main window only (NOT floating dialogs): open WM-maximized. Matched
+         by title ("<project> - REAPER v7.80 ..."). This is WM-maximized, NOT
+         fullscreen — REAPER's own fullscreen bypasses the WM and breaks
+         under Xwayland. -->
+    <application class="REAPER" title="* - REAPER v*">
+      <maximized>yes</maximized>
     </application>
   </applications>
 </openbox_config>
