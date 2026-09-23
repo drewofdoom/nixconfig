@@ -1,18 +1,22 @@
-! Minimal style for REAPER Fluxbox session
+! Minimal style for REAPER Fluxbox session — dark titlebars, high contrast
 background: none
 window.title.font: sans-serif:size=9
 window.title.height: 18
 window.justify: center
 window.label: (%n)
 window.font: sans-serif:size=9
-window.foreground: #e0def4
-window.background: #26233a
-window.title.focus: #ebbcba
-window.title.unfocus: #26233a
-window.label.focus: #191724
-window.label.unfocus: #191724
-window.handle.focus: #ebbcba
-window.handle.unfocus: #26233a
+
+! Focused titlebar: dark bg, rose text
+window.foreground: #ebbcba
+window.background: #191724
+window.title.focus: #191724
+window.title.unfocus: #1f1d2e
+window.label.focus: #ebbcba
+window.label.unfocus: #6e6a86
+window.handle.focus: #191724
+window.handle.unfocus: #1f1d2e
+
+! Subtle border
 border.width: 1
-border.color: #191724
+border.color: #1f1d2e
 border.color.focus: #ebbcba

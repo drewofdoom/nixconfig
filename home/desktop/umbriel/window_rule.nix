@@ -25,5 +25,10 @@
       match.title = "Zed —";
       default_floating = true;
     }
+    # REAPER Xephyr nested session — start as a window, not fullscreen
+    {
+      match.name = "^reaper-xephyr$";
+      default_floating = true;
+    }
   ];
 }

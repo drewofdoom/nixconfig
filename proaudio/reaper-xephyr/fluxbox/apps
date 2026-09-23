@@ -1,7 +1,3 @@
-[app] (name=reaper)
-  [Maximized]	{yes}
-[end]
-
 [app] (name=fbrun)
   [Position]	(WINCENTER)	{0 0}
   [Layer]	{2}
