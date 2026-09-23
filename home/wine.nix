@@ -40,12 +40,22 @@ in
   home.packages = with pkgs; [
     wineWow64Packages.stagingFull
     winetricks
+    file # winetricks needs `file` for arch/WoW64 detection
     dxvk.out
     yabridge-dev
     yabridgectl-dev
   ];
 
-  # winetricks needs wine64 on PATH; ~/.local/bin is more reliably in scope
-  # than the Nix profile path depending on how it's invoked.
-  home.file.".local/bin/wine64".source = "${pkgs.wineWow64Packages.stagingFull}/bin/wine64";
+  # This Wine build (new-wow64 mode) ships no `wine64` binary — `wine` is a
+  # bash wrapper that sets WINELOADER to the real ELF `.wine`. winetricks
+  # detects the prefix arch by reading the ELF header at offset 0x12, which
+  # fails on the wrapper script ("Unknown file arch"). Point it at the real
+  # ELF binaries via WINE_BIN / WINESERVER_BIN, as the winetricks source
+  # documents for wrapper setups. (In new-wow64 mode winetricks sets
+  # WINE64="${WINE}", so no separate wine64 binary is needed.)
+  home.sessionVariables = {
+    WINE_BIN = "${pkgs.wineWow64Packages.stagingFull}/bin/.wine";
+    WINESERVER_BIN = "${pkgs.wineWow64Packages.stagingFull}/bin/wineserver";
+    WINEARCH = "win64";
+  };
 }
