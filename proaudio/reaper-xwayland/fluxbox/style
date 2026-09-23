@@ -1,14 +1,13 @@
-! Minimal style for REAPER Fluxbox session — dark titlebars, high contrast
-background: none
-window.title.font: sans-serif:size=9
-window.title.height: 18
-window.justify: center
-window.label: (%n)
-window.font: sans-serif:size=9
+! Fluxbox style for the REAPER session (rose-pine moon).
+! NOTE: key names matter — Fluxbox silently ignores unknown keys.
+! Window border keys are window.borderWidth/window.borderColor (there is no
+! per-focus border color); the titlebar font key is window.font.
 
-! Focused titlebar: dark bg, rose text
-window.foreground: #ebbcba
-window.background: #191724
+window.font: Inter Variable:size=9
+window.justify: center
+window.title.height: 18
+
+! Titlebar: dark bg, rose text when focused
 window.title.focus: #191724
 window.title.unfocus: #1f1d2e
 window.label.focus: #ebbcba
@@ -16,7 +15,6 @@ window.label.unfocus: #6e6a86
 window.handle.focus: #191724
 window.handle.unfocus: #1f1d2e
 
-! Strong dark borders (rose-pine base on near-black)
-border.width: 1
-border.color: #0f0e17
-border.color.focus: #403d52
+! Single dark border for all windows (no focus variant exists)
+window.borderWidth: 1
+window.borderColor: #403d52
