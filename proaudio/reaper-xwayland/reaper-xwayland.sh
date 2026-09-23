@@ -27,22 +27,10 @@ if [ "${1:-}" = "--inner" ]; then
   exec reaper "$@"
 fi
 
-# X desktop size (Xwayland -geometry, rootful mode). UNSET by default: when
-# nothing is passed, Xwayland negotiates the size with Umbriel (last session:
-# 2153x1132). Forcing -geometry interacts badly with Umbriel's output scaling
-# (a test 800x600 came up 320 wide), so only set this if the negotiated size
-# is wrong, e.g. REAPER_GEOMETRY=2560x1132 reaper-xwayland.sh — then check
-# the actual size with: xwininfo -root (on the session display).
-REAPER_GEOMETRY="${REAPER_GEOMETRY:-}"
-
 XWAYLAND_RUN="$(command -v xwayland-run || echo '')"
 if [ -z "$XWAYLAND_RUN" ]; then
   echo "ERROR: xwayland-run not found in PATH." >&2
   exit 1
 fi
 
-if [ -n "$REAPER_GEOMETRY" ]; then
-  exec "$XWAYLAND_RUN" -geometry "$REAPER_GEOMETRY" -- "$0" --inner "$@"
-else
-  exec "$XWAYLAND_RUN" -- "$0" --inner "$@"
-fi
+exec "$XWAYLAND_RUN" -- "$0" --inner "$@"
