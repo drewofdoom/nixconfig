@@ -25,5 +25,10 @@
       match.title = "Zed —";
       default_floating = true;
     }
+    # Xwayland-run
+    {
+      match.app_id = "org.freedesktop.Xwayland";
+      default_maximize = true;
+    }
   ];
 }
