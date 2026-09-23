@@ -13,6 +13,19 @@
   boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelModules = [ "ntsync" ];
 
+  # -- Kernel tuning --
+  # nowatchdog: the NMI watchdog is pure overhead and a latency source; it is
+  # only useful for catching hard lockups on servers. preempt=full: the kernel
+  # is built PREEMPT_DYNAMIC, so this opts into full preemption at boot -- the
+  # single biggest win for REAPER/JACK scheduling latency.
+  boot.kernelParams = [
+    "nowatchdog"
+    "preempt=full"
+    # Disable speculative-execution mitigations on this desktop-only machine.
+    # Safe when no untrusted code runs; recovers 2-8% throughput on Zen 3.
+    "mitigations=off"
+  ];
+
   networking.networkmanager.enable = true;
 
   nix.settings.accept-flake-config = true;
