@@ -1,0 +1,55 @@
+! Openbox "Reaper" theme (rose-pine moon). Deployed to ~/.themes/Reaper/.
+! Titlebar text uses Inter Variable; borders dark single-pixel.
+
+window.active.title.bg: Flat Solid #191724
+window.active.label.text.color: #ebbcba
+window.active.label.text.font: shadow=n:Inter Variable:size=9
+window.active.handle.bg: Flat Solid #191724
+window.active.grip.bg: Flat Solid #191724
+window.active.border.color: #403d52
+window.active.button.unpressed.bg: Parentrelative
+window.active.button.pressed.bg: Flat Solid #403d52
+window.active.button.disabled.bg: Parentrelative
+window.active.button.hover.bg: Flat Solid #524f67
+window.active.button.toggled.unpressed.bg: Flat Solid #403d52
+window.active.button.toggled.pressed.bg: Flat Solid #524f67
+window.active.button.toggled.hover.bg: Flat Solid #524f67
+
+window.inactive.title.bg: Flat Solid #1f1d2e
+window.inactive.label.text.color: #6e6a86
+window.inactive.label.text.font: shadow=n:Inter Variable:size=9
+window.inactive.handle.bg: Flat Solid #1f1d2e
+window.inactive.grip.bg: Flat Solid #1f1d2e
+window.inactive.border.color: #0f0e17
+window.inactive.button.unpressed.bg: Parentrelative
+window.inactive.button.pressed.bg: Flat Solid #2a273f
+window.inactive.button.disabled.bg: Parentrelative
+window.inactive.button.hover.bg: Flat Solid #2a273f
+window.inactive.button.toggled.unpressed.bg: Flat Solid #2a273f
+window.inactive.button.toggled.pressed.bg: Flat Solid #403d52
+window.inactive.button.toggled.hover.bg: Flat Solid #403d52
+
+window.label.text.justify: Center
+window.title.height: 18
+window.handle.width: 3
+window.border.width: 1
+window.client.padding.width: 0
+window.client.padding.height: 0
+
+menu.title.bg: Flat Solid #191724
+menu.title.text.color: #ebbcba
+menu.title.text.font: shadow=n:Inter Variable:size=9
+menu.title.text.justify: Center
+menu.items.bg: Flat Solid #1f1d2e
+menu.items.text.color: #e0def4
+menu.items.text.font: shadow=n:Inter Variable:size=9
+menu.items.disabled.text.color: #6e6a86
+menu.items.active.bg: Flat Solid #403d52
+menu.items.active.text.color: #e0def4
+menu.separator.color: #403d52
+menu.separator.width: 1
+menu.border.color: #403d52
+menu.border.width: 1
+menu.text.justify: Left
+menu.title.margin.width: 2
+menu.items.margin.width: 2

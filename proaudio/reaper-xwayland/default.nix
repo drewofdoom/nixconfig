@@ -1,14 +1,17 @@
-# REAPER on a dedicated Xwayland server with Fluxbox.
+# REAPER on a dedicated Xwayland server with a lightweight WM (Fluxbox or
+# Openbox, selected via REAPER_WM).
 #
 # xwayland-satellite provides no window manager, so REAPER's floating
-# FX/plugin windows are unmanageable. Fluxbox parents those transient windows
-# so they appear as regular Umbriel windows — without trapping REAPER inside
-# a nested Xephyr container.
+# FX/plugin windows are unmanageable. A real WM parents those transient
+# windows so they behave — without trapping REAPER inside a nested Xephyr
+# container.
 #
 # Provides:
 #   - ~/.nix-profile/bin/reaper-xwayland.sh — launch script
-#   - ~/.local/share/applications/reaper-xwayland.desktop — desktop entry
+#   - ~/.local/share/applications/reaper-xwayland.desktop — desktop entry (Fluxbox)
+#   - ~/.local/share/applications/reaper-xwayland-openbox.desktop — entry (Openbox)
 #   - ~/.fluxbox/ — dedicated Fluxbox config (upstream default location)
+#   - ~/.config/reaper-openbox/rc.xml + ~/.themes/Reaper/ — Openbox config/theme
 #
 {
   pkgs,
@@ -37,6 +40,19 @@ let
     startupNotify = false;
   };
 
+  xwaylandOpenboxEntry = pkgs.makeDesktopItem {
+    name = "reaper-xwayland-openbox";
+    desktopName = "REAPER (Xwayland/Openbox)";
+    comment = "REAPER on a dedicated Xwayland server with Openbox";
+    exec = "env REAPER_WM=openbox reaper-xwayland.sh %F";
+    icon = "cockos-reaper";
+    categories = [
+      "Audio"
+      "AudioVideo"
+    ];
+    startupNotify = false;
+  };
+
 in
 {
   options.programs.reaper-xwayland = {
@@ -47,6 +63,8 @@ in
     home.packages = [
       xwaylandScript
       xwaylandEntry
+      xwaylandOpenboxEntry
+      pkgs.openbox
     ];
 
     # Deploy Fluxbox config to ~/.fluxbox/ (upstream default location)
@@ -56,5 +74,10 @@ in
     home.file.".fluxbox/apps".source = ./fluxbox/apps;
     home.file.".fluxbox/windowmenu".source = ./fluxbox/windowmenu;
     home.file.".fluxbox/style".source = ./fluxbox/style;
+
+    # Openbox config (kept out of ~/.config/openbox so a future native
+    # openbox session isn't hijacked) + "Reaper" theme
+    home.file.".config/reaper-openbox/rc.xml".source = ./openbox/rc.xml;
+    home.file.".themes/Reaper/openbox-3/themerc".source = ./openbox/Reaper-themerc;
   };
 }

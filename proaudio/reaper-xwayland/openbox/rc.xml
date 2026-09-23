@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Openbox config for the REAPER-on-Xwayland session.
+     Managed by Home Manager (nixconfig proaudio/reaper-xwayland).
+     Deliberately minimal:
+       - No Alt+mouse bindings anywhere (Alt+click is REAPER's own modifier).
+         Move via titlebar drag, resize via window edges.
+       - No Alt+Tab (Umbriel owns it on the host).
+       - New windows open centered (placement center=yes).
+       - Single workspace. -->
+<openbox_config xmlns="http://openbox.org/3.4/rc">
+  <theme>
+    <name>Reaper</name>
+    <titleLayout>NLIMC</titleLayout>
+    <keepBorder>yes</keepBorder>
+    <animateIconify>no</animateIconify>
+    <fontplace>Center</fontplace>
+  </theme>
+  <desktops>
+    <number>1</number>
+    <firstdesk>1</firstdesk>
+    <names>
+      <name>reaper</name>
+    </names>
+    <popupTime>0</popupTime>
+  </desktops>
+  <focus>
+    <focusNew>yes</focusNew>
+    <followMouse>no</followMouse>
+    <focusLast>yes</focusLast>
+    <focusLastOnDesktop>no</focusLastOnDesktop>
+    <underMouse>no</underMouse>
+  </focus>
+  <placement>
+    <policy>Smart</policy>
+    <center>yes</center>
+    <monitor>Active</monitor>
+    <primaryMonitor>1</primaryMonitor>
+  </placement>
+  <window>
+    <decor>yes</decor>
+    <shade>no</shade>
+    <maximized>no</maximized>
+  </window>
+  <mouse>
+    <dragThreshold>8</dragThreshold>
+    <doubleClickTime>400</doubleClickTime>
+    <!-- Titlebar: drag to move, double-click to toggle maximize -->
+    <context name="Titlebar">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Left" action="Drag">
+        <action name="Move"/>
+      </mousebind>
+      <mousebind button="Left" action="DoubleClick">
+        <action name="ToggleMaximize"/>
+      </mousebind>
+      <mousebind button="Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ShowMenu"><menu>client-menu</menu></action>
+      </mousebind>
+    </context>
+    <!-- Window edges: drag to resize (no modifier) -->
+    <context name="Top">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"><edge>top</edge></action>
+      </mousebind>
+    </context>
+    <context name="Bottom">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"><edge>bottom</edge></action>
+      </mousebind>
+    </context>
+    <context name="Left">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"><edge>left</edge></action>
+      </mousebind>
+    </context>
+    <context name="Right">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"><edge>right</edge></action>
+      </mousebind>
+    </context>
+    <context name="TRCorner">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="TLCorner">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="BRCorner">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="BLCorner">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <!-- Close/maximize/iconify buttons keep their default actions -->
+  </mouse>
+  <keyboard>
+    <!-- Alt+F4 to close; everything else belongs to Umbriel/REAPER -->
+    <keybind key="A-F4">
+      <action name="Close"/>
+    </keybind>
+  </keyboard>
+  <menu>
+    <file>menu.xml</file>
+    <hideDelay>200</hideDelay>
+  </menu>
+</openbox_config>

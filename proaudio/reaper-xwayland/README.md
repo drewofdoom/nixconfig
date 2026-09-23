@@ -1,21 +1,26 @@
-# REAPER on a dedicated Xwayland server with Fluxbox
+# REAPER on a dedicated Xwayland server with a lightweight WM
 
 **Problem**: REAPER under xwayland-satellite has no window manager, so its
 floating FX/plugin windows are unmanageable.
 
 **Solution**: Run REAPER on a dedicated Xwayland server (`xwayland-run`) with
-Fluxbox as the window manager. Fluxbox parents the transient windows so they
-appear as regular Umbriel windows. Cleanup is automatic: `xwayland-run` kills
-its process group (Fluxbox + X server) when REAPER exits.
+a real WM (Fluxbox by default, Openbox optional). The WM parents the
+transient windows so they behave. Cleanup is automatic: `xwayland-run` kills
+its process group (WM + X server) when REAPER exits.
 
 ## Files
 
 - **Module**: `proaudio/reaper-xwayland/default.nix` — Home Manager module
 - **Launch script**: installed to `~/.nix-profile/bin/reaper-xwayland.sh`
-  - Spawns Fluxbox (dedicated config) → REAPER under one `xwayland-run`
-  - Trap on the Fluxbox PID as a cleanup fallback
-- **Desktop entry**: `~/.local/share/applications/reaper-xwayland.desktop` — searchable in the Noctalia launcher (`Mod+Space`)
+  - `REAPER_WM` selects the WM: `fluxbox` (default) or `openbox`
+  - Spawns WM → REAPER under one `xwayland-run`, trap as cleanup fallback
+- **Desktop entries**: `reaper-xwayland.desktop` (Fluxbox) and
+  `reaper-xwayland-openbox.desktop` (Openbox) — searchable in the Noctalia
+  launcher (`Mod+Space`)
 - **Fluxbox config**: deployed to `~/.fluxbox/` (upstream default location)
+- **Openbox config**: `~/.config/reaper-openbox/rc.xml` + `Reaper` theme in
+  `~/.themes/Reaper/` (rose-pine moon, Inter Variable titlebars, dark
+  1px borders, centered windows, no Alt+mouse bindings)
   - `init` — ClickFocus; no toolbar/slit
   - `keys` — Alt+drag to move, Alt+right-drag to resize, Alt+Tab to cycle, Alt+F4 to close, Alt+F2 to run
   - `menu` — REAPER, xterm, Run...
