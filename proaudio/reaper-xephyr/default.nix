@@ -19,9 +19,13 @@
 let
   cfg = config.programs.reaper-xephyr;
 
-  # Wrap the standalone script so it appears in PATH
+  # Wrap the standalone scripts so they appear in PATH
   launchScript = pkgs.runCommand "reaper-xephyr-sh" { } ''
     install -Dm755 ${./reaper-xephyr.sh} $out/bin/reaper-xephyr.sh
+  '';
+
+  xwaylandScript = pkgs.runCommand "reaper-xwayland-sh" { } ''
+    install -Dm755 ${./reaper-xwayland.sh} $out/bin/reaper-xwayland.sh
   '';
 
   # Desktop entry for the launcher (Mod+Space -> "REAPER (Xephyr)")
@@ -30,6 +34,20 @@ let
     desktopName = "REAPER (Xephyr)";
     comment = "REAPER inside a nested Xephyr + Fluxbox session";
     exec = "reaper-xephyr.sh %F";
+    icon = "cockos-reaper";
+    categories = [
+      "Audio"
+      "AudioVideo"
+    ];
+    startupNotify = false;
+  };
+
+  # Desktop entry for the dedicated-Xwayland launcher
+  xwaylandEntry = pkgs.makeDesktopItem {
+    name = "reaper-xwayland";
+    desktopName = "REAPER (Xwayland)";
+    comment = "REAPER on a dedicated Xwayland server with Fluxbox (floating windows as native windows)";
+    exec = "reaper-xwayland.sh %F";
     icon = "cockos-reaper";
     categories = [
       "Audio"
@@ -57,10 +75,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Install the launch script and desktop entry
+    # Install the launch scripts and desktop entries
     home.packages = [
       launchScript
       desktopEntry
+      xwaylandScript
+      xwaylandEntry
     ];
 
     # Deploy Fluxbox config to ~/.config/umbriel/fluxbox-reaper/
