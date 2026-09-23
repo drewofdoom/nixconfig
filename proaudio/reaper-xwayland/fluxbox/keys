@@ -3,10 +3,10 @@
 # No Ctrl bindings — REAPER uses Ctrl heavily.
 # No F-keys except F2/F4 — REAPER uses F-keys for actions.
 
-# --- Window movement & resizing (Alt + click) ---
-OnWindow Mod1 Mouse1 :MacroCmd {Raise} {Focus} {StartMoving}
-OnWindowBorder Move1 :StartMoving
-OnWindow Mod1 Mouse3 :MacroCmd {Raise} {Focus} {StartResizing NearestCorner}
+# --- Window movement & resizing ---
+# NOTE: no Alt+click ops on windows — Alt+mouse is REAPER's own modifier for
+# plugin/mouse actions. Move/resize via the titlebar (drag titlebar, or
+# right-click it for the window menu).
 
 # --- Titlebar ops ---
 OnTitlebar Mouse1 :MacroCmd {Raise} {Focus} {ActivateTab}

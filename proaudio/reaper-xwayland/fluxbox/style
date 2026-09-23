@@ -16,7 +16,7 @@ window.label.unfocus: #6e6a86
 window.handle.focus: #191724
 window.handle.unfocus: #1f1d2e
 
-! Subtle border
+! Strong dark borders (rose-pine base on near-black)
 border.width: 1
-border.color: #1f1d2e
-border.color.focus: #ebbcba
+border.color: #0f0e17
+border.color.focus: #403d52
