@@ -26,20 +26,24 @@
         hdr = "auto";
         sdr_white = 400;
         vrr = "always";
-        scale = 1.25;
+        # scale = 1.25;
       };
       "HDMI-A-1" = {
         mode = "1920x1080@60";
         # Right-aligned with DP-1's right edge (4096) and below it (1152),
         # in logical coordinates at scale 1.25.
+        # position = [
+        #   2560
+        #   1152
+        # ];
         position = [
-          2560
-          1152
+          3150
+          1440
         ];
         hdr = "auto";
         sdr_white = 400;
         vrr = "disabled";
-        scale = 1.25;
+        # scale = 1.25;
       };
     };
 
