@@ -27,10 +27,14 @@ if [ "${1:-}" = "--inner" ]; then
   exec reaper "$@"
 fi
 
+# X desktop size (Xwayland -geometry, rootful mode). Override per launch:
+#   REAPER_GEOMETRY=4096x1152 reaper-xwayland.sh
+REAPER_GEOMETRY="${REAPER_GEOMETRY:-2560x1132}"
+
 XWAYLAND_RUN="$(command -v xwayland-run || echo '')"
 if [ -z "$XWAYLAND_RUN" ]; then
   echo "ERROR: xwayland-run not found in PATH." >&2
   exit 1
 fi
 
-exec "$XWAYLAND_RUN" -- "$0" --inner "$@"
+exec "$XWAYLAND_RUN" -geometry "$REAPER_GEOMETRY" -- "$0" --inner "$@"
