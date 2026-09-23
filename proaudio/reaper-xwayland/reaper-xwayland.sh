@@ -13,8 +13,8 @@
 
 set -euo pipefail
 
-# Fluxbox config directory (managed by Home Manager, shared with xephyr module)
-FLUXBOX_RC="${FLUXBOX_RC:-$HOME/.config/umbriel/fluxbox-reaper/init}"
+# Fluxbox config (managed by Home Manager at the upstream default ~/.fluxbox/)
+FLUXBOX_RC="${FLUXBOX_RC:-$HOME/.fluxbox/init}"
 
 if [ "${1:-}" = "--inner" ]; then
   # Running INSIDE the dedicated Xwayland server (DISPLAY already set).

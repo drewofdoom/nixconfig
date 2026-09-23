@@ -25,10 +25,5 @@
       match.title = "Zed —";
       default_floating = true;
     }
-    # REAPER (Xephyr)
-    {
-      match.app_id = "^Xephyr$";
-      default_floating = false;
-    }
   ];
 }

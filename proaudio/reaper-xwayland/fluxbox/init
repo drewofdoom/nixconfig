@@ -1,8 +1,8 @@
-session.menuFile:	~/.config/umbriel/fluxbox-reaper/menu
-session.keyFile: ~/.config/umbriel/fluxbox-reaper/keys
-session.styleFile: ~/.config/umbriel/fluxbox-reaper/style
-session.windowMenu: ~/.config/umbriel/fluxbox-reaper/windowmenu
-session.appsFile: ~/.config/umbriel/fluxbox-reaper/apps
+session.menuFile:	~/.fluxbox/menu
+session.keyFile: ~/.fluxbox/keys
+session.styleFile: ~/.fluxbox/style
+session.windowMenu: ~/.fluxbox/windowmenu
+session.appsFile: ~/.fluxbox/apps
 session.configVersion:	13
 session.screen0.toolbar.visible: false
 session.screen0.toolbar.autoHide: true

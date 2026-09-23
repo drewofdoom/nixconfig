@@ -2,8 +2,4 @@
 { ... }:
 
 {
-  programs.reaper-xephyr = {
-    width = 1900;
-    height = 1060;
-  };
 }
