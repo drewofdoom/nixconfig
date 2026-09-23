@@ -56,6 +56,7 @@ in
     resources
     simple-scan
     proton-vpn
+    proton-pass
     openmeters
     plezy
   ];
