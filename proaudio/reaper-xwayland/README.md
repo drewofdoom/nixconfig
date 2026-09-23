@@ -39,6 +39,32 @@ Open the launcher (`Mod+Space`) and search for "REAPER (Xwayland)", or run from 
 reaper-xwayland.sh
 ```
 
+### Input auto-cabling (optional)
+
+WirePlumber likes to cable the default mic into REAPER's inputs, and links
+vanish on hotplug/restart. The bundled `reaper-autolink.sh` watcher keeps
+your interface cabled to `REAPER:in1/in2` for the whole session:
+
+```bash
+REAPER_INPUT_MATCH=ioStation reaper-xwayland.sh
+```
+
+`REAPER_INPUT_MATCH` is a substring of the device's PipeWire port name.
+Exclusive mode (default) also evicts non-device links into REAPER's inputs;
+`REAPER_INPUT_EXCLUSIVE=0` keeps them (multi-source recording).
+Standalone one-shot reconcile: `REAPER_AUTOLINK_ONCE=1 reaper-autolink.sh`.
+
+### Low-latency tracking (optional)
+
+```bash
+REAPER_LOWLATENCY=1 reaper-xwayland.sh            # 128-sample quantum
+REAPER_LOWLATENCY=1 REAPER_QUANTUM=256/48000 reaper-xwayland.sh
+```
+
+Sets `PIPEWIRE_LATENCY` for the session only. Leave unset for mixing
+(default quantum). REAPER's title bar shows the live buffer/latency —
+confirm it dropped before tracking.
+
 ## Dependencies
 
 - `xwayland-run` — system package

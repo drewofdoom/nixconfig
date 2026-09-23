@@ -24,6 +24,10 @@ let
     install -Dm755 ${./reaper-xwayland.sh} $out/bin/reaper-xwayland.sh
   '';
 
+  autolinkScript = pkgs.runCommand "reaper-autolink-sh" { } ''
+    install -Dm755 ${./reaper-autolink.sh} $out/bin/reaper-autolink.sh
+  '';
+
   xwaylandEntry = pkgs.makeDesktopItem {
     name = "reaper-xwayland";
     desktopName = "REAPER (Xwayland)";
@@ -47,6 +51,7 @@ in
     home.packages = [
       xwaylandScript
       xwaylandEntry
+      autolinkScript
     ];
 
     # Deploy Fluxbox config to ~/.fluxbox/ (upstream default location)
