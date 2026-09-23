@@ -1,0 +1,28 @@
+# Minimal Fluxbox keys for REAPER environment
+# No Mod4 (Super) — Umbriel owns that.
+# No Ctrl bindings — REAPER uses Ctrl heavily.
+# No F-keys except F2/F4 — REAPER uses F-keys for actions.
+
+# --- Window movement & resizing (Alt + click) ---
+OnWindow Mod1 Mouse1 :MacroCmd {Raise} {Focus} {StartMoving}
+OnWindowBorder Move1 :StartMoving
+OnWindow Mod1 Mouse3 :MacroCmd {Raise} {Focus} {StartResizing NearestCorner}
+
+# --- Titlebar ops ---
+OnTitlebar Mouse1 :MacroCmd {Raise} {Focus} {ActivateTab}
+OnTitlebar Move1  :StartMoving
+OnTitlebar Mouse3 :WindowMenu
+
+# --- Window cycling ---
+Mod1 Tab :NextWindow {groups} (workspace=[current])
+Mod1 Shift Tab :PrevWindow {groups} (workspace=[current])
+
+# --- Close window ---
+Mod1 F4 :Close
+
+# --- Run dialog ---
+Mod1 F2 :Exec fbrun
+
+# --- Desktop clicks ---
+OnDesktop Mouse1 :HideMenus
+OnDesktop Mouse3 :RootMenu

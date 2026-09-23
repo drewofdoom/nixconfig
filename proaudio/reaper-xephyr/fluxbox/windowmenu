@@ -1,0 +1,10 @@
+[begin] (%t)
+      [maximize] (Maximize)
+      [minimize] (Minimize)
+      [shade] (Shade)
+      [stick] (Stick)
+      [separator]
+      [sendto] (To Workspace...)
+      [separator]
+      [close] (Close)
+[end]

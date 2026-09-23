@@ -52,9 +52,12 @@ in
     ./plugins
     ./reasonus-native/module.nix
     ./reaper-mcp.nix
+    ./reaper-xephyr
     inputs.reaper-flake.homeModules.reaper
     # ./reaper.nix
   ];
+
+  programs.reaper-xephyr.enable = true;
 
   programs.reaper = {
     enable = true;

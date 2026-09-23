@@ -1,0 +1,14 @@
+session.menuFile:	~/.config/umbriel/fluxbox-reaper/menu
+session.keyFile: ~/.config/umbriel/fluxbox-reaper/keys
+session.styleFile: ~/.config/umbriel/fluxbox-reaper/style
+session.windowMenu: ~/.config/umbriel/fluxbox-reaper/windowmenu
+session.appsFile: ~/.config/umbriel/fluxbox-reaper/apps
+session.configVersion:	13
+session.screen0.toolbar.visible: false
+session.screen0.toolbar.autoHide: true
+session.screen0.slit.visible: false
+session.screen0.strftime: %H:%M
+session.screen0.windowPlacement: UnderMouse
+session.screen0.focusNewWindows: true
+session.screen0.focusModel: ClickFocus
+session.screen0.fullMaximization: true
