@@ -1,9 +1,0 @@
-[begin] (REAPER)
-      [exec] (REAPER) {reaper}
-      [exec] (xterm) {xterm}
-      [exec] (Run...) {fbrun}
-      [separator]
-      [reconfig] (Reload Config)
-      [restart] (Restart)
-      [exit] (Exit)
-[end]
