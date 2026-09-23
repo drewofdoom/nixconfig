@@ -12,8 +12,8 @@ if [ -f "$HOME/.config/umbriel/fluxbox-reaper/env" ]; then
   . "$HOME/.config/umbriel/fluxbox-reaper/env"
 fi
 
-WIDTH="${WIDTH:-${REAPER_XEPHYR_WIDTH:-3253}}"
-HEIGHT="${HEIGHT:-${REAPER_XEPHYR_HEIGHT:-1420}}"
+WIDTH="${WIDTH:-${REAPER_XEPHYR_WIDTH:-1920}}"
+HEIGHT="${HEIGHT:-${REAPER_XEPHYR_HEIGHT:-1080}}"
 XEPHYR_DISPLAY=":$DISPLAY_NUM"
 
 # Resolve Xephyr from nixpkgs if not in PATH
