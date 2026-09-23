@@ -8,12 +8,19 @@ window.active.handle.bg: Flat Solid #191724
 window.active.grip.bg: Flat Solid #191724
 window.active.border.color: #403d52
 window.active.button.unpressed.bg: Parentrelative
+window.active.button.unpressed.image.color: #ebbcba
 window.active.button.pressed.bg: Flat Solid #403d52
+window.active.button.pressed.image.color: #e0def4
 window.active.button.disabled.bg: Parentrelative
+window.active.button.disabled.image.color: #6e6a86
 window.active.button.hover.bg: Flat Solid #524f67
+window.active.button.hover.image.color: #e0def4
 window.active.button.toggled.unpressed.bg: Flat Solid #403d52
+window.active.button.toggled.unpressed.image.color: #ebbcba
 window.active.button.toggled.pressed.bg: Flat Solid #524f67
+window.active.button.toggled.pressed.image.color: #e0def4
 window.active.button.toggled.hover.bg: Flat Solid #524f67
+window.active.button.toggled.hover.image.color: #e0def4
 
 window.inactive.title.bg: Flat Solid #1f1d2e
 window.inactive.label.text.color: #6e6a86
@@ -22,12 +29,19 @@ window.inactive.handle.bg: Flat Solid #1f1d2e
 window.inactive.grip.bg: Flat Solid #1f1d2e
 window.inactive.border.color: #0f0e17
 window.inactive.button.unpressed.bg: Parentrelative
+window.inactive.button.unpressed.image.color: #6e6a86
 window.inactive.button.pressed.bg: Flat Solid #2a273f
+window.inactive.button.pressed.image.color: #908caa
 window.inactive.button.disabled.bg: Parentrelative
+window.inactive.button.disabled.image.color: #2a273f
 window.inactive.button.hover.bg: Flat Solid #2a273f
+window.inactive.button.hover.image.color: #908caa
 window.inactive.button.toggled.unpressed.bg: Flat Solid #2a273f
+window.inactive.button.toggled.unpressed.image.color: #6e6a86
 window.inactive.button.toggled.pressed.bg: Flat Solid #403d52
+window.inactive.button.toggled.pressed.image.color: #908caa
 window.inactive.button.toggled.hover.bg: Flat Solid #403d52
+window.inactive.button.toggled.hover.image.color: #908caa
 
 window.label.text.justify: Center
 window.title.height: 18

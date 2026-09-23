@@ -115,4 +115,15 @@
     <file>menu.xml</file>
     <hideDelay>200</hideDelay>
   </menu>
+  <!-- REAPER positions its own windows at top-left (USPosition); force them
+       centered instead. Class verified via xwininfo ("REAPER" "REAPER"). -->
+  <applications>
+    <application class="REAPER">
+      <position force="yes">
+        <x>center</x>
+        <y>center</y>
+      </position>
+      <focus>yes</focus>
+    </application>
+  </applications>
 </openbox_config>
