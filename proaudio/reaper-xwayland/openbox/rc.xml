@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!-- Openbox config for the REAPER-on-Xwayland session.
      Managed by Home Manager (nixconfig proaudio/reaper-xwayland).
      Deliberately minimal:
@@ -47,18 +47,18 @@
     <!-- Titlebar: drag to move, double-click to toggle maximize -->
     <context name="Titlebar">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus" />
+        <action name="Raise" />
       </mousebind>
       <mousebind button="Left" action="Drag">
-        <action name="Move"/>
+        <action name="Move" />
       </mousebind>
       <mousebind button="Left" action="DoubleClick">
-        <action name="ToggleMaximize"/>
+        <action name="ToggleMaximize" />
       </mousebind>
       <mousebind button="Right" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus" />
+        <action name="Raise" />
         <action name="ShowMenu"><menu>client-menu</menu></action>
       </mousebind>
     </context>
@@ -85,58 +85,58 @@
     </context>
     <context name="TRCorner">
       <mousebind button="Left" action="Drag">
-        <action name="Resize"/>
+        <action name="Resize" />
       </mousebind>
     </context>
     <context name="TLCorner">
       <mousebind button="Left" action="Drag">
-        <action name="Resize"/>
+        <action name="Resize" />
       </mousebind>
     </context>
     <context name="BRCorner">
       <mousebind button="Left" action="Drag">
-        <action name="Resize"/>
+        <action name="Resize" />
       </mousebind>
     </context>
     <context name="BLCorner">
       <mousebind button="Left" action="Drag">
-        <action name="Resize"/>
+        <action name="Resize" />
       </mousebind>
     </context>
     <!-- Titlebar buttons: press focuses, click acts (these bindings ARE the
          buttons' behavior — without them the buttons are dead chrome) -->
     <context name="Close">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus" />
+        <action name="Raise" />
       </mousebind>
       <mousebind button="Left" action="Click">
-        <action name="Close"/>
+        <action name="Close" />
       </mousebind>
     </context>
     <context name="Maximize">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus" />
+        <action name="Raise" />
       </mousebind>
       <mousebind button="Left" action="Click">
-        <action name="ToggleMaximize"/>
+        <action name="ToggleMaximize" />
       </mousebind>
     </context>
     <context name="Iconify">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus" />
+        <action name="Raise" />
       </mousebind>
       <mousebind button="Left" action="Click">
-        <action name="Iconify"/>
+        <action name="Iconify" />
       </mousebind>
     </context>
   </mouse>
   <keyboard>
     <!-- Alt+F4 to close; everything else belongs to Umbriel/REAPER -->
     <keybind key="A-F4">
-      <action name="Close"/>
+      <action name="Close" />
     </keybind>
   </keyboard>
   <menu>
@@ -148,11 +148,13 @@
        The main window opens maximized (WM-maximized, NOT fullscreen — REAPER's
        own fullscreen bypasses the WM and breaks under Xwayland). -->
   <applications>
-    <!-- All REAPER windows (main + floating FX/plugin dialogs): REAPER
-         positions its own windows at top-left (USPosition); force them
-         centered instead. Class verified via xwininfo ("REAPER" "REAPER"). -->
+    <!-- All REAPER windows: center them, WITHOUT force. Non-forced position
+         applies only when the program doesn't specify one itself, so
+         REAPER-remembered positions are honored and only genuinely new
+         windows land centered. Class verified via xwininfo
+         ("REAPER" "REAPER"). -->
     <application class="REAPER">
-      <position force="yes">
+      <position>
         <x>center</x>
         <y>center</y>
       </position>
