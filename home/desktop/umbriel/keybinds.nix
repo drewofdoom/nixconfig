@@ -59,16 +59,16 @@
     };
 
     # === Focus: window directional ===
-    "Mod+Up" = "window-focus-or-output-up";
-    "Mod+Down" = "window-focus-or-output-down";
-    "Mod+Left" = "window-focus-or-output-left";
-    "Mod+Right" = "window-focus-or-output-right";
-    "Mod+MouseBack" = "window-focus-or-output-left";
-    "Mod+MouseForward" = "window-focus-or-output-right";
+    "Mod+Up" = "window-focus-up";
+    "Mod+Down" = "window-focus-down";
+    "Mod+Left" = "window-focus-left";
+    "Mod+Right" = "window-focus-right";
+    "Mod+MouseBack" = "window-focus-left";
+    "Mod+MouseForward" = "window-focus-right";
     "Mod+Home" = "column-focus-first";
     "Mod+End" = "column-focus-last";
-    "Mod+WheelLeft" = "window-focus-or-output-left";
-    "Mod+WheelRight" = "window-focus-or-output-right";
+    "Mod+WheelLeft" = "window-focus-left";
+    "Mod+WheelRight" = "window-focus-right";
 
     # === Move: to workspace directly ===
     "Mod+Ctrl+1" = "column-move-to-workspace:1";
