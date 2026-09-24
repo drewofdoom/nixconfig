@@ -17,7 +17,7 @@
 # Daemon bridge, vendored from the live checkout (pure evaluation forbids
 # absolute paths). Re-copy after bridge changes:
 #   cp ~/Projects/reaper-daemon/bridge/{reaper_agent_bridge,json}.lua proaudio/reaper-lua/
-# Currently at bridge v3.21.0. Disk-write gates stay live in the checkout
+# Currently at bridge v3.22.1. Disk-write gates stay live in the checkout
 # at bridge/bridge_config.json (currently all open).
 {
   pkgs,
@@ -42,13 +42,13 @@ let
     doCheck = false;
   };
 
-  # Pinned per MEMORY.md (2026-09-21): xdarkzx-reaper-mcp 0.8.1.
+  # Pinned per MEMORY.md: xdarkzx-reaper-mcp 0.8.2.
   xdarkzx-reaper-mcp = pkgs.python3Packages.buildPythonApplication rec {
     pname = "xdarkzx-reaper-mcp";
-    version = "0.8.1";
+    version = "0.8.2";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/38/ea/d95e3526561daef391246daa60e035b15296f2433e300afa16a1046b3537/xdarkzx_reaper_mcp-0.8.1.tar.gz";
-      sha256 = "sha256-yEKP72PCIwtFI4Z//MXUKH7Z1kOB04aJqe3Ma2ea+Ws=";
+      url = "https://files.pythonhosted.org/packages/a6/04/2c91716f3b4dfcfb34743786c47ae57b704ccdf7d375fa1b557d6c57073b/xdarkzx_reaper_mcp-0.8.2.tar.gz";
+      sha256 = "sha256-JQpjKCmoEKUo0zOYuvrYjwoJimrGstqxb/Q+WjDLlSE=";
     };
     pyproject = true;
     build-system = with pkgs.python3Packages; [ hatchling ];
@@ -70,8 +70,8 @@ let
   reaper-mcp-lua = pkgs.fetchFromGitHub {
     owner = "xDarkzx";
     repo = "Reaper-MCP";
-    rev = "92be0fe468ba22b3df28c9a51ba1d54b2eb2c6b0"; # v0.8.1
-    hash = "sha256-/4le3j/DGFzxyk7qqwBaMilCIlEe5pZcTUatIV3fvJA=";
+    rev = "22663456bb5b8fde57c5af6d6f7cdf7c0627710a"; # v0.8.2
+    hash = "sha256-ZALRC7ETaCNeMID+6eyjO3cxX8z9kl9VnNksvmXegPs=";
   };
 
   # Daemon bridge from the vendored copies (see note above).

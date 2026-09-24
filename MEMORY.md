@@ -50,16 +50,16 @@
   and not pursuing swell-wayland or other workarounds — just accepting satellite's
   current limitations and waiting for upstream improvement.**
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
-  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.8.1 from
+  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.8.2 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
   26.05 lacks it) plus the matching `reaper_mcp_server.lua` (GitHub tag
-  v0.8.1, updated 2026-09-21). Both bridges load via flake-native mechanisms — lua files through
+  v0.8.2, updated 2026-09-24). Both bridges load via flake-native mechanisms — lua files through
   `programs.reaper.resourceFiles.files`, startup via additive
   `programs.reaper.lineFiles.files."Scripts/__startup.lua"` (coexists with the
   flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). Daemon bridge
   lua is vendored in `proaudio/reaper-lua/` (pure eval forbids absolute
   paths — re-copy from `~/Projects/reaper-daemon/bridge/` after bridge
-  changes; currently v3.21.0). opencode client config, podcast profile, and
+  changes; currently v3.22.1). opencode client config, podcast profile, and
   `REAPER.md` memory are Nix-managed (`proaudio/opencode/`, deployed to
   `~/.config/opencode/`). The old blackstar wiring
   (pipx install, `REAPER/Scripts/__startup.lua` marker blocks) is gone.
