@@ -6,6 +6,7 @@
       match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$";
       blur = true;
       blur_ignore_alpha = 0.5;
+      blur_popups = true;
       blur_optimized = false;
     }
   ];

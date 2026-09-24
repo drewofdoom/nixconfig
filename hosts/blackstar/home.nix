@@ -49,7 +49,6 @@
 
     window_rule = [
       {
-        match.app_id = "^steam$";
         match.title = "^notificationtoasts_.+_desktop";
         default_floating = true;
         default_position = {
@@ -58,6 +57,7 @@
           anchor = "bottom_right";
         };
         default_focused = false;
+        default_pinned = true;
       }
     ];
   };
