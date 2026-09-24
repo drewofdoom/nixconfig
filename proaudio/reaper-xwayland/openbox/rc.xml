@@ -143,10 +143,6 @@
     <file>menu.xml</file>
     <hideDelay>200</hideDelay>
   </menu>
-  <!-- REAPER positions its own windows at top-left (USPosition); force them
-       centered instead. Class verified via xwininfo ("REAPER" "REAPER").
-       The main window opens maximized (WM-maximized, NOT fullscreen — REAPER's
-       own fullscreen bypasses the WM and breaks under Xwayland). -->
   <applications>
     <application class="REAPER" title="REAPER v*">
       <maximized>yes</maximized>
