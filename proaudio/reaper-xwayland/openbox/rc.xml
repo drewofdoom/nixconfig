@@ -148,24 +148,9 @@
        The main window opens maximized (WM-maximized, NOT fullscreen — REAPER's
        own fullscreen bypasses the WM and breaks under Xwayland). -->
   <applications>
-    <!-- All REAPER windows: center them, WITHOUT force. Non-forced position
-         applies only when the program doesn't specify one itself, so
-         REAPER-remembered positions are honored and only genuinely new
-         windows land centered. Class verified via xwininfo
-         ("REAPER" "REAPER"). -->
-    <application class="REAPER">
-      <position>
-        <x>center</x>
-        <y>center</y>
-      </position>
-      <focus>yes</focus>
-    </application>
-    <!-- Main window only (NOT floating dialogs): open WM-maximized. Matched
-         by title ("<project> - REAPER v7.80 ..."). This is WM-maximized, NOT
-         fullscreen — REAPER's own fullscreen bypasses the WM and breaks
-         under Xwayland. -->
-    <application class="REAPER" title="* - REAPER v*">
+    <application class="REAPER" title="REAPER v*">
       <maximized>yes</maximized>
+      <decor>no</decor>
     </application>
   </applications>
 </openbox_config>
