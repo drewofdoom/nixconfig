@@ -1,6 +1,7 @@
 # Desktop apps (non-shell, non-wine packages). Moved verbatim from home-common.nix.
 {
   pkgs,
+  config,
   inputs,
   ...
 }:
@@ -60,4 +61,13 @@ in
     openmeters
     plezy
   ];
+
+  # LADSPA plugin discovery (PipeWireController et al.): with LADSPA_PATH
+  # unset, hosts fall back to /usr/lib/ladspa, which doesn't exist on NixOS —
+  # so the profile's lib/ladspa (lsp-plugins, zam, x42, …) is invisible.
+  # Point at the user profile + system profile explicitly. Missing dirs are
+  # harmless (hosts skip them).
+  home.sessionVariables = {
+    LADSPA_PATH = "${config.home.profileDirectory}/lib/ladspa:/run/current-system/sw/lib/ladspa";
+  };
 }
