@@ -35,15 +35,18 @@ let
       hash = "sha256-TiKiyE3GZYCX1+vooHdD03fAhNQPAA1IzTfkG++I7TY=";
     };
   });
-  # Pinned giang17/wine D2D1/DirectComposition fork — the ONLY wine on the
-  # system. Wine is used solely for yabridge, and the fork draws plugin GUIs
-  # stock (and staging) Wine cannot. Pinned in pkgs/wine-d2d1.nix, no
-  # auto-update. Staging remains one line away in nixpkgs if ever needed.
-  wine-d2d1 = pkgs.callPackage ../pkgs/wine-d2d1.nix { };
+  # nixpkgs wine-staging (WoW64, dual-arch). Previously the giang17
+  # D2D1/DirectComposition fork lived here; it hung on editor teardown
+  # (FabFilter Pro-R 2: Wine side vanished, host + REAPER deadlocked), so
+  # we're back to upstream staging, which serves the important plugins best.
+  # Plain `staging`, not `stagingFull` — Full only adds media-adjacent deps
+  # (gstreamer etc.) nothing here needs; one word to flip back if that ever
+  # proves wrong.
+  wine-staging = pkgs.wineWow64Packages.staging;
 in
 {
   home.packages = [
-    wine-d2d1
+    wine-staging
     pkgs.winetricks
     pkgs.file # winetricks needs `file` for arch/WoW64 detection
     pkgs.dxvk.out
@@ -58,13 +61,12 @@ in
   # ELF binaries via WINE_BIN / WINESERVER_BIN, as the winetricks source
   # documents for wrapper setups. (In new-wow64 mode winetricks sets
   # WINE64="${WINE}", so no separate wine64 binary is needed.)
-  # winetricks uses `wine` from PATH (now the fork) automatically.
-  # yabridge uses $WINELOADER when set, else `wine` from PATH. Pin it
-  # globally so plugin hosts always run under the fork regardless of what
-  # else is on PATH (a stale 9.21 staging build once leaked in via PATH).
+  # winetricks uses `wine` from PATH (staging) automatically.
+  # yabridge uses $WINELOADER when set, else `wine` from PATH — pinned so
+  # plugin hosts always run under staging regardless of PATH contents.
   home.sessionVariables = {
-    WINE_BIN = "${wine-d2d1}/bin/.wine";
-    WINESERVER_BIN = "${wine-d2d1}/bin/wineserver";
+    WINE_BIN = "${wine-staging}/bin/.wine";
+    WINESERVER_BIN = "${wine-staging}/bin/wineserver";
     WINEARCH = "win64";
     WINELOADER = "/etc/profiles/per-user/drew/bin/wine";
   };
