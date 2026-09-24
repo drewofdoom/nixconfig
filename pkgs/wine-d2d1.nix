@@ -17,6 +17,7 @@
 {
   wineWow64Packages,
   fetchzip,
+  lib,
 }:
 
 wineWow64Packages.full.overrideAttrs (old: {
@@ -25,7 +26,10 @@ wineWow64Packages.full.overrideAttrs (old: {
     url = "https://github.com/giang17/wine/archive/fa70e75758526f974874dfde223b47abe1cb5c13.tar.gz";
     hash = "sha256-6eOh0zw5bUos8c9q2yFDm0LU3UKo9cY4HLvGu+yZmFg=";
   };
-  # NOTE: keeps nixpkgs' own patches (cert-path, add-dll-accept-device-paths).
-  # If the build fails at patch phase against 11.18 source, add
-  # `patches = [];` here.
+  # The fork already carries nixpkgs' add-dll-accept-device-paths change
+  # (upstream's patch detects as reversed), so drop it; keep the rest
+  # (cert-path applied cleanly against 11.18).
+  patches = builtins.filter (
+    p: !(lib.hasInfix "add-dll-accept-device-paths" (toString p))
+  ) old.patches;
 })
