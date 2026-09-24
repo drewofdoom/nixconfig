@@ -59,9 +59,13 @@ in
   # documents for wrapper setups. (In new-wow64 mode winetricks sets
   # WINE64="${WINE}", so no separate wine64 binary is needed.)
   # winetricks uses `wine` from PATH (now the fork) automatically.
+  # yabridge uses $WINELOADER when set, else `wine` from PATH. Pin it
+  # globally so plugin hosts always run under the fork regardless of what
+  # else is on PATH (a stale 9.21 staging build once leaked in via PATH).
   home.sessionVariables = {
     WINE_BIN = "${wine-d2d1}/bin/.wine";
     WINESERVER_BIN = "${wine-d2d1}/bin/wineserver";
     WINEARCH = "win64";
+    WINELOADER = "/etc/profiles/per-user/drew/bin/wine";
   };
 }
