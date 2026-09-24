@@ -7,9 +7,14 @@
     heroic
     protontricks
     mangohud
+    elektroid
 
     # keep uv available for ad-hoc pip work
     uv
+  ];
+
+  services.flatpak.packages = [
+    "hu.irl.sysex-controls"
   ];
 
   programs.umbriel.settings = {

@@ -18,15 +18,18 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   plugins = lib.attrValues inputs.self.packages.${system};
 
-  # Plugins installed straight from nixpkgs (no repackaging needed).
+  # Apps/Plugins installed straight from nixpkgs (no repackaging needed).
   nixpkgsPlugins = with pkgs; [
+    # Apps
+    vcv-rack
+
+    # Plugins
     surge-xt
     dragonfly-reverb
     x42-plugins
     zam-plugins
     lsp-plugins
     cardinal
-    vcv-rack
     vital
     odin2
     dexed
