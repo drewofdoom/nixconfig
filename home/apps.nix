@@ -71,4 +71,15 @@ in
     LADSPA_PATH = "${config.home.profileDirectory}/lib/ladspa:/run/current-system/sw/lib/ladspa";
     LV2_PATH = "${config.home.profileDirectory}/lib/lv2:/run/current-system/sw/lib/lv2";
   };
+
+  # PipeWireController spawns each filter chain / virtual node as
+  # `pwctl-chain@<id>` running `/usr/bin/pipewire -c` — a hardcoded FHS path
+  # that doesn't exist on NixOS (units die 203/EXEC in a restart loop).
+  # Drop-in override re-points ExecStart at the stable system profile path.
+  # (Kept as a drop-in, not an edit: the app manages the base unit file.)
+  home.file.".config/systemd/user/pwctl-chain@.service.d/override.conf".text = ''
+    [Service]
+    ExecStart=
+    ExecStart=/run/current-system/sw/bin/pipewire -c %i.conf
+  '';
 }
