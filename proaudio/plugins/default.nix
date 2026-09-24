@@ -34,6 +34,7 @@ let
     odin2
     dexed
     chow-tape-model
+    rnnoise
   ];
 in
 {
