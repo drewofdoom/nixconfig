@@ -2,6 +2,15 @@
 
 { pkgs, ... }:
 
+let
+  # Stable PATH alias for the pinned wine-d2d1 fork (pkgs/wine-d2d1.nix).
+  # A plain profile install would collide with staging's bin/wine; this
+  # exposes it as bin/wine-d2d1 instead. WINELOADER below points at it.
+  wine-d2d1-sh = pkgs.writeShellScriptBin "wine-d2d1" ''
+    exec ${pkgs.callPackage ../../pkgs/wine-d2d1.nix {}}/bin/wine "$@"
+  '';
+in
+
 {
   home.packages = with pkgs; [
     heroic
@@ -10,7 +19,17 @@
 
     # keep uv available for ad-hoc pip work
     uv
+
+    wine-d2d1-sh
   ];
+
+  # yabridge uses $WINELOADER when set, else `wine` from PATH (staging).
+  # Point it at the fork persistently. WARNING: the first run against each
+  # existing prefix UPGRADES it 11.8 -> 11.18 (one-way). Back up prefixes
+  # (cp -a) before relaunching anything against them.
+  home.sessionVariables = {
+    WINELOADER = "/etc/profiles/per-user/drew/bin/wine-d2d1";
+  };
 
   programs.umbriel.settings = {
     # VRR is set per-output — there is no top-level vrr option.
