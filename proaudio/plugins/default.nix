@@ -24,6 +24,9 @@ let
     dragonfly-reverb
     x42-plugins
     zam-plugins
+    lsp-plugins
+    cardinal
+    vcv-rack
     vital
     odin2
     dexed
