@@ -9,11 +9,12 @@
 #
 # Build on blackstar only (long compile — not the old laptop):
 #   nix build .#wine-d2d1
-# Deliberately NOT in any profile (bin/wine would collide with the staging
-# build). Invoke by store path with a DEDICATED prefix, never an existing one:
-#   WINEPREFIX=~/.local/share/wineprefixes/d2d1-test \
-#     ./result/bin/wine winecfg
-# Leave DXVK out of test prefixes — the fork's dxgi IS the point.
+# Installed into the profile via home/wine.nix as the system's only wine.
+# (No staging anywhere: this fork is vanilla-based, and staging patches
+# would collide with its own diff.)
+# Invoke with a FRESH prefix, never an upgraded one:
+#   WINEPREFIX=~/.local/share/wineprefixes/fresh ./result/bin/wine winecfg
+# Leave DXVK out of fork prefixes — the fork's dxgi IS the point.
 {
   wineWow64Packages,
   fetchzip,
