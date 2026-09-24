@@ -35,13 +35,18 @@ let
       hash = "sha256-TiKiyE3GZYCX1+vooHdD03fAhNQPAA1IzTfkG++I7TY=";
     };
   });
+  # Pinned giang17/wine D2D1/DirectComposition fork — the ONLY wine on the
+  # system. Wine is used solely for yabridge, and the fork draws plugin GUIs
+  # stock (and staging) Wine cannot. Pinned in pkgs/wine-d2d1.nix, no
+  # auto-update. Staging remains one line away in nixpkgs if ever needed.
+  wine-d2d1 = pkgs.callPackage ../pkgs/wine-d2d1.nix { };
 in
 {
-  home.packages = with pkgs; [
-    wineWow64Packages.stagingFull
-    winetricks
-    file # winetricks needs `file` for arch/WoW64 detection
-    dxvk.out
+  home.packages = [
+    wine-d2d1
+    pkgs.winetricks
+    pkgs.file # winetricks needs `file` for arch/WoW64 detection
+    pkgs.dxvk.out
     yabridge-dev
     yabridgectl-dev
   ];
@@ -53,9 +58,10 @@ in
   # ELF binaries via WINE_BIN / WINESERVER_BIN, as the winetricks source
   # documents for wrapper setups. (In new-wow64 mode winetricks sets
   # WINE64="${WINE}", so no separate wine64 binary is needed.)
+  # winetricks uses `wine` from PATH (now the fork) automatically.
   home.sessionVariables = {
-    WINE_BIN = "${pkgs.wineWow64Packages.stagingFull}/bin/.wine";
-    WINESERVER_BIN = "${pkgs.wineWow64Packages.stagingFull}/bin/wineserver";
+    WINE_BIN = "${wine-d2d1}/bin/.wine";
+    WINESERVER_BIN = "${wine-d2d1}/bin/wineserver";
     WINEARCH = "win64";
   };
 }
