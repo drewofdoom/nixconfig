@@ -33,6 +33,12 @@
       alias rgrep='ugrep -R'
       alias t='bat --style=plain --paging=never'
     '';
+    plugins = [
+      {
+        name = "done";
+        src = pkgs.fishPlugins.done.src;
+      }
+    ];
   };
 
   programs.zoxide = {
@@ -60,11 +66,13 @@
 
   programs.ghostty = {
     enable = true;
+    enableFishIntegration = true;
     settings = {
       font-family = "Maple Mono NF";
       font-size = 11;
       theme = "noctalia";
       mouse-scroll-multiplier = "precision:1,discrete:1.5";
+      background-opacity = "0.95";
     };
   };
 
