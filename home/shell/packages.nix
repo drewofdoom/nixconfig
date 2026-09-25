@@ -18,8 +18,6 @@
     ffmpeg # ffmpeg/ffprobe/ffplay on PATH
     fzf
     gh
-    git
-    git
     glib.bin # gio (GIO metadata, e.g. Nautilus custom folder attributes)
     glow
     gping

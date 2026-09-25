@@ -15,7 +15,6 @@ let
 in
 {
   home.packages = [
-    pkgs.bibata-cursors
     conflux-icon-theme
   ];
 

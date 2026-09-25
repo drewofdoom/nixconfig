@@ -17,6 +17,7 @@
       rich-cli
       mediainfo
       unar
+      yq
     ];
     settings = {
       yazi = {
@@ -86,7 +87,7 @@
           }
           {
             mime = "application/pdf";
-            run = "piper -- pdftotext -l 10 -nopgbrk -q -- $1 - | bat -p --color=always -l md";
+            run = "piper -- pdftotext -l 10 -nopgbrk -q -- \"$1\" - | bat -p --color=always -l md";
           }
           {
             mime = "text/csv";
