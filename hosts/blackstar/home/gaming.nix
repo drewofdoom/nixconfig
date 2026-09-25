@@ -8,7 +8,7 @@
     # umu-launcher provides `umu-run` (Proton runtime, no Steam needed).
     umu-launcher
     p7zip # `7z` extraction of Anomaly / GAMMA archives
-    unrar # `libunrar`-adjacent: RAR archives in the modpack
+    unrar # ships lib/libunrar.so; see UNRAR_LIB_PATH below
     python3 # venv for gamma-launcher / stalker-gamma-linux
     pipx # optional: isolated install of gamma-launcher
 
@@ -19,4 +19,11 @@
     gobject-introspection
     python3Packages.pygobject3
   ];
+
+  # The PyPI `unrar` module (used by gamma-launcher) loads libunrar.so via
+  # ctypes and only looks in system paths + $UNRAR_LIB_PATH. On NixOS the lib
+  # lives in the nix store, so point it there explicitly.
+  home.sessionVariables = {
+    UNRAR_LIB_PATH = "${pkgs.unrar}/lib/libunrar.so";
+  };
 }
