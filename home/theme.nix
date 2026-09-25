@@ -14,7 +14,10 @@ let
   conflux-icon-theme = pkgs.callPackage ../pkgs/conflux-icon-theme.nix { };
 in
 {
-  home.packages = [ conflux-icon-theme ];
+  home.packages = [
+    pkgs.bibata-cursors
+    conflux-icon-theme
+  ];
 
   # Bibata-Modern-Ice cursor as the default system cursor (Wayland + XWayland)
   home.pointerCursor = {

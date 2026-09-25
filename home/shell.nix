@@ -7,14 +7,12 @@
 }:
 
 {
-  programs.git = {
-    enable = true;
-    settings.user = {
-      name = "Drew DeVore";
-      email = "drew@devorcula.com";
-    };
-    settings.init.defaultBranch = "main";
-  };
+  imports = [
+    ./shell/yazi.nix
+    ./shell/packages.nix
+    ./shell/git.nix
+    ./shell/neovim.nix
+  ];
 
   programs.fish = {
     enable = true;
@@ -34,6 +32,7 @@
       alias fgrep='ugrep -F'
       alias rgrep='ugrep -R'
       alias t='bat --style=plain --paging=never'
+      alias cd='z'
     '';
   };
 
@@ -60,52 +59,13 @@
     };
   };
 
-  programs.gh = {
-    enable = true;
-    settings.git_protocol = "ssh";
-  };
-
   programs.ghostty = {
     enable = true;
     settings = {
       font-family = "Maple Mono NF";
       font-size = 11;
       theme = "noctalia";
-      # Default is precision:1,discrete:3 -- wheel was ~2x too fast.
       mouse-scroll-multiplier = "precision:1,discrete:1.5";
-    };
-  };
-
-  programs.yazi = {
-    enable = true;
-  };
-
-  # Zed (native, not FHS) + declarative extensions and toolchains.
-  # Merges into ~/.config/zed/settings.json, your in-app edits are preserved.
-  programs.zed-editor = {
-    enable = true;
-    extensions = [
-      "nix"
-      "toml"
-    ];
-    extraPackages = with pkgs; [
-      nil
-      nixd
-      nixfmt
-      ripgrep
-      nodejs
-      python3
-    ];
-    userSettings = {
-      languages.Nix = {
-        language_servers = [ "nil" ];
-        formatter = {
-          external = {
-            command = "nixfmt";
-            arguments = [ ];
-          };
-        };
-      };
     };
   };
 
@@ -114,30 +74,4 @@
     enable = true;
     nix-direnv.enable = true;
   };
-
-  home.packages = with pkgs; [
-    # NOTE: no nixpkgs opencode -- unstable (1.18.30) crashes resolving
-    # any model (TypeError err_* on every prompt). Stable (1.15.10) exists
-    # in nixpkgs but is older than upstream. Upstream binary installed via
-    # https://opencode.ai/install to ~/.opencode/bin (1.18.31+, autoupdates).
-    # See sessionPath in misc.nix.
-    gh
-    git
-    nil
-    nixd
-    eza
-    fzf
-    ugrep
-    bat
-    ripgrep
-    fd
-    ffmpeg # ffmpeg/ffprobe/ffplay on PATH
-    glib.bin # gio (GIO metadata, e.g. Nautilus custom folder attributes)
-    python3
-    uv
-    nodejs
-    btop
-    gping
-    nix-search-tv
-  ];
 }

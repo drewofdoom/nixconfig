@@ -29,22 +29,4 @@
   # fails with "Setting attribute ... not supported" -- GLib has nowhere to
   # persist file metadata (Nautilus custom icons/attributes live there).
   services.gvfs.enable = true;
-
-  # environment.systemPackages = with pkgs; [
-  #   neovim
-  #   wget
-  #   jq
-  #   yq
-  #   git
-  #   bibata-cursors
-  #   gnome-keyring
-  #   libsecret
-  #   nautilus
-  #   proton-pass-cli
-  #   xwayland-satellite
-  #   xwayland-run
-  #   unar
-  #   file-roller
-  #   vulkan-tools
-  # ];
 }

@@ -34,14 +34,12 @@ in
 
 {
   home.packages = with pkgs; [
-    heroic
-    protontricks
-    mangohud
     elektroid
+    heroic
+    mangohud
+    protontricks
 
-    # keep uv available for ad-hoc pip work
-    uv
-
+    # custom
     vban-boost
   ];
 

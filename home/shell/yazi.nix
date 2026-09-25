@@ -7,6 +7,17 @@
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
+    extraPackages = with pkgs; [
+      glow
+      eza
+      bat
+      jq
+      poppler-utils
+      exiftool
+      rich-cli
+      mediainfo
+      unar
+    ];
     settings = {
       yazi = {
         mgr = {
@@ -46,7 +57,11 @@
             run = "lsar";
           }
           {
-            mime = "{audio,video,image}/*";
+            mime = "image/*";
+            run = "piper -- exiftool \"$1\"";
+          }
+          {
+            mime = "{audio,video}/*";
             run = "mediainfo";
           }
           {
@@ -58,8 +73,32 @@
             run = "mediainfo";
           }
           {
-            url = "*";
-            run = "piper -- echo $1";
+            mime = "text/markdown";
+            run = "piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark \"$1\"";
+          }
+          {
+            mime = "application/json";
+            run = "piper -- jq --color-output . \"$1\"";
+          }
+          {
+            mime = "application/yaml";
+            run = "piper -- yq --color-output . \"$1\"";
+          }
+          {
+            mime = "application/pdf";
+            run = "piper -- pdftotext -l 10 -nopgbrk -q -- $1 - | bat -p --color=always -l md";
+          }
+          {
+            mime = "text/csv";
+            run = "piper -- rich \"$1\" --max-rows 100";
+          }
+          {
+            url = "*/";
+            run = "piper -- eza -TL=2 --color=always --icons=always --group-directories-first --no-quotes \"$1\"";
+          }
+          {
+            mime = "{text}/*";
+            run = "piper -- bat -p --color=always \"$1\"";
           }
         ];
         prepend_fetchers = [

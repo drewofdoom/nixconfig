@@ -15,7 +15,8 @@ in
     # Basic apps
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.pipewirecontroller.packages.${pkgs.stdenv.hostPlatform.system}.default
-    libsecret
+    file-roller
+    nautilus
 
     # Chat apps
     telegram-desktop
@@ -61,6 +62,35 @@ in
     openmeters
     plezy
   ];
+
+  # Zed (native, not FHS) + declarative extensions and toolchains.
+  # Merges into ~/.config/zed/settings.json, your in-app edits are preserved.
+  programs.zed-editor = {
+    enable = true;
+    extensions = [
+      "nix"
+      "toml"
+    ];
+    extraPackages = with pkgs; [
+      nil
+      nixd
+      nixfmt
+      ripgrep
+      nodejs
+      python3
+    ];
+    userSettings = {
+      languages.Nix = {
+        language_servers = [ "nil" ];
+        formatter = {
+          external = {
+            command = "nixfmt";
+            arguments = [ ];
+          };
+        };
+      };
+    };
+  };
 
   # LADSPA/LV2 plugin discovery (PipeWireController et al.): with these
   # unset, hosts fall back to /usr/lib/{ladspa,lv2}, which doesn't exist on
