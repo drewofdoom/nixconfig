@@ -32,7 +32,6 @@
       alias fgrep='ugrep -F'
       alias rgrep='ugrep -R'
       alias t='bat --style=plain --paging=never'
-      alias cd='z'
     '';
   };
 
