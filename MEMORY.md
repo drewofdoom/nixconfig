@@ -138,6 +138,15 @@
 - **blackstar kernel/VM tuning** (`hosts/blackstar/host.nix`): `nowatchdog` +
   `preempt=full` (kernel is PREEMPT_DYNAMIC), `vm.swappiness=180` +
   `vm.page-cluster=0` (zram-appropriate), `bbr` + `fq`, `systemd-boot.configurationLimit=10`.
+- **xwayland-satellite is custom-built 0.8.3** (2026-09-25, `system/packages.nix`):
+  nixpkgs (stable AND unstable) still ships 0.8.2, which breaks Steam's
+  file-picker dialogs. Built fresh from the upstream `v0.8.3` tag via
+  `rustPlatform.buildRustPackage` — do NOT "simplify" to `overrideAttrs`
+  (stale `cargoDeps`: the vendor hash bakes in at first evaluation, so a
+  version/src/cargoHash override still vendors the old tree and fails).
+  PERIODIC CHECK — revert to plain `xwayland-satellite` once nixpkgs carries
+  >= 0.8.3: `nix eval nixpkgs#xwayland-satellite.version` (stable) and the
+  same against `nixpkgs-unstable`.
   Gamemode sets `desiredgov=performance` but deliberately leaves `defaultgov` unset so
   exit restores the *current* state -- keeps the Noctalia power toggle (which drives
   power-profiles-daemon) authoritative when no game runs.
