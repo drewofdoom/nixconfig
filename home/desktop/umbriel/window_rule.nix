@@ -2,11 +2,6 @@
 
 {
   programs.umbriel.settings.window_rule = [
-    # Ghostty translucency.
-    {
-      match.app_id = "^com.mitchellh.ghostty$";
-      opacity = 0.95;
-    }
     # Floating utilities
     {
       match.app_id = "^(org.gnome.DejaDup|Emulator|zenity|xdg-desktop-portal|org.pulseaudio.pavucontrol|dev.noctalia.Noctalia|org.gnome.Decibels)$";
