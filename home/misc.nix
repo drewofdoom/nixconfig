@@ -3,12 +3,14 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }:
 
 {
   home.sessionVariables = {
     PAGER = "bat";
+    GLOW_STYLE = "${config.xdg.configHome}/glow/noctalia.json";
   };
 
   # Upstream opencode binary (see shell.nix note).
