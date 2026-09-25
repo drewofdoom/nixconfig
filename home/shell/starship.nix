@@ -7,7 +7,7 @@
   programs.starship = {
     enable = true;
     settings = {
-      format = "[╭╴](fg:arrow)$username$os$git_branch(at $directory)\n[╰─](fg:arrow)$character";
+      # format = "[╭╴](fg:arrow)$username$os$git_branch(at $directory)\n[╰─](fg:arrow)$character";
       add_newline = true;
 
       aws.symbol = " ";
