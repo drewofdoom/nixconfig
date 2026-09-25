@@ -27,6 +27,7 @@
       alias la='eza -a'
       alias laa='eza -a --long --icons=always'
       alias lx='eza --long --icons=always --hyperlink=auto'
+      alias lt='eza --tree'
       alias grep='ugrep'
       alias egrep='ugrep -E'
       alias fgrep='ugrep -F'
@@ -48,6 +49,10 @@
 
   programs.starship = {
     enable = true;
+    settings = {
+      format = "[╭╴](fg:arrow)$username$os$git_branch(at $directory)\n[╰─](fg:arrow)$character";
+      add_newline = true;
+    };
   };
 
   programs.atuin = {
