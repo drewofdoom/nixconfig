@@ -12,6 +12,7 @@
     ./shell/packages.nix
     ./shell/git.nix
     ./shell/neovim.nix
+    ./shell/starship.nix
   ];
 
   programs.fish = {
@@ -45,14 +46,6 @@
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
-  };
-
-  programs.starship = {
-    enable = true;
-    settings = {
-      format = "[╭╴](fg:arrow)$username$os$git_branch(at $directory)\n[╰─](fg:arrow)$character";
-      add_newline = true;
-    };
   };
 
   programs.atuin = {
