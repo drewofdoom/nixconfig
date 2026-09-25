@@ -4,6 +4,7 @@
   programs.cava = {
     enable = true;
     settings = {
+      general.live-config = 1;
       input.method = "pipewire";
       output = {
         method = "noncurses";
