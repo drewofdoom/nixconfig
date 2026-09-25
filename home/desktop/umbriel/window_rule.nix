@@ -2,11 +2,6 @@
 
 {
   programs.umbriel.settings.window_rule = [
-    # Default blur
-    {
-      blur = true;
-      blur_optimized = true;
-    }
     # Ghostty translucency.
     {
       match.app_id = "^com.mitchellh.ghostty$";

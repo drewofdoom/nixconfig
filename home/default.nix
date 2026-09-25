@@ -18,6 +18,7 @@
     ./flatpak.nix
     ./ssh.nix
     ./misc.nix
+    ./cava.nix
     ../proaudio
   ];
   home.username = "drew";
