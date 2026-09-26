@@ -5,27 +5,31 @@
     restic
     rclone
     restic-browser
-    backrest
   ];
 
+  services.restic.enable = true;
   services.restic.backups."blackstar" = {
-    # Repo keyed by hostname, not friendly name.
     repository = "rclone:gdrive:backups/blackstar";
     repositoryFile = null;
     passwordFile = "${config.home.homeDirectory}/.config/restic/blackstar-password";
     rcloneOptions = { };
     paths = [
       "${config.home.homeDirectory}/Documents"
-      "${config.home.homeDirectory}/Projects"
       "${config.home.homeDirectory}/Audio/Archive"
       "${config.home.homeDirectory}/Audio/Assets"
-      # Workspace is scratch/nodatacow — exclude or include explicitly per need.
+      "${config.home.homeDirectory}/Templates"
+      "${config.home.homeDirectory}/Pictures/Avatars"
+      "${config.home.homeDirectory}/Pictures/Wallpapers"
     ];
     exclude = [
       ".cache"
       "node_modules"
       "*.tmp"
       ".local/share/Steam"
+      "Documents/FabFilter"
+      "Documents/iZotope"
+      "Documents/Surge"
+      "Documentts/VST3"
     ];
     pruneOpts = [
       "--keep-daily 7"

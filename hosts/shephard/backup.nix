@@ -5,9 +5,9 @@
     restic
     rclone
     restic-browser
-    backrest
   ];
 
+  services.restic.enable = true;
   services.restic.backups."shephard" = {
     # Repo keyed by hostname, not friendly name.
     repository = "rclone:gdrive:backups/shephard";
@@ -18,8 +18,6 @@
     rcloneOptions = { };
     paths = [
       "${config.home.homeDirectory}/Documents"
-      "${config.home.homeDirectory}/Projects"
-      # Add more per-host source dirs here.
     ];
     exclude = [
       ".cache"
