@@ -48,7 +48,7 @@ in
 
     # Desktop
     sone
-    fragments
+    transmission_4-gtk
     rustdesk-flutter
     showtime
     mpv
