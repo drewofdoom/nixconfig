@@ -9,7 +9,7 @@
 
   services.restic.enable = true;
   services.restic.backups."blackstar" = {
-    repository = "rclone:gdrive:backups/blackstar";
+    repository = "rclone:gdrive:Backups/blackstar";
     repositoryFile = null;
     passwordFile = "${config.home.homeDirectory}/.config/restic/blackstar-password";
     rcloneOptions = { };
@@ -20,6 +20,10 @@
       "${config.home.homeDirectory}/Templates"
       "${config.home.homeDirectory}/Pictures/Avatars"
       "${config.home.homeDirectory}/Pictures/Wallpapers"
+      "${config.home.homeDirectory}/.config/reaper-flake/FXChains"
+      "${config.home.homeDirectory}/.config/reaper-flake/TrackTemplates"
+      "${config.home.homeDirectory}/.config/reaper-flake/ProjectTemplates"
+      "${config.home.homeDirectory}/.config/reaper-flake/MIDINoteNames"
     ];
     exclude = [
       ".cache"

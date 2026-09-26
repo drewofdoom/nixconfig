@@ -10,7 +10,7 @@
   services.restic.enable = true;
   services.restic.backups."shephard" = {
     # Repo keyed by hostname, not friendly name.
-    repository = "rclone:gdrive:backups/shephard";
+    repository = "rclone:gdrive:Backups/shephard";
     repositoryFile = null;
     passwordFile = "${config.home.homeDirectory}/.config/restic/shephard-password";
     # HM rclone backend reads ~/.config/rclone/rclone.conf by default;
@@ -18,12 +18,20 @@
     rcloneOptions = { };
     paths = [
       "${config.home.homeDirectory}/Documents"
+      "${config.home.homeDirectory}/.config/reaper-flake/FXChains"
+      "${config.home.homeDirectory}/.config/reaper-flake/TrackTemplates"
+      "${config.home.homeDirectory}/.config/reaper-flake/ProjectTemplates"
+      "${config.home.homeDirectory}/.config/reaper-flake/MIDINoteNames"
     ];
     exclude = [
       ".cache"
       "node_modules"
       "*.tmp"
       ".local/share/Steam"
+      "Documents/FabFilter"
+      "Documents/iZotope"
+      "Documents/Surge"
+      "Documentts/VST3"
     ];
     pruneOpts = [
       "--keep-daily 7"

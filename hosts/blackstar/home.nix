@@ -1,9 +1,6 @@
 # blackstar-only home config.
 
-{
-  pkgs,
-  ...
-}:
+{ ... }:
 
 {
   imports = [
