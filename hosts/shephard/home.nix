@@ -2,4 +2,5 @@
 { ... }:
 
 {
+  imports = [ ./backup.nix ];
 }
