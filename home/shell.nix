@@ -70,7 +70,7 @@
       font-size = 11;
       theme = "noctalia";
       mouse-scroll-multiplier = "precision:1,discrete:1.5";
-      background-opacity = "0.95";
+      # background-opacity = "0.95";
     };
   };
 
