@@ -22,6 +22,7 @@
     surge-xt
     vital
     wolf-shaper
+    x42-avldrums
     x42-plugins
     zam-plugins
     zlcompressor
