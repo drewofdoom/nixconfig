@@ -63,8 +63,9 @@
   `REAPER.md` memory are Nix-managed (`proaudio/opencode/`, deployed to
   `~/.config/opencode/`). The old blackstar wiring
   (pipx install, `REAPER/Scripts/__startup.lua` marker blocks) is gone.
-- **ReaSonus Native** (`proaudio/reasonus-native/`, flake package
-  `reasonus-native`): control-surface extension for the PreSonus **ioStation
+- **ReaSonus Native** (`proaudio/reasonus-native/`, built by its own
+  `module.nix` via `pkgs.callPackage`, no flake package): control-surface
+  extension for the PreSonus **ioStation
   24c** (FaderPort V2 family). Built from source; upstream's CMake pulls WDL /
   reaper-sdk / GSL / mINI / fmt over the network via FetchContent, so all five
   are pinned and pre-populated into `lib/` in `postPatch` (the `lib/<name>`
@@ -102,15 +103,12 @@
   since the issue was the package, not the model.
 - **Pro audio** lives in `proaudio/` (all hosts via home-common):
   `proaudio/default.nix` = REAPER via reaper-flake (see above);
-  `proaudio/plugins/` = GitHub plugins (one file per plugin) + nixpkgs
-  plugin packages. GitHub derivations repackage release assets into
-  `$out/<format>` + `passthru.formats`, flake `packages` exposes them
-  (one line per plugin), `proaudio/plugins/default.nix` symlinks each format
-  to `~/.<format>/github/<pname>` and adds standalones to PATH. Updates:
-  single-src files via `nix-update <pname> --flake`; everything (incl.
-  multi-asset brummer files and prefixed-tag dusk monorepo) via
-  `python3 proaudio/plugins/update.py [--all | <file>...]` (dusk files carry
-  `# update-tag-prefix: <prefix>`).
+  `proaudio/plugins.nix` = every plugin/app, straight from nixpkgs
+  (`home.packages`, so they land in `~/.nix-profile/lib/<format>` which
+  REAPER already searches). GitHub-release plugin packaging is GONE:
+  no `proaudio/plugins/` derivations, no `update.py`, no flake `packages`
+  output, no `nix-update`. Add a plugin = one nixpkgs attr in
+  `plugins.nix`; nixpkgs tracks upstream versions, so nothing to update.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.

@@ -17,6 +17,8 @@ in
     inputs.pipewirecontroller.packages.${pkgs.stdenv.hostPlatform.system}.default
     file-roller
     nautilus
+    nautilus-open-any-terminal
+    sushi
 
     # Chat apps
     telegram-desktop

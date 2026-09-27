@@ -53,40 +53,6 @@
       ...
     }@inputs:
     {
-      # Local packages. Auto-generated: every top-level *.nix file in
-      # proaudio/plugins/ and pkgs/ becomes a package named by its filename
-      # stem (minus default.nix and the disabled zl-spectrum-equalizer);
-      # directories with default.nix (e.g. reasonus-native) are explicit below.
-      # Plugin updates: `python3 proaudio/plugins/update.py --all` from the
-      # repo root. Handles both single-asset and multi-asset files, including
-      # monorepo tag prefixes (see `# update-tag-prefix:` directives).
-      packages.x86_64-linux =
-        let
-          system = "x86_64-linux";
-          callPkg = nixpkgs.legacyPackages.${system}.callPackage;
-          autoDir =
-            dir: excludes:
-            let
-              files = builtins.filter (n: !(builtins.elem n excludes)) (
-                builtins.attrNames (builtins.readDir dir)
-              );
-              nixFiles = builtins.filter (n: nixpkgs.lib.hasSuffix ".nix" n) files;
-            in
-            builtins.listToAttrs (
-              map (f: {
-                name = nixpkgs.lib.removeSuffix ".nix" f;
-                value = callPkg (dir + "/${f}") { };
-              }) nixFiles
-            );
-        in
-        autoDir ./proaudio/plugins [
-          "default.nix"
-          "zl-spectrum-equalizer.nix"
-        ]
-        // autoDir ./pkgs [ "default.nix" ]
-        // {
-          reasonus-native = callPkg ./proaudio/reasonus-native { };
-        };
       nixosConfigurations =
         let
           mkHost =

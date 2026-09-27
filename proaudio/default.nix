@@ -1,6 +1,6 @@
 # Pro-audio setup, all hosts: REAPER + extensions, declaratively via
 # reaper-flake (github:9Prestidigitator/reaper-flake, input `reaper-flake`).
-# Plugin packages (nixpkgs + GitHub) live in ./plugins.
+# Plugin packages all come from nixpkgs and live in ./plugins.nix.
 #
 # reaper-flake owns REAPER's resource dir (~/.config/reaper-flake by default)
 # and merges only the values declared here, leaving the rest of REAPER's
@@ -49,19 +49,18 @@ let
 in
 {
   imports = [
-    ./plugins
+    ./plugins.nix
     ./reasonus-native/module.nix
     ./reaper-mcp.nix
     ./reaper-xwayland
     inputs.reaper-flake.homeModules.reaper
-    # ./reaper.nix
   ];
 
+  # Custom script to launch REAPER in OpenBox
   programs.reaper-xwayland.enable = true;
 
   programs.reaper = {
     enable = true;
-
     experimental.swell-wayland.enable = false;
 
     packages = with pkgs; [
@@ -341,7 +340,4 @@ in
       ];
     };
   };
-
-  # Dev tool for updating plugin versions in proaudio/plugins/*.nix.
-  home.packages = with pkgs; [ nix-update ];
 }
