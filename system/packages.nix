@@ -4,6 +4,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    dmidecode
     gnome-keyring
     libsecret
     vulkan-tools
