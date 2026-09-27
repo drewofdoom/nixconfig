@@ -77,13 +77,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "reasonus-native";
-  version = "0.11.1";
+  version = "0.11.2";
 
   src = fetchFromGitHub {
     owner = "navelpluisje";
     repo = "Reasonus-Native";
     tag = finalAttrs.version;
-    hash = "sha256-ym0TDq3JP9fmPV9u2J+C3RSkXHvGHEf0s3uQOj+DxEE=";
+    hash = "sha256-uQuWka64CfpLbqOBwulwvLEv4hGiho5qw6iKjj0WbSU=";
   };
 
   nativeBuildInputs = [
