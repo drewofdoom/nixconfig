@@ -7,8 +7,9 @@
 }:
 
 let
-  # Plezy unstable in order to stay on latest version
+  # Unstable overrides
   plezy = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.plezy;
+  opencode = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode;
 in
 {
   home.packages = with pkgs; [
@@ -19,6 +20,7 @@ in
     nautilus
     nautilus-open-any-terminal
     sushi
+    opencode
 
     # Chat apps
     telegram-desktop
