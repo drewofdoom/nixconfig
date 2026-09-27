@@ -7,6 +7,8 @@
     dmidecode
     gnome-keyring
     libsecret
+    s-tui
+    stress
     vulkan-tools
     xwayland-run
     xwayland-satellite
