@@ -52,7 +52,7 @@
       };
       layout.scrolling = {
         center_underfull_strip = true;
-        center_focused = "on_overflow";
+        # center_focused = "on_overflow";
       };
     };
   };
