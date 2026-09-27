@@ -205,6 +205,16 @@
       repeat = false;
     };
 
+    # === Screen recording (region via slurp / full; re-press to stop) ===
+    "Mod+Shift+R" = {
+      action = "spawn:screen-record";
+      repeat = false;
+    };
+    "Mod+Shift+Alt+R" = {
+      action = "spawn:screen-record --full";
+      repeat = false;
+    };
+
     # === Misc ===
     "Mod+Shift+Slash" = {
       action = "cheatsheet-toggle";
