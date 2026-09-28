@@ -26,7 +26,7 @@
         # early in topgrade's default order and `nh os switch -u` would build
         # whatever is in the working tree rather than the freshly pulled config.
         # The step's config name is `git_repos`, not `git`.
-        first = [ "git_repos" ];
+        # first = [ "git_repos" ];
 
         # Home Manager is wired as a NixOS module here (see flake.nix), so the
         # flake exposes no homeConfigurations and `nh home switch` has no target.
@@ -47,17 +47,17 @@
         nix_arguments = "--no-nom";
       };
 
-      git = {
-        # nixconfig (the flake) and reaper-daemon. `~/Projects/*` is a glob --
-        # topgrade expands it and pulls each repo it finds.
-        repos = [
-          "~/Projects/nixconfig"
-          "~/Projects/reaper-daemon"
-        ];
-        pull_predefined = true;
-        # Pulls are `git pull --ff-only --recurse-submodules` (topgrade's
-        # built-in behaviour), so a dirty tree fails the step instead of merging.
-      };
+      # git = {
+      #   # nixconfig (the flake) and reaper-daemon. `~/Projects/*` is a glob --
+      #   # topgrade expands it and pulls each repo it finds.
+      #   repos = [
+      #     "~/Projects/nixconfig"
+      #     "~/Projects/reaper-daemon"
+      #   ];
+      #   pull_predefined = true;
+      #   # Pulls are `git pull --ff-only --recurse-submodules` (topgrade's
+      #   # built-in behaviour), so a dirty tree fails the step instead of merging.
+      # };
     };
   };
 }
