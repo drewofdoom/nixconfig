@@ -46,6 +46,12 @@
     "nix-command"
     "flakes"
   ];
+  # GitHub API auth for flake input updates (`nh os switch -u` 403s on the
+  # 60 req/hr anonymous limit with ~6 github inputs). The token lives OUTSIDE
+  # this repo in ~/.config/nix/nix.conf (user-level, unmanaged, mode 600):
+  #   access-tokens = github.com=<zero-permission fine-grained PAT>
+  # Kept out of the tree deliberately (2026-09-28) — nixconfig is pushed to
+  # GitHub, and even a zero-permission token doesn't belong in history.
   nix.settings.extra-substituters = [
     "https://noctalia.cachix.org"
     "https://pipewirecontroller-nix.cachix.org"
