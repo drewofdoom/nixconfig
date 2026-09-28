@@ -1,6 +1,7 @@
 # Core system settings: boot, networking, nix, user, sudo.
 {
   pkgs,
+  config,
   ...
 }:
 
@@ -26,19 +27,46 @@
     "mitigations=off"
   ];
 
-  networking.networkmanager.enable = true;
+  systemd.network.wait-online.enable = false;
+  boot.initrd.systemd.network.wait-online.enable = false;
+
+  networking = {
+    networkmanager.enable = true;
+    nftables.enable = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ config.services.tailscale.interfaceName ];
+      allowedUDPPorts = [ config.services.tailscale.port ];
+      checkReversePath = "loose";
+    };
+  };
 
   nix.settings.accept-flake-config = true;
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  nix.settings.extra-substituters = [
+    "https://noctalia.cachix.org"
+    "https://pipewirecontroller-nix.cachix.org"
+  ];
+  nix.settings.extra-trusted-public-keys = [
+    "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+    "pipewirecontroller-nix.cachix.org-1:wY/tr9Hxc0kvGW2zgh2DUjQI+LqLBCQ7bm9Wkr3dgdc="
+  ];
+  nixpkgs.config.allowUnfree = true;
 
-  # Tailscale operator access for drew via group + polkit rule
-  # (services.tailscale.operator doesn't exist in this NixOS version)
-  users.groups.tailscale = { };
-
-  services.tailscale = {
+  # nh -- flake helper that picks the config by hostname (`nh os switch`
+  # builds .#shephard here, .#blackstar there). Weekly GC keeps the store lean.
+  programs.nh = {
     enable = true;
-    openFirewall = true;
+    flake = "/home/drew/Projects/nixconfig";
+    clean = {
+      enable = true;
+      dates = "weekly";
+      extraArgs = "--keep-since 7d --keep 5";
+    };
   };
-  networking.firewall.checkReversePath = "loose";
 
   time.timeZone = "America/Denver";
 
@@ -60,35 +88,32 @@
     variant = "";
   };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  nix.settings.extra-substituters = [
-    "https://noctalia.cachix.org"
-    "https://pipewirecontroller-nix.cachix.org"
-  ];
-  nix.settings.extra-trusted-public-keys = [
-    "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-    "pipewirecontroller-nix.cachix.org-1:wY/tr9Hxc0kvGW2zgh2DUjQI+LqLBCQ7bm9Wkr3dgdc="
-  ];
+  services.tailscale.enable = true;
+  # Tailscale operator access for drew via group + polkit rule
+  # (services.tailscale.operator doesn't exist in this NixOS version)
+  users.groups.tailscale = { };
 
-  nixpkgs.config.allowUnfree = true;
-
-  # nh -- flake helper that picks the config by hostname (`nh os switch`
-  # builds .#shephard here, .#blackstar there). Weekly GC keeps the store lean.
-  programs.nh = {
-    enable = true;
-    flake = "/home/drew/Projects/nixconfig";
-    clean = {
-      enable = true;
-      dates = "weekly";
-      extraArgs = "--keep-since 7d --keep 5";
-    };
-  };
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
+  ];
 
   # Lets foreign (non-Nix) binaries execute via a compatibility loader shim.
   programs.nix-ld.enable = true;
+
+  programs.fish.enable = true;
+
+  services.openssh = {
+    enable = true;
+    openFirewall = false;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "drew" ];
+      MaxAuthTries = 3;
+      PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+    };
+  };
 
   users.users."drew" = {
     isNormalUser = true;
@@ -103,6 +128,9 @@
       "lp"
     ];
     shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIstrtZnIuDhLiAhUk5y5fa2eJ4J28g2vunTEo9Gmvad drew@devorcula.com"
+    ];
   };
 
   # Trusted user: lets drew use the flake's nixConfig (extra-substituters /
@@ -124,8 +152,6 @@
       ];
     }
   ];
-
-  programs.fish.enable = true;
 
   system.stateVersion = "26.05";
 }
