@@ -19,6 +19,7 @@
     ./ssh.nix
     ./misc.nix
     ./cava.nix
+    ./topgrade.nix
     ../proaudio
   ];
   home.username = "drew";
