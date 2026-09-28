@@ -62,7 +62,6 @@
       git = {
         repos = [
           "~/Projects/nixconfig"
-          "~/Projects/reaper-daemon"
         ];
       };
     };
