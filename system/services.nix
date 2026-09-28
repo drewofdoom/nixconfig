@@ -25,6 +25,10 @@
   # user-scope packages declared in home/flatpak.nix).
   services.flatpak.enable = true;
 
+  # Firmware updates via LVFS (fwupdmgr). Topgrade's `firmware` step
+  # (firmware.upgrade = true in home/topgrade.nix) drives it.
+  services.fwupd.enable = true;
+
   # GVFS daemon (notably gvfsd-metadata): without it, `gio set ... metadata::*`
   # fails with "Setting attribute ... not supported" -- GLib has nowhere to
   # persist file metadata (Nautilus custom icons/attributes live there).
