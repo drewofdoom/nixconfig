@@ -45,9 +45,13 @@
       require('mini.statusline').setup()
       require('which-key').setup()
       require('Comment').setup()
-      require('nvim-treesitter.configs').setup({
-        highlight = { enable = true },
-        indent = { enable = true },
+      -- nvim-treesitter (main-branch API: no .configs module).
+      -- Parsers come from withPlugins above; just auto-start highlighting.
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'bash', 'c', 'lua', 'markdown', 'nix' },
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
       })
     '';
   };
