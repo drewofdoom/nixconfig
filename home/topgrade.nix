@@ -34,8 +34,6 @@
 
         # `home_manager` runs `nh home switch`, which has no flake output
         # to build here (HM is a NixOS module, not homeConfigurations).
-        # `system` is disabled in favour of the "NixOS upgrade" custom
-        # command above (same `nh os switch -u`, plus `-Q`).
         disable = [
           "home_manager"
           "self_update"
