@@ -37,7 +37,7 @@
       git = {
         # nixconfig (the flake) and reaper-daemon. `~/Projects/*` is a glob --
         # topgrade expands it and pulls each repo it finds.
-        repos = [ "~/Projects/*" ];
+        repos = [ "~/Projects/nixconfig" ];
         pull_predefined = true;
         # Pulls are `git pull --ff-only --recurse-submodules` (topgrade's
         # built-in behaviour), so a dirty tree fails the step instead of merging.
