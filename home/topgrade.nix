@@ -14,15 +14,27 @@
   programs.topgrade = {
     enable = true;
     settings = {
+      commands = {
+        "Run garbage collection on Nix store" = "nix-collect-garbage";
+      };
+
       misc = {
+        assume_yes = true;
+        cleanup = true;
+
         # Pull git before anything else. Without this, the `system` step runs
         # early in topgrade's default order and `nh os switch -u` would build
         # whatever is in the working tree rather than the freshly pulled config.
         # The step's config name is `git_repos`, not `git`.
         first = [ "git_repos" ];
+
         # Home Manager is wired as a NixOS module here (see flake.nix), so the
         # flake exposes no homeConfigurations and `nh home switch` has no target.
-        disable = [ "home_manager" ];
+        disable = [
+          "home_manager"
+          "yazi"
+        ];
+
         # System step runs `nh os switch -u` instead of
         # `nixos-rebuild switch --upgrade`. `-u` updates flake.lock first.
         #
@@ -32,12 +44,16 @@
         # table is fatal -- but it only *warns*, then runs on a blank config, so
         # re-check the table when topgrade is bumped.
         nix_handler = "nh";
+        nix_arguments = "--no-nom";
       };
 
       git = {
         # nixconfig (the flake) and reaper-daemon. `~/Projects/*` is a glob --
         # topgrade expands it and pulls each repo it finds.
-        repos = [ "~/Projects/nixconfig" ];
+        repos = [
+          "~/Projects/nixconfig"
+          "~/Projects/reaper-daemon"
+        ];
         pull_predefined = true;
         # Pulls are `git pull --ff-only --recurse-submodules` (topgrade's
         # built-in behaviour), so a dirty tree fails the step instead of merging.
