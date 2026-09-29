@@ -1,11 +1,12 @@
 # Shared Syncthing: syncs dot-config folders between blackstar/shephard
 # (+ future machines). Devices are declared here; folders reference them.
 #
-# To add a machine: add its entry under settings.devices (get its ID from
-# the Syncthing GUI Actions > Show ID, or `syncthing --device-id` as user
-# drew), then add its name to each folder's `devices` list you want it to
-# share. Device IDs below are placeholders until first run -- replace with
-# real IDs after `nh os switch` on each host.
+# To add a machine: add its entry under settings.devices (get its ID with
+# `sudo -u drew syncthing device-id -C /home/drew/.config/syncthing -D
+# /home/drew/.local/share/syncthing`, or GUI Actions > Show ID), then add
+# its name to each folder's `devices` list you want it to share.
+# Device IDs are public (derived from the public key) -- safe in git.
+# The private key.pem/cert.pem stay local and never enter the repo.
 { ... }:
 
 {
@@ -19,8 +20,8 @@
     overrideFolders = true;
     settings = {
       devices = {
-        blackstar.id = "REPLACE-WITH-BLACKSTAR-ID";
-        shephard.id = "REPLACE-WITH-SHEPHARD-ID";
+        blackstar.id = "2KBR4YB-HYHDSXN-Y4AYRX7-AODVYVQ-CHGS3IG-I5CHVYZ-JD6JZ3G-LMT5SQQ";
+        shephard.id = "76Y6JJV-UHZ3BUL-AYJX2LO-N7ILSXJ-2QOBBGA-MV5ITAR-UQRO6R7-3H3JMQY";
       };
       folders = {
         reaper-fxchains = {
