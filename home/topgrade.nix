@@ -64,6 +64,9 @@
 
       linux = {
         home_manager_arguments = [ ];
+        nix_arguments = [
+          "--no-build-output"
+        ];
       };
 
       git = {
