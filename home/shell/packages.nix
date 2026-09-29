@@ -12,6 +12,7 @@
     # See sessionPath in misc.nix.
     bat
     btop
+    cpx
     exiftool
     eza
     fd

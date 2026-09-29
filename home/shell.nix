@@ -23,6 +23,7 @@
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
       alias cat='bat --plain'
+      alias cp='cpx'
       alias ls='eza --color=always'
       alias ll='eza --long --icons=always'
       alias la='eza -a'
