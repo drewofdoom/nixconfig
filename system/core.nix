@@ -8,6 +8,11 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Plymouth BGRT splash (OEM logo from firmware, no distro branding).
+  boot.plymouth.enable = true;
+  boot.plymouth.theme = "bgrt";
+  boot.initrd.systemd.enable = true;
   # Zen 7.2.6 (matches unstable's Zen version, so the unstable 615 driver
   # below passes the kernel-version check). Revisit if Zen moves and the
   # driver doesn't follow -- fall back to pkgs.linuxPackages (6.12 LTS).
@@ -22,6 +27,10 @@
   boot.kernelParams = [
     "nowatchdog"
     "preempt=full"
+    "quiet"
+    "splash"
+    "loglevel=3"
+    "rd.systemd.show_status=auto"
     # Disable speculative-execution mitigations on this desktop-only machine.
     # Safe when no untrusted code runs; recovers 2-8% throughput on Zen 3.
     "mitigations=off"
