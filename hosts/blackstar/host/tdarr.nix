@@ -31,6 +31,12 @@
     workers.transcodeCPU = 0;
     workers.healthcheckGPU = 0;
     workers.healthcheckCPU = 0;
+    pathTranslators = [
+      {
+        server = "/mnt/data/tmp_tdarr";
+        node = "/var/cache/tdarr";
+      }
+    ];
   };
 
   # Pin tdarr to uid/gid 911 to match the server container's PUID/PGID=911,
@@ -49,10 +55,20 @@
     serverPort = "8266";
   };
 
-  # The node stages transcodes under /temp (mirrors the compose `tdarr_cache:/temp`
-  # volume). The unit's strict sandbox can't write there by default, so create
-  # it and whitelist it.
+  # Transcode cache dirs. The module sandboxes the unit with
+  # ProtectSystem=strict, which makes the ENTIRE filesystem read-only except
+  # for StateDirectory and the paths listed in ReadWritePaths. So a cache dir
+  # needs BOTH: created here AND whitelisted below. Correct tdarr:tdarr
+  # ownership on its own is not enough -- the write still fails with EROFS
+  # ("os error 30"), which reads as a permissions problem but is not one.
+  #
+  # /var/cache/tdarr is the node-local cache. /temp mirrors the compose
+  # `tdarr_cache:/temp` volume on the server, kept so the currently-configured
+  # path keeps working; drop it once the server-side cache path is confirmed.
+  # Both sit on the root fs -- the 13T CIFS share is mounted only at
+  # /mnt/data/media -- and local disk is what keeps transcodes fast anyway.
   systemd.tmpfiles.rules = [
+    "d /var/cache/tdarr 0750 tdarr tdarr -"
     "d /temp 0750 tdarr tdarr -"
     # Audio subvolumes are root-owned; hand them to drew (audio work runs as
     # the desktop user). tmpfiles runs at boot and adopts the mountpoints each
@@ -62,7 +78,10 @@
     "d /home/drew/Audio/Assets 0755 drew users -"
     "d /home/drew/Audio/Workspace 0755 drew users -"
   ];
-  systemd.services.tdarr-node-blackstar.serviceConfig.ReadWritePaths = [ "/temp" ];
+  systemd.services.tdarr-node-blackstar.serviceConfig.ReadWritePaths = [
+    "/var/cache/tdarr"
+    "/temp"
+  ];
 
   # -- CIFS mount for the server's media share --
   # Credentials live OUTSIDE the repo at /etc/samba/media.credentials (root,
