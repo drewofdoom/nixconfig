@@ -24,7 +24,7 @@
       comment-nvim
     ];
 
-    extraLuaConfig = ''
+    initLua = ''
       -- Noctalia theme (generated at ~/.config/nvim/lua/matugen.lua).
       -- Guard with pcall so nvim still starts if the template hasn't run yet.
       local ok, matugen = pcall(require, 'matugen')
