@@ -2,6 +2,10 @@
 
 {
   programs.umbriel.settings = {
+    # input.touch = {
+    #   enabled = true;
+    #   map_to_output = "HDMI-1";
+    # };
     window_rule = [
       {
         match.title = "^notificationtoasts_.+_desktop";

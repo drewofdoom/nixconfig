@@ -34,6 +34,10 @@
         mouse = {
           accel_profile = "flat";
         };
+        cursor = {
+          hide_when_typing = true;
+          hide_timeout_ms = 10000;
+        };
       };
       appearance = {
         prefer_no_csd = true;
