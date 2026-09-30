@@ -29,7 +29,7 @@
 - **DXVK off for FabFilter/Analog Obsession type plugins** (black GUI with DXVK on).
 - **REAPER is declarative via reaper-flake** (input `reaper-flake`,
   github:9Prestidigitator/reaper-flake, `inputs.nixpkgs.follows = "nixpkgs"`).
-  `proaudio/default.nix` imports its Home Manager module and sets
+  `proaudio/reaper/` imports its Home Manager module and sets
   `programs.reaper`: native-Wayland SWELL (`experimental.swell-wayland.enable`),
   `packages` (freetype/libpng/zlib/fontconfig/libepoxy/gtk3/cairo/glib) for
   ReaImGui-style dlopen deps, SWS, and ReaPack with ReaImGui + js_ReaScriptAPI
@@ -50,19 +50,36 @@
   and not pursuing swell-wayland or other workarounds — just accepting satellite's
   current limitations and waiting for upstream improvement.**
 - **REAPER MCPs re-wired declaratively** (2026-09-19) after the reaper-flake
-  move: `proaudio/reaper-mcp.nix` packages xdarkzx `reaper-mcp` 0.8.2 from
+  move: `proaudio/reaper/mcp.nix` packages xdarkzx `reaper-mcp` 0.8.2 from
   PyPI (with [analysis] extras; `pyloudnorm` built alongside since nixpkgs
   26.05 lacks it) plus the matching `reaper_mcp_server.lua` (GitHub tag
-  v0.8.2, updated 2026-09-24). Both bridges load via flake-native mechanisms — lua files through
+  v0.8.2, updated 2026-09-24). The bridge loads via flake-native mechanisms — lua file through
   `programs.reaper.resourceFiles.files`, startup via additive
   `programs.reaper.lineFiles.files."Scripts/__startup.lua"` (coexists with the
-  flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). Daemon bridge
-  lua is vendored in `proaudio/reaper-lua/` (pure eval forbids absolute
-  paths — re-copy from `~/Projects/reaper-daemon/bridge/` after bridge
-  changes; currently v3.22.1). opencode client config, podcast profile, and
+  flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). **reaper-daemon
+  was removed from nixconfig (2026-09-29)** — no longer installed or wired as
+  an MCP; the repo stays on-disk and topgrade still syncs it, but there is no
+  vendored `proaudio/reaper-lua/` anymore. opencode client config, podcast profile, and
   `REAPER.md` memory are Nix-managed (`proaudio/opencode/`, deployed to
   `~/.config/opencode/`). The old blackstar wiring
   (pipx install, `REAPER/Scripts/__startup.lua` marker blocks) is gone.
+- **reaper-tools symlinks are run by the repo's own `bootstrap.sh`**
+  (2026-09-29), from `home.activation.reaperTools` in
+  `proaudio/reaper/mcp.nix` (`entryAfter "writeBoundary"`), not authored by Nix.
+  It creates `~/.config/reaper-flake/Scripts/MCP Agent -> reaper-scripts` and
+  `~/.reaper_mcp -> mcp-state`; both paths are hardcoded by their consumers
+  (REAPER's resource dir, and the MCP's state dir which has no Linux env
+  override — `%APPDATA%` is Windows-only).
+  Chose symlinks over making `~/.reaper_mcp` a real Syncthing folder because
+  `~/Projects/reaper-tools` is ALREADY a synced folder (`system/syncthing.nix`,
+  id `reaper-tools`); a second folder on a symlink back into the repo would
+  watch identical content twice and risk conflict-deletion. Syncthing points at
+  the repo, never at either link, so it never chases a link out of the repo.
+  `bootstrap.sh` is idempotent, treats dangling links as correct (reported, not
+  fixed), and removes a real directory sitting in the link's way. CAVEAT: that
+  `rm -rf` now runs on every home-manager activation — real data at
+  `~/.reaper_mcp` would be deleted. `~/Projects/reaper-tools` is NOT a git repo
+  and is deliberately NOT in topgrade's repo list (Syncthing is the only sync).
 - **ReaSonus Native** (`proaudio/reasonus-native/`, built by its own
   `module.nix` via `pkgs.callPackage`, no flake package): control-surface
   extension for the PreSonus **ioStation
@@ -102,13 +119,23 @@
   `openrouter/inclusionai/ling-3.0-flash-vl:free` on blackstar — removed
   since the issue was the package, not the model.
 - **Pro audio** lives in `proaudio/` (all hosts via home-common):
-  `proaudio/default.nix` = REAPER via reaper-flake (see above);
-  `proaudio/plugins.nix` = every plugin/app, straight from nixpkgs
+  `proaudio/default.nix` = bare import list; the REAPER config is split one
+  file per section under `proaudio/reaper/` -- `default.nix` (enablement +
+  runtime dlopen packages only), `mcp.nix`, `extensions.nix` (ReaPack + SWS,
+  repositories in `reapack-repos.nix`), `actions.nix`, `key-bindings.nix`,
+  and `preferences/` (one file per preferences group: `general.nix`,
+  `plug-ins.nix`, `editing-behavior.nix`; its `default.nix` is just the
+  import index). Find a section by opening the one file that owns it, not by
+  grepping a monolithic `default.nix`. `default.nix` in each directory is an
+  index + import list only, so additions go in a new sibling file.
+  `proaudio/reasonus-native/` stays separate (self-contained extension build:
+  source + calibration scripts + own module). `proaudio/plugins.nix` = every
+  plugin/app, straight from nixpkgs
   (`home.packages`, so they land in `~/.nix-profile/lib/<format>` which
   REAPER already searches). GitHub-release plugin packaging is GONE:
   no `proaudio/plugins/` derivations, no `update.py`, no flake `packages`
   output, no `nix-update`. Add a plugin = one nixpkgs attr in
-  `plugins.nix`; nixpkgs tracks upstream versions, so nothing to update.
+  `proaudio/plugins.nix`; nixpkgs tracks upstream versions, so nothing to update.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
@@ -122,11 +149,15 @@
   redundant. Verify with `nix shell nixpkgs#libva-utils -c vainfo` (expect
   "VA-API NVDEC driver [direct backend]").
 - **REAPER desktop entry pins `DISPLAY=:10`** (`xdg.desktopEntries.reaper` in
-  `proaudio/default.nix`, `exec = "env DISPLAY=:10 reaper %F"`). Umbriel's
+  `proaudio/reaper/default.nix`, `exec = "env DISPLAY=:10 reaper %F"`). Umbriel's
   xwayland-satellite owns `:0`; inheriting it routes REAPER's X11 plugin windows
   through satellite -- the black-screen yabridge bug. swell-wayland spawns its own
   plain `Xwayland :10 -rootless`, so `:10` is the safe display. `GDK_BACKEND=wayland`
   is already set session-wide and is NOT repeated in the entry.
+- **Openbox is gone entirely (2026-09-29)**: `proaudio/reaper-xwayland/` (the
+  REAPER-in-Openbox session) was deleted, and nothing else in the config
+  referenced openbox. xwayland-satellite 0.8.3 + winetricks fixed the rootless
+  issues, so no WM is needed to parent REAPER's floating FX/plugin windows.
 - **blackstar on Zen + unstable NVIDIA** (2026-09-22): `boot.kernelPackages =
   pkgs.linuxPackages_zen` (7.2.6) + unstable's `linuxPackages_zen` 615 driver.
   Stable's 595 doesn't compile against 7.x (gcc-15 `strncpy` error); both

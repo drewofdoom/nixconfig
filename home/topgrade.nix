@@ -69,8 +69,9 @@
       git = {
         repos = [
           "~/Projects/nixconfig"
-          # DISABLED (2026-09-29): reaper-daemon unused; re-enable by uncommenting.
-          # "~/Projects/reaper-daemon"
+          # Repo stays on-disk and is kept in sync by topgrade, but is no longer
+          # wired into this config as an MCP (see proaudio/reaper-mcp.nix).
+          "~/Projects/reaper-daemon"
         ];
       };
     };

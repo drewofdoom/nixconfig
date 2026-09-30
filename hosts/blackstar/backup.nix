@@ -20,10 +20,9 @@
       "${config.home.homeDirectory}/Templates"
       "${config.home.homeDirectory}/Pictures/Avatars"
       "${config.home.homeDirectory}/Pictures/Wallpapers"
-      "${config.home.homeDirectory}/.config/reaper-flake/FXChains"
-      "${config.home.homeDirectory}/.config/reaper-flake/TrackTemplates"
-      "${config.home.homeDirectory}/.config/reaper-flake/ProjectTemplates"
-      "${config.home.homeDirectory}/.config/reaper-flake/MIDINoteNames"
+      "${config.home.homeDirectory}/.config/reaper-flake"
+      "${config.home.homeDirectory}/Projects/reaper-tools"
+      "${config.home.homeDirectory}/.config/opencode"
     ];
     exclude = [
       ".cache"

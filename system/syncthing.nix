@@ -45,8 +45,8 @@
             "shephard"
           ];
         };
-        reaper-agent-custom-scripts = {
-          path = "/home/drew/.config/reaper-flake/Scripts/MCP Agent";
+        reaper-tools = {
+          path = "/home/drew/Projects/reaper-tools";
           devices = [
             "blackstar"
             "shephard"
@@ -71,13 +71,6 @@
         # its own rather than in a nix string where every tweak needs a rebuild.
         opencode-mcp = {
           path = "/home/drew/.config/opencode/mcp";
-          devices = [
-            "blackstar"
-            "shephard"
-          ];
-        };
-        opencode-podcast = {
-          path = "/home/drew/.config/opencode/podcast";
           devices = [
             "blackstar"
             "shephard"
