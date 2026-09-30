@@ -23,6 +23,16 @@
       match.title = "Zed —";
       default_floating = true;
     }
+    {
+      match.app_id = "^io.github.knightinfected.PipeWireControlCenter$";
+      default_floating = true;
+      default_scratchpad = "default";
+      default_position = {
+        x = 0;
+        y = 0;
+        anchor = "center";
+      };
+    }
     # Xwayland-run
     {
       match.app_id = "org.freedesktop.Xwayland";
