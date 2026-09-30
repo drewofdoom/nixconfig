@@ -26,19 +26,31 @@
       folders = {
         reaper-fxchains = {
           path = "/home/drew/.config/reaper-flake/FXChains";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
         reaper-project-templates = {
           path = "/home/drew/.config/reaper-flake/ProjectTemplates";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
         reaper-track-templates = {
           path = "/home/drew/.config/reaper-flake/TrackTemplates";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
         reaper-agent-custom-scripts = {
           path = "/home/drew/.config/reaper-flake/Scripts/MCP Agent";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
         # opencode config is synced as two focused folders, never the whole
         # ~/.config/opencode tree -- that would drag node_modules/ and the
@@ -49,14 +61,27 @@
         # this same list, so ids and sharing stay in step automatically.
         opencode-agents = {
           path = "/home/drew/.config/opencode/agents";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
         # reaper-podcast.toml: the xDarkzx Reaper-MCP tool profile. Hand-edited
         # (it tracks the MCP's module list as packages bump), so it lives on
         # its own rather than in a nix string where every tweak needs a rebuild.
         opencode-mcp = {
           path = "/home/drew/.config/opencode/mcp";
-          devices = [ "blackstar" "shephard" ];
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
+        };
+        opencode-podcast = {
+          path = "/home/drew/.config/opencode/podcast";
+          devices = [
+            "blackstar"
+            "shephard"
+          ];
         };
       };
     };
