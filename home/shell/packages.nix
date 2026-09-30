@@ -23,6 +23,7 @@
     glow
     gping
     jq
+    lua5_4
     mediainfo
     nil
     nix-search-tv
