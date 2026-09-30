@@ -1,9 +1,15 @@
 # REAPER MCP servers, declaratively via reaper-flake mechanisms.
 #
-# Two servers (both load-bearing, see opencode/REAPER.md for the division of
-# labor): xDarkzx `reaper-mcp` (PyPI 0.8.1, with [analysis] extras) and the
-# local `reaper-daemon` checkout (stdlib-only `reaper_mcp.py`, referenced live
-# so the working tree stays the source of truth for the Python side).
+# Two servers (see opencode/REAPER.md for the division of labor): xDarkzx
+# `reaper-mcp` (PyPI 0.8.1, with [analysis] extras) and the local `reaper-daemon`
+# checkout (stdlib-only `reaper_mcp.py`, referenced live so the working tree
+# stays the source of truth for the Python side).
+#
+# reaper-daemon is currently DISABLED (2026-09-29): the vendored bridge files,
+# the startup script, the __startup.lua dofile line, and the action entry are
+# all commented out below (marked "DISABLED"). `daemonBridgeFile` /
+# `daemonStartup` are retained so it can be flipped back on in one step.
+# TODO: MEMORY.md still documents reaper-daemon paths — update when re-enabling.
 #
 # REAPER-side loaders are installed WITHOUT hand-editing the resource dir:
 # - Lua files land in Scripts/ via `programs.reaper.resourceFiles.files`
@@ -163,14 +169,18 @@ in
     resourceFiles.files = {
       "Scripts/reaper-mcp/reaper_mcp_server.lua" =
         "${reaper-mcp-lua}/reaper_scripts/reaper_mcp_server.lua";
-      "Scripts/reaper-daemon/startup.lua" = daemonStartup;
-      "Scripts/reaper-daemon/reaper_agent_bridge.lua" = daemonBridgeFile "reaper_agent_bridge.lua";
-      "Scripts/reaper-daemon/json.lua" = daemonBridgeFile "json.lua";
+      # DISABLED (2026-09-29): reaper-daemon no longer used. `daemonBridgeFile`
+      # and `daemonStartup` are still defined above (unused bindings are fine
+      # in Nix); uncomment these four lines to re-enable.
+      # "Scripts/reaper-daemon/startup.lua" = daemonStartup;
+      # "Scripts/reaper-daemon/reaper_agent_bridge.lua" = daemonBridgeFile "reaper_agent_bridge.lua";
+      # "Scripts/reaper-daemon/json.lua" = daemonBridgeFile "json.lua";
     };
 
     lineFiles.files."Scripts/__startup.lua" = [
       ''pcall(dofile, reaper.GetResourcePath() .. "/Scripts/reaper-mcp/reaper_mcp_server.lua")''
-      ''pcall(dofile, reaper.GetResourcePath() .. "/Scripts/reaper-daemon/startup.lua")''
+      # DISABLED (2026-09-29): see resourceFiles above.
+      # ''pcall(dofile, reaper.GetResourcePath() .. "/Scripts/reaper-daemon/startup.lua")''
     ];
 
     actions.scripts = [
@@ -178,10 +188,11 @@ in
         path = "reaper-mcp/reaper_mcp_server.lua";
         description = "Custom: reaper-mcp bridge (xDarkzx MCP)";
       }
-      {
-        path = "reaper-daemon/reaper_agent_bridge.lua";
-        description = "Custom: reaper-daemon bridge";
-      }
+      # DISABLED (2026-09-29): see resourceFiles above.
+      # {
+      #   path = "reaper-daemon/reaper_agent_bridge.lua";
+      #   description = "Custom: reaper-daemon bridge";
+      # }
     ];
   };
 

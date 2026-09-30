@@ -1,5 +1,10 @@
 # REAPER on a dedicated Xwayland server with Openbox.
 #
+# DISABLED (2026-09-29): this module is not imported and
+# `programs.reaper-xwayland.enable` is commented out in `proaudio/default.nix`
+# -- xwayland-satellite 0.8.3 + winetricks solved the rootless issues, so the
+# Openbox session is no longer needed. Files kept for easy re-enabling.
+#
 # xwayland-satellite provides no window manager, so REAPER's floating
 # FX/plugin windows are unmanageable. Openbox parents those transient windows
 # so they behave — without trapping REAPER inside a nested Xephyr container.

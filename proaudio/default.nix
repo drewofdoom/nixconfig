@@ -52,12 +52,15 @@ in
     ./plugins.nix
     ./reasonus-native/module.nix
     ./reaper-mcp.nix
-    ./reaper-xwayland
+    # DISABLED (2026-09-29): Openbox session for REAPER no longer needed --
+    # xwayland-satellite 0.8.3 + winetricks resolved the rootless issues, so
+    # REAPER runs rootless under the compositor directly. Uncomment to restore.
+    # ./reaper-xwayland
     inputs.reaper-flake.homeModules.reaper
   ];
 
   # Custom script to launch REAPER in OpenBox
-  programs.reaper-xwayland.enable = true;
+  # programs.reaper-xwayland.enable = true;
 
   programs.reaper = {
     enable = true;

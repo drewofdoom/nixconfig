@@ -69,7 +69,8 @@
       git = {
         repos = [
           "~/Projects/nixconfig"
-          "~/Projects/reaper-daemon"
+          # DISABLED (2026-09-29): reaper-daemon unused; re-enable by uncommenting.
+          # "~/Projects/reaper-daemon"
         ];
       };
     };
