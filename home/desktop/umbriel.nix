@@ -49,8 +49,8 @@
         blur = {
           enabled = true;
           optimized = true;
-          passes = 2;
-          radius = 1;
+          passes = 3;
+          radius = 2;
           noise = 0.03;
           brightness = 0.9;
           contrast = 0.9;
