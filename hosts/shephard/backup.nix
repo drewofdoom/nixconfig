@@ -18,10 +18,12 @@
     rcloneOptions = { };
     paths = [
       "${config.home.homeDirectory}/Documents"
-      "${config.home.homeDirectory}/.config/reaper-flake/FXChains"
-      "${config.home.homeDirectory}/.config/reaper-flake/TrackTemplates"
-      "${config.home.homeDirectory}/.config/reaper-flake/ProjectTemplates"
+      # FXChains / TrackTemplates / ProjectTemplates are NOT listed: they are
+      # now symlinks into ~/Projects/reaper-tools, which is backed up as a git
+      # repo instead. Backing them up from here would follow the link and
+      # duplicate the same chains under two paths in the snapshot.
       "${config.home.homeDirectory}/.config/reaper-flake/MIDINoteNames"
+      "${config.home.homeDirectory}/Projects/reaper-tools"
     ];
     exclude = [
       ".cache"

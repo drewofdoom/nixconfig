@@ -14,17 +14,20 @@
 # - The bridge is also registered in `programs.reaper.actions.scripts`
 #   so it can be (re)run from REAPER's action list.
 #
-# The reaper-tools repo (~/Projects/reaper-tools, synced by Syncthing — see
-# system/syncthing.nix) needs two symlinks that its consumers hardcode and
-# cannot be configured, so they are created by the repo's own idempotent
-# bootstrap.sh rather than authored by Nix:
+# The reaper-tools repo (~/Projects/reaper-tools, pulled from the tailnet Gitea)
+# needs five symlinks that its consumers hardcode and cannot be configured, so
+# they are created by the repo's own idempotent bootstrap.sh rather than authored
+# by Nix:
 #   ~/.config/reaper-flake/Scripts/MCP Agent -> .../reaper-scripts
+#   ~/.config/reaper-flake/FXChains           -> .../fx-chains
+#   ~/.config/reaper-flake/TrackTemplates     -> .../track-templates
+#   ~/.config/reaper-flake/ProjectTemplates   -> .../project-templates
 #   ~/.reaper_mcp                            -> .../mcp-state
-# Both are outside the repo, so Syncthing (pointed at the repo) never chases a
-# link out of it. Run on every home-manager activation: recreates a link
-# deleted by hand, and creates dangling links on a machine where the repo has
-# not been cloned yet (they resolve on their own once Syncthing delivers it).
-# Runs after "writeBoundary" so ~/.config/reaper-flake exists.
+# The four resource-dir links are safe: reaper-flake merges only the files it
+# declares and leaves the rest of the dir alone. Run on every home-manager
+# activation: recreates a link deleted by hand, and creates dangling links on a
+# machine where the repo has not been cloned yet (they resolve on their own once
+# it is). Runs after "writeBoundary" so ~/.config/reaper-flake exists.
 {
   pkgs,
   lib,
