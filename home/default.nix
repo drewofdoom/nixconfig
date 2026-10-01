@@ -14,6 +14,7 @@
     ./shell.nix
     ./theme.nix
     ./apps.nix
+    ./hermes.nix
     ./wine.nix
     ./flatpak.nix
     ./ssh.nix
