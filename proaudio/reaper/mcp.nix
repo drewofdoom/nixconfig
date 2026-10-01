@@ -15,15 +15,17 @@
 #   so it can be (re)run from REAPER's action list.
 #
 # The reaper-tools repo (~/Projects/reaper-tools, pulled from the tailnet Gitea)
-# needs five symlinks that its consumers hardcode and cannot be configured, so
+# needs four symlinks that its consumers hardcode and cannot be configured, so
 # they are created by the repo's own idempotent bootstrap.sh rather than authored
 # by Nix:
 #   ~/.config/reaper-flake/Scripts/MCP Agent -> .../reaper-scripts
 #   ~/.config/reaper-flake/FXChains           -> .../fx-chains
-#   ~/.config/reaper-flake/TrackTemplates     -> .../track-templates
-#   ~/.config/reaper-flake/ProjectTemplates   -> .../project-templates
+#   ~/.config/reaper-flake/TrackTemplates     -> .../mcp-state/track_templates
 #   ~/.reaper_mcp                            -> .../mcp-state
-# The four resource-dir links are safe: reaper-flake merges only the files it
+# TrackTemplates deliberately resolves into the MCP's own template dir, so
+# agent-saved templates show up in REAPER's native template manager. The two
+# use different extensions (*.template vs *.RTrackTemplate) and cannot collide.
+# The resource-dir links are safe: reaper-flake merges only the files it
 # declares and leaves the rest of the dir alone. Run on every home-manager
 # activation: recreates a link deleted by hand, and creates dangling links on a
 # machine where the repo has not been cloned yet (they resolve on their own once
