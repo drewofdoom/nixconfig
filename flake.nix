@@ -8,6 +8,10 @@
 
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
+    # Hermes Agent (NousResearch): CLI + Home Manager module (user service).
+    # Imported in home/hermes.nix — see services.hermes-agent there.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";

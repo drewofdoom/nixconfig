@@ -133,6 +133,9 @@
   users.users."drew" = {
     isNormalUser = true;
     description = "Drew DeVore";
+    # Keep the systemd user manager alive after logout, otherwise user
+    # services (Hermes gateway, home-manager, …) stop at last session end.
+    linger = true;
     extraGroups = [
       "networkmanager"
       "wheel"

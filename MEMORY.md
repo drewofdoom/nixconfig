@@ -136,6 +136,24 @@
   no `proaudio/plugins/` derivations, no `update.py`, no flake `packages`
   output, no `nix-update`. Add a plugin = one nixpkgs attr in
   `proaudio/plugins.nix`; nixpkgs tracks upstream versions, so nothing to update.
+- **Hermes Agent** (input `hermes-agent`, github:NousResearch/hermes-agent) lives in
+  `home/hermes.nix`, so it applies to both hosts through `home/`. Splits into
+  `programs.hermes-agent` (CLI on PATH + `HERMES_HOME`, `desktop.enable`) and
+  `services.hermes-agent` (`~/.hermes` state, `config.yaml` from `settings`,
+  gateway user service, `extraDependencyGroups = [ "messaging" ]` since there is no
+  runtime pip on Nix). Docs call it Tier 2 / best-effort and warn that `main` can
+  break — `nix flake update hermes-agent` is the update path, no patching the store.
+  `users.users.drew.linger = true` in `system/core.nix` so the gateway survives logout
+    (Hermes cannot set linger itself). **API keys are NOT in Nix**: `environmentFiles`
+    points at an unmanaged 0600 `~/.config/hermes/env`, guarded by
+    `builtins.pathExists` so a missing file skips the option instead of failing the
+    rebuild (eval-time, so it only sees the machine doing the build — don't eval
+    blackstar's config from shephard). Deliberately per-host: same path, different
+    keys per machine, so neither can spend the other's quota and revoking one leaves
+    the other working. Matches the existing restic `passwordFile` convention.
+    CLI mutation commands (`hermes setup`, `config set`,
+  `gateway install`) are blocked by the `.managed` marker — edit
+  `home/hermes.nix` and rebuild instead. Container mode is NixOS-only, not used here.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.
