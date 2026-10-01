@@ -22,6 +22,7 @@
       "${config.home.homeDirectory}/Pictures/Wallpapers"
       "${config.home.homeDirectory}/.config/reaper-flake"
       "${config.home.homeDirectory}/Projects/reaper-tools"
+      "${config.home.homeDirectory}/Projects/nixconfig"
       # Hermes Agent: the durable knowledge worth restoring on a new machine --
       # agent identity (SOUL.md) and the accumulated memory/skills/cron. These
       # are plain markdown/toml, safe to read.
@@ -29,6 +30,7 @@
       "${config.home.homeDirectory}/.hermes/memories"
       "${config.home.homeDirectory}/.hermes/skills"
       "${config.home.homeDirectory}/.hermes/cron"
+      "${config.home.homeDirectory}/.hermes/profiles"
     ];
     exclude = [
       ".cache"

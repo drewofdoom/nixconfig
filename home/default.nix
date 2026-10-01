@@ -18,6 +18,7 @@
     ./wine.nix
     ./flatpak.nix
     ./ssh.nix
+    ./git.nix
     ./misc.nix
     ./cava.nix
     ./topgrade.nix
