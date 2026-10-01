@@ -12,7 +12,10 @@
     enable = true;
     settings = {
       general = {
-        autostart = [ "noctalia" ];
+        autostart = [
+          "noctalia"
+          "pipewire-control-center"
+        ];
         mod_key = "Super";
         xwayland = true;
         show_cheatsheet = false;
