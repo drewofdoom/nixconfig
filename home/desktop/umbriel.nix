@@ -50,7 +50,7 @@
           enabled = true;
           optimized = true;
           passes = 3;
-          radius = 2;
+          radius = 1;
           noise = 0.03;
           brightness = 0.9;
           contrast = 0.9;
