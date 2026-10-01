@@ -52,30 +52,6 @@
             "shephard"
           ];
         };
-        # opencode config is synced as two focused folders, never the whole
-        # ~/.config/opencode tree -- that would drag node_modules/ and the
-        # machine-specific opencode.jsonc (which hardcodes the nix profile's
-        # reaper-mcp binary path and TMPDIR) along with it.
-        #
-        # Folder ids are derived from these labels, and both machines apply
-        # this same list, so ids and sharing stay in step automatically.
-        opencode-agents = {
-          path = "/home/drew/.config/opencode/agents";
-          devices = [
-            "blackstar"
-            "shephard"
-          ];
-        };
-        # reaper-podcast.toml: the xDarkzx Reaper-MCP tool profile. Hand-edited
-        # (it tracks the MCP's module list as packages bump), so it lives on
-        # its own rather than in a nix string where every tweak needs a rebuild.
-        opencode-mcp = {
-          path = "/home/drew/.config/opencode/mcp";
-          devices = [
-            "blackstar"
-            "shephard"
-          ];
-        };
       };
     };
   };

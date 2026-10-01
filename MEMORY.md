@@ -59,9 +59,9 @@
   flake's ReaPack/SWS hooks; never hand-edit `__startup.lua`). **reaper-daemon
   was removed from nixconfig (2026-09-29)** — no longer installed or wired as
   an MCP; the repo stays on-disk and topgrade still syncs it, but there is no
-  vendored `proaudio/reaper-lua/` anymore. opencode client config, podcast profile, and
-  `REAPER.md` memory are Nix-managed (`proaudio/opencode/`, deployed to
-  `~/.config/opencode/`). The old blackstar wiring
+  vendored `proaudio/reaper-lua/` anymore. (That `proaudio/opencode/` directory is
+    since GONE from the tree — Nix no longer manages anything under
+    `~/.config/opencode/`; see the opencode-REMOVED entry below.)
   (pipx install, `REAPER/Scripts/__startup.lua` marker blocks) is gone.
 - **reaper-tools symlinks are run by the repo's own `bootstrap.sh`**
   (2026-09-29), from `home.activation.reaperTools` in
@@ -109,15 +109,11 @@
   PipeWire JACK, ntsync module. musnix not yet added (only if xruns persist).
 - **Zed is native** (`zed-editor` via `programs.zed-editor` + extensions `nix`, `toml`);
   FHS dropped. Toolchains via `extraPackages` + home packages.
-- **opencode is upstream**, not nixpkgs: both stable (1.15.x) and unstable
-  (1.18.30) builds were unusable (1.18.30 crashes resolving any model,
-  `TypeError err_*` on every prompt). Installed via
-  `https://opencode.ai/install` to `~/.opencode/bin` (on PATH via
-  `home.sessionPath`, autoupdates itself). Zen provider disabled in
-  `~/.config/opencode/opencode.jsonc` (no payment method on workspace).
-  Model override previously pinned to
-  `openrouter/inclusionai/ling-3.0-flash-vl:free` on blackstar — removed
-  since the issue was the package, not the model.
+- ~~**opencode is upstream**, not nixpkgs~~ — SUPERSEDED by the opencode-REMOVED
+  entry below. Kept only for the history: both stable (1.15.x) and unstable
+  (1.18.30) nixpkgs builds were unusable (1.18.30 crashed resolving any model,
+  `TypeError err_*`), so it had been installed out-of-band via
+  `https://opencode.ai/install` to `~/.opencode/bin`.
 - **Pro audio** lives in `proaudio/` (all hosts via home-common):
   `proaudio/default.nix` = bare import list; the REAPER config is split one
   file per section under `proaudio/reaper/` -- `default.nix` (enablement +
@@ -151,9 +147,40 @@
     blackstar's config from shephard). Deliberately per-host: same path, different
     keys per machine, so neither can spend the other's quota and revoking one leaves
     the other working. Matches the existing restic `passwordFile` convention.
-    CLI mutation commands (`hermes setup`, `config set`,
-  `gateway install`) are blocked by the `.managed` marker — edit
-  `home/hermes.nix` and rebuild instead. Container mode is NixOS-only, not used here.
+        CLI mutation commands (`hermes setup`, `config set`, `gateway install`) are
+        blocked by the `.managed` marker — edit `home/hermes.nix` and rebuild instead.
+        Container mode is NixOS-only, not used here.
+      - **Hermes restic coverage** (`hosts/blackstar/backup.nix`): backs up only the
+        knowledge — `SOUL.md`, `memories/`, `skills/`, `cron/`. `exclude` keeps out
+        `.env`, `mcp-tokens/`, `state.db`, `sessions/`, `logs/`; the API key stays in
+        the per-host `~/.config/hermes/env` and is never copied to Google Drive.
+        Deliberately NOT in Syncthing — user may move to Hermes Cloud for sync, and
+        syncing `.hermes` would fight that (plus it holds secrets).
+    - **HM activation scripts get NO session PATH** (2026-09-30): `home.activation.*`
+        entries run in a minimal env, so anything they shell out to must be reached
+        via an explicit `export PATH="${lib.makeBinPath [ ... ]}:$PATH"`. Being in
+        `home.packages` is NOT sufficient. Symptom: `nh os switch` builds fine, then
+        fails with `home-manager-drew.service` failed + "Activation (test) failed";
+        the real cause is only in `journalctl --user -b -n 60` (the transient unit is
+        already gone from `systemctl status`). This bit `reaperTools` → bootstrap.sh
+        → `python3: command not found`, which is now fixed in `proaudio/reaper/mcp.nix`.
+        Check this journal first on any future activation failure.
+- **opencode is REMOVED (2026-09-30)** — Hermes is the agent going forward. Nix
+  side is gone entirely (0 opencode derivations in the closure): dropped the
+  nixpkgs-unstable `opencode` attr in `home/apps.nix`, the
+  `~/.opencode/bin` entry in `home/misc.nix` `sessionPath` (kept `.local/bin`),
+  the stale comment block in `home/shell/packages.nix`, the
+  `~/.config/opencode` restic path in `hosts/blackstar/backup.nix`, and the
+  `opencode-agents` + `opencode-mcp` Syncthing folders in
+  `system/syncthing.nix`. The two Syncthing folder ids disappear on both
+  machines at once — expected, and it leaves their data intact.
+  **Data was deleted 2026-09-30** (`rm -rf ~/.opencode ~/.config/opencode`)
+    after the content was ported into Hermes by hand — `agents/podcast.md`
+    (~8KB REAPER podcast admin prompt) and `mcp/reaper-podcast.toml` (the xDarkzx
+    podcast tool profile, 139 tools). Not a Nix path, so no rebuild restores it.
+    The two Syncthing folder ids disappeared on both machines at the same switch.
+    Note `proaudio/opencode/` (once Nix-managed, per the older REAPER-MCP entry)
+    is already gone from the tree — that memory line is stale.
 - **nh** is the rebuild frontend: `nh os switch` (hostname → flake attr). Weekly GC.
 - **Proton Pass SSH**: binary is `pass-cli` (not `proton-pass`); socket pinned to
   `~/.ssh/proton-pass-agent.sock` on both service (`--socket-path %h/...`) and session.

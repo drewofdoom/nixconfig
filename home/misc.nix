@@ -13,11 +13,7 @@
     GLOW_STYLE = "${config.xdg.configHome}/glow/noctalia.json";
   };
 
-  # Upstream opencode binary (see shell.nix note).
-  home.sessionPath = [
-    "$HOME/.opencode/bin"
-    "$HOME/.local/bin"
-  ];
+  home.sessionPath = [ "$HOME/.local/bin" ];
 
   # Papirus "projects" folder icon on ~/Projects (GIO metadata lives in the
   # binary gvfs-metadata store, so this re-applies it idempotently each switch

@@ -103,7 +103,14 @@ in
 
   home.packages = [ xdarkzx-reaper-mcp ];
 
+  # bootstrap.sh runs `python3 -m py_compile` on the repo's tools/. Home Manager
+  # activation scripts run in a minimal environment with NO session PATH, so
+  # `python3` resolved to nothing and every python tool reported
+  # "command not found" (2026-09-30). This failed the activation even though
+  # python3 IS in home.packages -- a profile on PATH is not enough for a script
+  # that never sees that PATH. Prepend the explicit interpreter instead.
   home.activation.reaperTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    export PATH="${lib.makeBinPath [ pkgs.python3 ]}:$PATH"
     if [ -x "$HOME/Projects/reaper-tools/bootstrap.sh" ]; then
       "$HOME/Projects/reaper-tools/bootstrap.sh"
     else
