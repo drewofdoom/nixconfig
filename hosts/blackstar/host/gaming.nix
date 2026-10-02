@@ -55,4 +55,15 @@
       disable_splitlock = 1;
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    (retroarch.withCores (
+      cores: with cores; [
+        pcsx-rearmed
+        ppsspp
+      ]
+    ))
+    retroarch-assets
+  ];
+
 }

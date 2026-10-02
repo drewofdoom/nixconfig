@@ -9,14 +9,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Plymouth BGRT splash (OEM logo from firmware, no distro branding).
   boot.plymouth.enable = true;
   boot.plymouth.theme = "bgrt";
+
   boot.initrd.systemd.enable = true;
-  # Zen 7.2.6 (matches unstable's Zen version, so the unstable 615 driver
-  # below passes the kernel-version check). Revisit if Zen moves and the
-  # driver doesn't follow -- fall back to pkgs.linuxPackages (6.12 LTS).
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelModules = [ "ntsync" ];
 
   # -- Kernel tuning --
