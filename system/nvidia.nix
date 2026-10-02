@@ -3,17 +3,9 @@
 # newer; blackstar's RTX 3080 qualifies).
 {
   config,
-  pkgs,
-  inputs,
   ...
 }:
 
-let
-  unstablePkgs = import inputs.nixpkgs-unstable {
-    system = pkgs.stdenv.hostPlatform.system;
-    config.allowUnfree = true;
-  };
-in
 {
   services.xserver.videoDrivers = [ "nvidia" ];
 

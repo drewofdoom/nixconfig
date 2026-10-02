@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 {
   # Steam needs its FHS env, udev rules (controllers) and firewall ports --

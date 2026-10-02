@@ -41,8 +41,10 @@
 
   # Pin tdarr to uid/gid 911 to match the server container's PUID/PGID=911,
   # so files created through the CIFS mount share ownership with the server.
-  users.users.tdarr.uid = 911;
-  users.groups.tdarr.gid = 911;
+  users = {
+    tdarr.uid = 911;
+    groups.tdarr.gid = 911;
+  };
 
   # Tdarr_Node 2.86 uses serverURL only for the initial engine check; all
   # ongoing API calls go to serverIP:serverPort (default 0.0.0.0:8266 --
