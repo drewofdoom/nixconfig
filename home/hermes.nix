@@ -17,10 +17,11 @@
 }:
 
 let
-  # Per-host API keys, deliberately NOT in this repo. This path is identical on
-  # every host but the file contents are not — each machine gets its own key, so
-  # neither machine can spend the other's quota and revoking one leaves the other
-  # working. Back the file up somewhere that is not this git repo.
+  # Per-host API keys and dashboard credentials, deliberately NOT in this repo.
+  # This path is identical on every host but the file contents are not — each
+  # machine gets its own key, so neither machine can spend the other's quota and
+  # revoking one leaves the other working. Back the file up somewhere that is
+  # not this git repo.
   #
   # Create it once per machine (the `cat > file` form avoids the key ever
   # landing in shell history, unlike install -m600 /dev/stdin with a heredoc):
@@ -30,11 +31,14 @@ let
   #   EOF
   #   chmod 0600 ~/.config/hermes/env
   #
-  # The path is checked at eval time so a missing file skips the option rather
-  # than failing the rebuild. Nothing is written to ~/.hermes/.env without it,
-  # and the gateway will start but fail to authenticate until it exists.
+  # The file is named unconditionally rather than guarded by
+  # `builtins.pathExists`. Under flake evaluation in pure mode that builtin
+  # cannot stat a path outside the Nix store and always returns false, so an
+  # existence guard here silently evaluates to false on every machine and the
+  # option was never applied. Naming it directly is also what the module wants:
+  # its activation already prints a warning and continues when the file is
+  # unreadable, so a missing file costs a warning rather than a failed rebuild.
   envPath = "${config.home.homeDirectory}/.config/hermes/env";
-  haveKeys = builtins.pathExists envPath;
 in
 {
   imports = [ inputs.hermes-agent.homeManagerModules.default ];
@@ -55,7 +59,6 @@ in
     # Rendering to ~/.hermes/config.yaml. Nix keys win; keys the agent writes
     # itself are preserved across rebuilds.
     settings = {
-      model.default = "anthropic/claude-sonnet-4";
       toolsets = [ "all" ];
       terminal = {
         backend = "local";
@@ -82,6 +85,6 @@ in
     # Secrets: merged into ~/.hermes/.env at activation time, so a rebuild is
     # the only thing needed after an edit (plus a service restart). Never put
     # keys in Nix expressions — they land in the world-readable /nix/store.
-    environmentFiles = lib.optionals haveKeys [ envPath ];
+    environmentFiles = [ envPath ];
   };
 }
