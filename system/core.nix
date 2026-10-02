@@ -6,36 +6,62 @@
 }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  nix = {
+    settings = {
+      accept-flake-config = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      extra-substituters = [
+        "https://noctalia.cachix.org"
+        "https://pipewirecontroller-nix.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+        "pipewirecontroller-nix.cachix.org-1:wY/tr9Hxc0kvGW2zgh2DUjQI+LqLBCQ7bm9Wkr3dgdc="
+      ];
+      trusted-users = [ "drew" ];
+    };
+  };
 
-  boot.plymouth.enable = true;
-  boot.plymouth.theme = "bgrt";
+  nixpkgs.config.allowUnfree = true;
 
-  boot.initrd.systemd.enable = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
 
-  boot.kernelPackages = pkgs.linuxPackages;
-  boot.kernelModules = [ "ntsync" ];
+    initrd = {
+      systemd = {
+        enable = true;
+        network.wait-online.enable = false;
+      };
+    };
 
-  # -- Kernel tuning --
-  # nowatchdog: the NMI watchdog is pure overhead and a latency source; it is
-  # only useful for catching hard lockups on servers. preempt=full: the kernel
-  # is built PREEMPT_DYNAMIC, so this opts into full preemption at boot -- the
-  # single biggest win for REAPER/JACK scheduling latency.
-  boot.kernelParams = [
-    "nowatchdog"
-    "preempt=full"
-    "quiet"
-    "splash"
-    "loglevel=3"
-    "rd.systemd.show_status=auto"
-    # Disable speculative-execution mitigations on this desktop-only machine.
-    # Safe when no untrusted code runs; recovers 2-8% throughput on Zen 3.
-    "mitigations=off"
-  ];
+    kernelPackages = pkgs.linuxPackages;
+    kernelModules = [ "ntsync" ];
+    kernelParams = [
+      "nowatchdog"
+      "preempt=full"
+      "quiet"
+      "splash"
+      "loglevel=3"
+      "rd.systemd.show_status=auto"
+      # Disable speculative-execution mitigations on this desktop-only machine.
+      "mitigations=off"
+    ];
 
-  systemd.network.wait-online.enable = false;
-  boot.initrd.systemd.network.wait-online.enable = false;
+    plymouth.enable = true;
+  };
+
+  systemd = {
+    network.wait-online.enable = false;
+    services.tailscaled.serviceConfig.Environment = [
+      "TS_DEBUG_FIREWALL_MODE=nftables"
+    ];
+  };
 
   networking = {
     networkmanager.enable = true;
@@ -45,39 +71,6 @@
       trustedInterfaces = [ config.services.tailscale.interfaceName ];
       allowedUDPPorts = [ config.services.tailscale.port ];
       checkReversePath = "loose";
-    };
-  };
-
-  nix.settings.accept-flake-config = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  # GitHub API auth for flake input updates (`nh os switch -u` 403s on the
-  # 60 req/hr anonymous limit with ~6 github inputs). The token lives OUTSIDE
-  # this repo in ~/.config/nix/nix.conf (user-level, unmanaged, mode 600):
-  #   access-tokens = github.com=<zero-permission fine-grained PAT>
-  # Kept out of the tree deliberately (2026-09-28) — nixconfig is pushed to
-  # GitHub, and even a zero-permission token doesn't belong in history.
-  nix.settings.extra-substituters = [
-    "https://noctalia.cachix.org"
-    "https://pipewirecontroller-nix.cachix.org"
-  ];
-  nix.settings.extra-trusted-public-keys = [
-    "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-    "pipewirecontroller-nix.cachix.org-1:wY/tr9Hxc0kvGW2zgh2DUjQI+LqLBCQ7bm9Wkr3dgdc="
-  ];
-  nixpkgs.config.allowUnfree = true;
-
-  # nh -- flake helper that picks the config by hostname (`nh os switch`
-  # builds .#shephard here, .#blackstar there). Weekly GC keeps the store lean.
-  programs.nh = {
-    enable = true;
-    flake = "/home/drew/Projects/nixconfig";
-    clean = {
-      enable = true;
-      dates = "weekly";
-      extraArgs = "--keep-since 7d --keep 5";
     };
   };
 
@@ -96,67 +89,73 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  services = {
+    tailscale = {
+      enable = true;
+    };
 
-  services.tailscale.enable = true;
-  # Tailscale operator access for drew via group + polkit rule
-  # (services.tailscale.operator doesn't exist in this NixOS version)
-  users.groups.tailscale = { };
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
 
-  systemd.services.tailscaled.serviceConfig.Environment = [
-    "TS_DEBUG_FIREWALL_MODE=nftables"
-  ];
-
-  # Lets foreign (non-Nix) binaries execute via a compatibility loader shim.
-  programs.nix-ld.enable = true;
-
-  programs.fish.enable = true;
-
-  services.openssh = {
-    enable = true;
-    openFirewall = false;
-    settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
-      PermitRootLogin = "no";
-      AllowUsers = [ "drew" ];
-      MaxAuthTries = 3;
-      PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+    openssh = {
+      enable = true;
+      openFirewall = false;
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "no";
+        AllowUsers = [ "drew" ];
+        MaxAuthTries = 3;
+        PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+      };
     };
   };
 
-  users.users."drew" = {
-    isNormalUser = true;
-    description = "Drew DeVore";
-    # Keep the systemd user manager alive after logout, otherwise user
-    # services (Hermes gateway, home-manager, …) stop at last session end.
-    linger = true;
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "video"
-      "audio"
-      "tailscale"
-      "scanner"
-      "lp"
-    ];
-    shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIstrtZnIuDhLiAhUk5y5fa2eJ4J28g2vunTEo9Gmvad drew@devorcula.com"
-    ];
+  programs = {
+    nh = {
+      enable = true;
+      flake = "/home/drew/Projects/nixconfig";
+      clean = {
+        enable = true;
+        dates = "weekly";
+        extraArgs = "--keep-since 7d --keep 5";
+      };
+    };
+
+    # Lets foreign (non-Nix) binaries execute via a compatibility loader shim.
+    nix-ld.enable = true;
+
+    fish.enable = true;
   };
 
-  # Trusted user: lets drew use the flake's nixConfig (extra-substituters /
-  # extra-trusted-public-keys) without the "ignoring untrusted flake
-  # configuration" warning. MUST be nix.settings.trusted-users -- a bare
-  # top-level `trusted-users` is not a NixOS option and is silently ignored.
-  nix.settings.trusted-users = [ "drew" ];
+  users = {
+    users = {
+      "drew" = {
+        isNormalUser = true;
+        description = "Drew DeVore";
+        # Keep the systemd user manager alive after logout, otherwise user
+        # services (Hermes gateway, home-manager, …) stop at last session end.
+        linger = true;
+        extraGroups = [
+          "networkmanager"
+          "wheel"
+          "video"
+          "audio"
+          "tailscale"
+          "scanner"
+          "lp"
+        ];
+        shell = pkgs.fish;
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIstrtZnIuDhLiAhUk5y5fa2eJ4J28g2vunTEo9Gmvad drew@devorcula.com"
+        ];
+      };
+    };
+    groups.tailscale = { };
+  };
 
-  # Persistent passwordless sudo for drew (hostname-independent,
-  # survives renames unlike a hand-edit tied to `nixos`).
   security.sudo.extraRules = [
     {
       users = [ "drew" ];

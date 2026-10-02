@@ -13,42 +13,49 @@
     inputs.noctalia-greeter.nixosModules.default
   ];
 
-  # Umbriel is not in stable nixpkgs; pull it from the unstable input
-  programs.umbriel.package =
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.umbriel;
+  programs = {
+    # Umbriel Wayland compositor (provides `umbriel` session + portal)
+    umbriel = {
+      enable = true;
+      package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.umbriel;
+    };
 
-  # Umbriel Wayland compositor (provides `umbriel` session + portal)
-  programs.umbriel.enable = true;
+    # Noctalia v5 shell system-wide + recommended services
+    # (NetworkManager, Bluetooth, UPower, power-profiles-daemon)
+    noctalia = {
+      enable = true;
+      recommendedServices.enable = true;
+    };
 
-  # Noctalia v5 shell system-wide + recommended services
-  # (NetworkManager, Bluetooth, UPower, power-profiles-daemon)
-  programs.noctalia = {
-    enable = true;
-    recommendedServices.enable = true;
+    # GTK theming base: dconf + portal backend. Actual theme set in home/theme.nix.
+    dconf.enable = true;
   };
 
   # Noctalia Greeter via greetd. Disable any other display manager.
   # Uses flake module: services.displayManager.noctalia-greeter
-  services.displayManager.noctalia-greeter = {
-    enable = true;
-    settings = {
-      cursor = {
-        theme = "Bibata-Modern-Ice";
-        size = 24;
-        path = "${pkgs.bibata-cursors}/share/icons";
+  services = {
+    displayManager = {
+      noctalia-greeter = {
+        enable = true;
+        settings = {
+          cursor = {
+            theme = "Bibata-Modern-Ice";
+            size = 24;
+            path = "${pkgs.bibata-cursors}/share/icons";
+          };
+          keyboard = {
+            layout = "us";
+          };
+          session.default = "Umbriel";
+          user.default = "drew";
+        };
       };
-      keyboard = {
-        layout = "us";
-      };
-      session.default = "Umbriel";
-      user.default = "drew";
+
+      # Disable GDM and SDDM (noctalia-greeter handles them)
+      gdm.enable = false;
+      sddm.enable = false;
     };
   };
-  services.displayManager.gdm.enable = false;
-  services.displayManager.sddm.enable = false;
-
-  # GTK theming base: dconf + portal backend. Actual theme set in home/theme.nix.
-  programs.dconf.enable = true;
 
   xdg.portal = {
     enable = true;
