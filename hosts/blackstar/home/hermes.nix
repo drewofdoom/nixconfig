@@ -44,7 +44,19 @@
           type = "bearer";
           token = "\${A2A_ROSIE_TOKEN}";
         };
-        timeout = 120;
+        # Seconds blackstar waits for a reply from rosie. The client has no
+        # polling fallback -- it blocks on a single message/send POST and returns
+        # text (tools.py:117) -- so this must stay ABOVE rosie's own
+        # A2A_REPLY_TIMEOUT. At or below it, blackstar disconnects while she is
+        # still finishing; she persists the result into her session and we never
+        # receive it, nor the contextId needed to resume. The work completes and
+        # is unreachable.
+        #
+        # rosie's default A2A_REPLY_TIMEOUT is 300 (adapter.py:69) and she sets
+        # no override, so 300 here is exactly on her limit -- zero margin. This
+        # only becomes safe once A2A_REPLY_TIMEOUT is set to something lower on
+        # rosie (240 keeps a 60s gap). Until then, raise this to 360.
+        timeout = 300;
       };
     };
   };
