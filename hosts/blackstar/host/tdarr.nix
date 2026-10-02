@@ -14,11 +14,6 @@
   # Node polls the server outbound -- no inbound firewall ports needed.
   services.tdarr.nodes.blackstar = {
     name = "blackstar";
-    # Stable's tdarr-node (2.74.01) can't build: its ccextractor dep
-    # (0.94-unstable-2025-05-20) fails with "stray '#'" errors under gcc 15.
-    # Unstable's node (2.86.01, ccextractor 0.96.6) has the fix. Imported
-    # with allowUnfree since the raw flake input doesn't inherit
-    # nixpkgs.config.allowUnfree (tdarr-node is unfree).
     package =
       (import inputs.nixpkgs-unstable {
         system = pkgs.stdenv.hostPlatform.system;
@@ -46,56 +41,30 @@
     groups.tdarr.gid = 911;
   };
 
-  # Tdarr_Node 2.86 uses serverURL only for the initial engine check; all
-  # ongoing API calls go to serverIP:serverPort (default 0.0.0.0:8266 --
-  # the ECONNREFUSED in the logs). The module sets no serverIP, so override
-  # it here. Hostname, not the raw tailnet IP: :8266 is only reachable
-  # through the Tailscale Serve frontend (tdarr.bunny-octatonic.ts.net),
-  # direct-to-IP on 8266 is refused.
-  systemd.services.tdarr-node-blackstar.environment = {
-    serverIP = "tdarr.bunny-octatonic.ts.net";
-    serverPort = "8266";
+  systemd = {
+    services = {
+      tdarr-node-blackstar = {
+        environment = {
+          serverIP = "tdarr.bunny-octatonic.ts.net";
+          serverPort = "8266";
+        };
+
+        # Transcode cache dir
+        serviceConfig.ReadWritePaths = [
+          "/var/cache/tdarr"
+          "/temp"
+        ];
+      };
+    };
+
+    # Transcode cache dir
+    tmpfiles.rules = [
+      "d /var/cache/tdarr 0750 tdarr tdarr -"
+      "d /temp 0750 tdarr tdarr -"
+    ];
   };
 
-  # Transcode cache dirs. The module sandboxes the unit with
-  # ProtectSystem=strict, which makes the ENTIRE filesystem read-only except
-  # for StateDirectory and the paths listed in ReadWritePaths. So a cache dir
-  # needs BOTH: created here AND whitelisted below. Correct tdarr:tdarr
-  # ownership on its own is not enough -- the write still fails with EROFS
-  # ("os error 30"), which reads as a permissions problem but is not one.
-  #
-  # /var/cache/tdarr is the node-local cache. /temp mirrors the compose
-  # `tdarr_cache:/temp` volume on the server, kept so the currently-configured
-  # path keeps working; drop it once the server-side cache path is confirmed.
-  # Both sit on the root fs -- the 13T CIFS share is mounted only at
-  # /mnt/data/media -- and local disk is what keeps transcodes fast anyway.
-  systemd.tmpfiles.rules = [
-    "d /var/cache/tdarr 0750 tdarr tdarr -"
-    "d /temp 0750 tdarr tdarr -"
-    # Audio subvolumes are root-owned; hand them to drew (audio work runs as
-    # the desktop user). tmpfiles runs at boot and adopts the mountpoints each
-    # time, so ownership survives even if a subvol is recreated.
-    "d /home/drew/Audio 0755 drew users -"
-    "d /home/drew/Audio/Archive 0755 drew users -"
-    "d /home/drew/Audio/Assets 0755 drew users -"
-    "d /home/drew/Audio/Workspace 0755 drew users -"
-  ];
-  systemd.services.tdarr-node-blackstar.serviceConfig.ReadWritePaths = [
-    "/var/cache/tdarr"
-    "/temp"
-  ];
-
   # -- CIFS mount for the server's media share --
-  # Credentials live OUTSIDE the repo at /etc/samba/media.credentials (root,
-  # mode 0600) -- create it with:
-  #   sudo mkdir -p /etc/samba
-  #   printf 'username=\npassword=\n' | sudo tee /etc/samba/media.credentials
-  #   sudo chmod 0600 /etc/samba/media.credentials
-  # then fill in the values. The SMB user needs read+write on the share --
-  # a mapped node writes transcoded files back to the library.
-  # automount = the share is only connected on first access, and
-  # idle-timeout disconnects it after 60s idle. nofail so a missing
-  # file/share never blocks boot.
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/data/media" = {
     device = "//192.168.0.27/media";

@@ -13,8 +13,7 @@
 
   # Compressed RAM swap; no swap partition (no hibernation).
   # zstd: fast compression + decompression on Zen 3 (hardware-accelerated
-  # via the kernel zstd module). 25% of 32 GiB = 8 GiB backing, which with
-  # zstd's ~3:1 ratio provides ~24 GiB effective swap before any pressure.
+  # via the kernel zstd module).
   zramSwap = {
     enable = true;
     algorithm = "zstd";
@@ -105,14 +104,18 @@
     ];
   };
 
+  systemd.tmpfiles.rules = [
+    # Audio subvolumes are root-owned; hand them to drew (audio work runs as
+    # the desktop user). tmpfiles runs at boot and adopts the mountpoints each
+    # time, so ownership survives even if a subvol is recreated.
+    "d /home/drew/Audio 0755 drew users -"
+    "d /home/drew/Audio/Archive 0755 drew users -"
+    "d /home/drew/Audio/Assets 0755 drew users -"
+    "d /home/drew/Audio/Workspace 0755 drew users -"
+  ];
+
   # noatime on the root/home btrfs filesystems: purely a metadata-write
-  # reduction, safe and needs no data rewrite. Deliberately NOT adding
-  # compression here -- /home is 565 GiB and ~535 GiB of that is the Steam
-  # library (already-compressed game archives), so whole-fs compression would
-  # cost CPU on every game write for near-zero saving. Plain assignment (not
-  # mkForce): the generated hardware-configuration.nix sets no options for
-  # these, and list options merge additively -- mkForce would clobber NixOS's
-  # own `x-initrd.mount` on `/`, which root needs to mount in the initrd.
+  # reduction, safe and needs no data rewrite.
   fileSystems."/".options = [ "noatime" ];
   fileSystems."/home".options = [ "noatime" ];
 
