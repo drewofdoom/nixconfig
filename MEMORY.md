@@ -222,6 +222,8 @@
   power-profiles-daemon) authoritative when no game runs.
 
 ## Workflows
-- Validate: `nixos-rebuild build --flake .#shephard` (or detached for long builds).
+- Validate against the host you are **currently on** — run `hostname` first, then
+  `nixos-rebuild build --flake .#$(hostname)` (or detached for long builds).
+  Do NOT hardcode `shephard`; building the wrong host hides host-specific errors.
 - Switch: `nh os switch`.
 - `yabridgectl sync` after Wine/plugin changes; Reaper VST paths may need store lib dirs added.

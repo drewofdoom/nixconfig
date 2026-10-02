@@ -65,10 +65,21 @@ in
     plezy
   ];
 
-  # Zed (native, not FHS) + declarative extensions and toolchains.
-  # Merges into ~/.config/zed/settings.json, your in-app edits are preserved.
+  # Zed from nixpkgs-unstable rather than the system channel (26.05 still
+  # carries 1.3.6; unstable is 1.22.x). Declarative extensions and toolchains;
+  # merges into ~/.config/zed/settings.json, in-app edits are preserved.
+  #
+  # Native, not zed-editor-fhs: the FHS wrapper is only needed for extensions
+  # that hardcode /usr/bin/... paths (the "without nix-specific modifications"
+  # case). The extensions used here (nix, toml) are nix-aware, so they resolve
+  # tools via the nix-provided language server/toolchain paths instead.
+  # Trade-off: FHS makes arbitrary community extensions work, at the cost of a
+  # ~large wrapper and a /nix/store-visible FHS layer; flip to
+  # `inputs.nixpkgs-unstable...zed-editor-fhs` if a specific extension
+  # misbehaves.
   programs.zed-editor = {
     enable = true;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zed-editor;
     extensions = [
       "nix"
       "toml"

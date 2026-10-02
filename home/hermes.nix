@@ -63,10 +63,26 @@ in
         backend = "local";
         timeout = 180;
       };
+
       memory = {
         memory_enabled = true;
         user_profile_enabled = true;
       };
+
+      # display.personality is deliberately NOT set here. It is owned by the
+      # app's settings pane; pinning it in Nix re-asserted the old value on
+      # every activation and the GUI could never change it. Safe to leave out
+      # -- it is a standalone key (personality.py:112) with no coupling.
+      #
+      # The whole `model` block is out of Nix for the same reason, plus one
+      # extra hazard: the desktop picker writes model.default AND
+      # model.provider as a pair (model_switch.py:1783). Pinning provider here
+      # would deep-merge "openrouter" back over the app's pick on every
+      # rebuild, leaving a provider that no longer matches the chosen model --
+      # provider is authoritative at dispatch and is never re-derived from the
+      # model name (runtime_provider.py:478). With no provider pinned, Hermes
+      # autodetects from credentials (the documented default path), which the
+      # OPENROUTER_API_KEY in environmentFiles below satisfies.
     };
 
     # Agent workspace is your home dir by default.
@@ -85,5 +101,21 @@ in
     # the only thing needed after an edit (plus a service restart). Never put
     # keys in Nix expressions — they land in the world-readable /nix/store.
     environmentFiles = [ envPath ];
+
+        # Let Hermes write its own config.yaml, so settings panes and
+        # `hermes config set` persist instead of being refused.
+        #
+        # The module hardcodes HERMES_MANAGED (baked into the systemd unit and the
+        # desktop wrapper via makeWrapper --set) and offers no opt-out option. The
+        # escape hatch is the false/0/no/off value read by
+        # _MANAGED_FALSE_VALUES (hermes_constants.py:779). It must go here rather
+        # than in environmentFiles because `environment` is the declarative option
+        # that survives regeneration of the per-host secrets file.
+        #
+        # ~/.hermes/.env is loaded with override=True at import time
+        # (env_loader.py:507), ahead of every is_managed() gate -- so this beats
+        # the systemd Environment= line. It also short-circuits the
+        # ~/.hermes/.managed marker, which the activation rewrites every time.
+        environment.HERMES_MANAGED = "false";
   };
 }
