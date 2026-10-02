@@ -42,7 +42,7 @@
   # Pin tdarr to uid/gid 911 to match the server container's PUID/PGID=911,
   # so files created through the CIFS mount share ownership with the server.
   users = {
-    tdarr.uid = 911;
+    users.tdarr.uid = 911;
     groups.tdarr.gid = 911;
   };
 
