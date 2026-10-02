@@ -55,7 +55,10 @@
       # ("this Hermes installation is managed by home-manager"). Naming the
       # composite `hermes-cli` keeps the CLI default toolset; adding `a2a`
       # opts into the default-off plugin toolset (#81163).
-      platform_toolsets.cli = [ "hermes-cli" "a2a" ];
+      platform_toolsets.cli = [
+        "hermes-cli"
+        "a2a"
+      ];
 
       # blackstar is the A2A *client* here; rosie serves. Explicitly disable
       # the inbound platform: an earlier edit enabled it on blackstar, which
@@ -67,7 +70,7 @@
 
       # Peer to call.
       a2a_agents.rosie = {
-        url = "http://rosie:9900";
+        url = "http://rosie.bunny-octatonic.ts.net:9900";
         # Interpolated from ~/.config/hermes/env (merged into ~/.hermes/.env
         # at activation) so the token never lands in the world-readable store.
         # `type` is load-bearing: tools.py:49 only emits the Authorization
