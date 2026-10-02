@@ -22,7 +22,7 @@
       };
       include.optional.files = [
         "noctalia.toml"
-        "outputs.toml"
+        "local.toml"
       ];
       input = {
         window_drag_toggle = "floating";
