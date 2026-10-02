@@ -1,10 +1,5 @@
-# Wine + yabridge bridge infrastructure. Moved verbatim from home-common.nix.
-# Stays here rather than proaudio: it's bridge infrastructure, and the dev
-# override lives in the let block below.
-{
-  pkgs,
-  ...
-}:
+# Wine + yabridge bridge infrastructure.
+{ pkgs, ... }:
 
 let
   # Recent yabridge dev build (actions run 30739764611, commit b580a9f).
@@ -48,7 +43,7 @@ in
   home.packages = [
     wine-staging
     pkgs.winetricks
-    pkgs.file # winetricks needs `file` for arch/WoW64 detection
+    pkgs.file
     pkgs.dxvk.out
     yabridge-dev
     yabridgectl-dev

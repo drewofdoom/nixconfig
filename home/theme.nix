@@ -40,8 +40,7 @@ in
     "org/gnome/desktop/interface" = {
       icon-theme = "Conflux";
     };
-    # No headerbar buttons (Fedora equivalent:
-    # `gsettings set org.gnome.desktop.wm.preferences button-layout ''`)
+    # No headerbar buttons (equivalent: `gsettings set org.gnome.desktop.wm.preferences button-layout ''`)
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "";
     };

@@ -10,7 +10,6 @@
   imports = [
     ./shell/yazi.nix
     ./shell/packages.nix
-    ./shell/git.nix
     ./shell/neovim.nix
     ./shell/starship.nix
   ];

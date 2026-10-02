@@ -8,17 +8,24 @@
 { ... }:
 
 {
-  programs.git = {
-    enable = true;
+  programs = {
+    git = {
+      enable = true;
 
-    settings = {
-      init.defaultBranch = "main";
+      settings = {
+        init.defaultBranch = "main";
 
-      # Identity. These were previously set imperatively in ~/.gitconfig and
-      # are now declarative; home-manager drops the imperative copy on
-      # activation.
-      user.name = "Drew DeVore";
-      user.email = "drew@devorcula.com";
+        # Identity. These were previously set imperatively in ~/.gitconfig and
+        # are now declarative; home-manager drops the imperative copy on
+        # activation.
+        user.name = "Drew DeVore";
+        user.email = "drew@devorcula.com";
+      };
+    };
+
+    gh = {
+      enable = true;
+      settings.git_protocol = "ssh";
     };
   };
 }

@@ -10,7 +10,6 @@
 # Gateway is ON, so add your API keys below (see environmentFiles note).
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
