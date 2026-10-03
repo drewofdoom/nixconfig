@@ -6,9 +6,9 @@
 
 {
   # -- Tdarr node (Blackstar only, mapped) --
-  # Server lives on rosie (compose: internal node `rosie`, serverPort 8266,
-  # auth disabled, so no API key needed). This node gets 1 NVENC GPU worker;
-  # server disk speed is the bottleneck, so no more.
+  # Server lives on rosie (compose: internal node `rosie`, serverPort 8266) and
+  # now requires auth, so the node needs an API key. This node gets 1 NVENC GPU
+  # worker; server disk speed is the bottleneck, so no more.
   # Mapped = node reads/writes the library directly via /mnt/data/media below,
   # which mirrors the server's paths, so no pathTranslators needed.
   # Node polls the server outbound -- no inbound firewall ports needed.
@@ -21,6 +21,27 @@
       }).tdarr-node;
     serverURL = "http://tdarr.bunny-octatonic.ts.net:8266";
     type = "mapped";
+
+    # Server auth is enabled, so the node authenticates with an API key.
+    # environmentFile keeps the key out of /nix/store (world-readable): the
+    # module's own docs call this out as the intended path for `apiKey`. The
+    # file is unmanaged, so provision it once per machine:
+    #
+    #   sudo install -d -m 0755 -o root -g root /etc/tdarr
+    #   sudo sh -c 'umask 077; cat > /etc/tdarr/node.env' <<'EOF'
+    #   apiKey=tapi_...
+    #   EOF
+    #
+    # systemd reads EnvironmentFile as PID 1 before the service sandbox
+    # (ProtectSystem=strict) applies, so root:root 0600 is fine and the key is
+    # never readable by the tdarr user or anything else on the box.
+    #
+    # Caveat: a *missing* EnvironmentFile makes the unit fail to start rather
+    # than degrade, so keep this in sync with any rebuild-from-scratch. This
+    # file is deliberately NOT in the restic backup paths (backup.nix only
+    # covers ~/Documents and friends); re-provision by hand like the hermes
+    # env file and /etc/samba/media.credentials.
+    environmentFile = "/etc/tdarr/node.env";
     startPaused = false;
     workers.transcodeGPU = 1;
     workers.transcodeCPU = 0;
