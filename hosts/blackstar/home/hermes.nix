@@ -1,37 +1,40 @@
+# Per-host Hermes settings for blackstar.
+#
+# There is deliberately NO `services.hermes-agent` block here any more. It used
+# to carry `backend.mode = "serve"` on :9119, which is what started the
+# dashboard. That option group is disabled in home/hermes.nix (see the long note
+# there for the two-unit fight and the .env-rewriting trap that motivated it),
+# so the :9119 dashboard does not run on this machine. The CLI is unaffected: it
+# comes from `programs.hermes-agent` in home/hermes.nix.
+#
+# If you want the dashboard back, run `hermes serve` yourself -- as a service you
+# own, not one the module writes -- and set dashboard.public_url to match.
+#
+# Everything below already lives in ~/.hermes/config.yaml on disk, which Hermes
+# owns and edits freely. Verify with `hermes config get <key>` and change
+# anything missing with `hermes config set`:
+#
+#   platform_toolsets.cli         -> the toolset list for CLI sessions
+#   gateway.multiplex_profiles    -> true: one gateway serves every profile
+#   a2a_agents.<name>             -> outbound peer agents (rosie, ...)
+#
+# On a2a_agents.<name>.auth.token: keep it a REAL token, set with
+# `hermes config set`. Do NOT write the literal string "${A2A_ROSIE_TOKEN}" --
+# nothing interpolates it. plugins/platforms/a2a/tools.py reads auth["token"]
+# verbatim into the Authorization header (_auth_header, line 48). That was
+# already true before, and it only looked like it worked because an env merge
+# happened to supply the value.
+#
+# Per-profile credentials (Telegram/Discord) go in
+# ~/.hermes/profiles/<name>/.env, one copy per profile. Under multiplexing a
+# profile turn does NOT fall back to the process environment
+# (secret_scope.py:236, get_secret), so a profile with an empty .env sees no
+# key at all and re-prompts for one. Two profiles sharing one credential is
+# refused outright: "one credential cannot be consumed twice".
+#
+# If you ever declare an MCP server, note that bare `nix` is not on the PATH of
+# a Hermes-run process -- it fails with "missing executable 'nix'". Use an
+# absolute path.
 { ... }:
 
-{
-  services.hermes-agent = {
-    backend = {
-      mode = "serve";
-      host = "blackstar.bunny-octatonic.ts.net";
-      port = 9119;
-      waitFor = "hostname";
-    };
-
-    # No `settings` block any more: ~/.hermes/config.yaml is owned by Hermes (see
-    # home/hermes.nix for why). Everything below still lives in config.yaml on
-    # disk -- the module's merge preserves agent-written keys, and the previous
-    # activations already wrote these in. They are listed here only so the
-    # hand-migration is unambiguous. Verify with `hermes config get <key>` and
-    # add anything missing with `hermes config set`:
-    #
-    #   dashboard.public_url = "http://blackstar.bunny-octatonic.ts.net:9119"
-    #   platform_toolsets.cli = [ "hermes-cli" "a2a" ]
-    #   gateway.platforms.a2a.enabled = false
-    #   mcp_servers.nixos = { command = "nix"; args = [ "run" "github:utensils/mcp-nixos" "--" ]; }
-    #   a2a_agents.rosie = { url = "..."; auth = { type = "bearer"; token = "..."; }; timeout = 300; }
-    #
-    # On a2a_agents.rosie.auth.token specifically: it is currently the LITERAL
-    # string "${A2A_ROSIE_TOKEN}" in config.yaml, never a real secret. Nothing
-    # interpolates it -- plugins/platforms/a2a/tools.py reads auth["token"]
-    # verbatim into the Authorization header (_auth_header, line 48). That was
-    # already true before this change; it only looked like it worked because the
-    # env merge ran. Set the real token with `hermes config set` (or edit
-    # config.yaml directly) and keep it out of Nix.
-    #
-    # Note mcp_servers.nixos invokes bare `nix`, which the hermes systemd units
-    # do not have on PATH -- it fails with "missing executable 'nix'" at gateway
-    # start. Use an absolute path if you want that server to come up.
-  };
-}
+{ }
