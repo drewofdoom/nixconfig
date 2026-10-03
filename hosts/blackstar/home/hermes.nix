@@ -33,6 +33,13 @@
       gateway.platforms.a2a.enabled = false;
 
       # Peer to call.
+      mcp_servers = {
+        nixos = {
+          command = "nix";
+          args = [ "run" "github:utensils/mcp-nixos" "--" ];
+        };
+      };
+
       a2a_agents.rosie = {
         url = "http://rosie.bunny-octatonic.ts.net:9900";
         # Interpolated from ~/.config/hermes/env (merged into ~/.hermes/.env
