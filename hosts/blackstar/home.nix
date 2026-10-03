@@ -20,8 +20,8 @@
 #
 # A non-loopback bind REQUIRES an auth provider -- without one the backend fails
 # closed at startup, and --insecure is a deprecated no-op since the June 2026
-# hardening. Credentials come per-machine from ~/.config/hermes/env (wired via
-# environmentFiles in home/hermes.nix):
+# hardening. Credentials live per-machine in ~/.hermes/.env, which Hermes owns
+# (see the note in home/hermes.nix for why Nix no longer builds it):
 #   HERMES_DASHBOARD_BASIC_AUTH_USERNAME
 #   HERMES_DASHBOARD_BASIC_AUTH_PASSWORD
 #   HERMES_DASHBOARD_BASIC_AUTH_SECRET   (restart-stable sessions)

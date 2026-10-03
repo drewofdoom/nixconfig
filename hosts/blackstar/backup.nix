@@ -42,8 +42,9 @@
       "Documents/Surge"
       "Documentts/VST3"
       # Secrets in ~/.hermes -- deliberately NOT backed up. The LLM key in .env
-      # lives in ~/.config/hermes/env (per-host, unmanaged, 0600) and must not
-      # be copied to Google Drive; mcp-tokens/ are live OAuth credentials.
+      # (plus HERMES_MANAGED=false and the dashboard/bot credentials) lives
+      # only there; it is per-host, unmanaged, 0600, and must not be copied to
+      # Google Drive; mcp-tokens/ are live OAuth credentials.
       # Re-provision both by hand on a rebuilt machine.
       ".env"
       "mcp-tokens"

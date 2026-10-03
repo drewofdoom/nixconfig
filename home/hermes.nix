@@ -7,58 +7,62 @@
 #   services.hermes-agent — owns ~/.hermes (config.yaml, .env, memories,
 #                           sessions, cron) and runs the user services
 #
-# Gateway is ON, so add your API keys below (see environmentFiles note).
+# Gateway is ON. Secrets are NOT managed here any more — see the note below the
+# `in` for why, and for the one line you must add to ~/.hermes/.env yourself.
 {
-  config,
+  # config,
   pkgs,
   inputs,
   ...
 }:
 
-let
-  # Per-host API keys and dashboard credentials, deliberately NOT in this repo.
-  # This path is identical on every host but the file contents are not — each
-  # machine gets its own key, so neither machine can spend the other's quota and
-  # revoking one leaves the other working. Back the file up somewhere that is
-  # not this git repo.
+# let
+  # Why ~/.hermes/.env is no longer built by Nix
+  # ==========================================
   #
-  # Create it once per machine (the `cat > file` form avoids the key ever
-  # landing in shell history, unlike install -m600 /dev/stdin with a heredoc):
+  # This file used to point `environmentFiles` at ~/.config/hermes/env and treat
+  # that as the single source of truth for secrets. That was a trap, and it cost
+  # real credentials twice before this was removed:
   #
-  #   cat > ~/.config/hermes/env <<'EOF'
+  #   1. The module REWRITES ~/.hermes/.env from scratch on every activation --
+  #      `install -m <mode> <base> .env` followed by appending each
+  #      environmentFiles entry (moduleCommon.nix:770-777, called at
+  #      moduleCommon.nix:882). Anything Hermes itself wrote to .env was
+  #      destroyed by the next rebuild. The GUI and `hermes setup` both offer to
+  #      save platform tokens there, so that is exactly where they went.
+  #
+  #   2. Editing the secrets file did NOT reliably cause a rebuild to run, either.
+  #      Nix hashes the *path* named in environmentFiles, not its contents, so an
+  #      edited file produces an identical store path. `nh os switch` would
+  #      correctly decide there was nothing to do, and home-manager-drew.service
+  #      (Type=oneshot, RemainAfterExit) would stay active-exited without
+  #      re-running hermesAgentSetup.
+  #
+  # Net effect: a rebuild deleted your tokens, and not rebuilding did nothing.
+  # Both branches lost the secrets.
+  #
+  # So ~/.hermes/.env is now entirely Hermes-owned. Put every key there directly
+  # (mode 0600), including:
+  #
+  #   HERMES_MANAGED=false        <- REQUIRED, see below
   #   OPENROUTER_API_KEY=sk-or-...
-  #   EOF
-  #   chmod 0600 ~/.config/hermes/env
+  #   TELEGRAM_BOT_TOKEN=...      <- else "No messaging platforms enabled"
+  #   DISCORD_BOT_TOKEN=...       <- same
   #
-  # The gateway needs bot tokens here too, or it starts with no messaging
-  # platforms at all ("No messaging platforms enabled"):
-  #   TELEGRAM_BOT_TOKEN=<token from @BotFather>
-  #   DISCORD_BOT_TOKEN=<token from the Discord developer portal>
-  # config.yaml enables platforms.telegram and platforms.discord, but those
-  # are only the on/off switch — the credential is read from the environment
-  # (gateway/config_env.py:513), so a platform can be "enabled" with no token
-  # behind it and the gateway silently skips it.
+  # NEVER put these in a Nix expression: they land in the world-readable
+  # /nix/store.
   #
-  # These belong in this file and NOT in ~/.hermes/.env, even though the GUI
-  # and `hermes setup` offer to save them there. The Desktop can write platform
-  # tokens to ~/.hermes/.env, but this module REWRITES that file from scratch on
-  # every activation — `install -m <mode> <base> .env` followed by appending
-  # each environmentFiles entry (moduleCommon.nix:770-777, called at
-  # moduleCommon.nix:882). Anything the GUI wrote there that is not in
-  # environmentFiles or `environment` is destroyed by the next rebuild, which
-  # is why the platforms go quiet after a reboot. The module says as much in
-  # the environmentFiles description: "Each activation writes .env again from
-  # the start."
+  # Each multiplexed profile needs its own copy under
+  # ~/.hermes/profiles/<name>/.env. Under multiplexing a profile turn resolves
+  # credentials from that profile's own .env and deliberately does NOT fall back
+  # to the process environment (secret_scope.py:236, get_secret), so a profile
+  # with an empty .env sees no key at all and re-prompts for one. That is not a
+  # Nix artifact and is unaffected by this change.
   #
-  # The file is named unconditionally rather than guarded by
-  # `builtins.pathExists`. Under flake evaluation in pure mode that builtin
-  # cannot stat a path outside the Nix store and always returns false, so an
-  # existence guard here silently evaluates to false on every machine and the
-  # option was never applied. Naming it directly is also what the module wants:
-  # its activation already prints a warning and continues when the file is
-  # unreadable, so a missing file costs a warning rather than a failed rebuild.
-  envPath = "${config.home.homeDirectory}/.config/hermes/env";
-in
+  # The old per-host file ~/.config/hermes/env is no longer read by anything and
+  # can be deleted once its keys are copied into ~/.hermes/.env. Keep it out of
+  # git either way.
+# in
 {
   imports = [ inputs.hermes-agent.homeManagerModules.default ];
 
@@ -75,35 +79,23 @@ in
     #   sudo loginctl enable-linger drew
     gateway.enable = true;
 
-    # Rendering to ~/.hermes/config.yaml. Nix keys win; keys the agent writes
-    # itself are preserved across rebuilds.
-    settings = {
-      toolsets = [ "all" ];
-      terminal = {
-        backend = "local";
-        timeout = 180;
-      };
-
-      memory = {
-        memory_enabled = true;
-        user_profile_enabled = true;
-      };
-
-      # display.personality is deliberately NOT set here. It is owned by the
-      # app's settings pane; pinning it in Nix re-asserted the old value on
-      # every activation and the GUI could never change it. Safe to leave out
-      # -- it is a standalone key (personality.py:112) with no coupling.
-      #
-      # The whole `model` block is out of Nix for the same reason, plus one
-      # extra hazard: the desktop picker writes model.default AND
-      # model.provider as a pair (model_switch.py:1783). Pinning provider here
-      # would deep-merge "openrouter" back over the app's pick on every
-      # rebuild, leaving a provider that no longer matches the chosen model --
-      # provider is authoritative at dispatch and is never re-derived from the
-      # model name (runtime_provider.py:478). With no provider pinned, Hermes
-      # autodetects from credentials (the documented default path), which the
-      # OPENROUTER_API_KEY in environmentFiles below satisfies.
-    };
+    # No `settings` block: ~/.hermes/config.yaml is owned by Hermes.
+    #
+    # This was not always so, and the reasons are worth keeping, because they
+    # are the reason to leave it alone:
+    #   display.personality is owned by the settings pane; pinning it re-asserted
+    #   the old value every activation so the GUI could never change it.
+    #   The `model` block is worse: the desktop picker writes model.default AND
+    #   model.provider as a pair (model_switch.py:1783). Pinning provider would
+    #   deep-merge "openrouter" back over the app's pick, leaving a provider
+    #   that no longer matches the chosen model -- provider is authoritative at
+    #   dispatch and is never re-derived from the model name
+    #   (runtime_provider.py:478).
+    #
+    # Note the module still deep-merges `terminal.cwd` (from workingDirectory
+    # below) and `_config_version` into config.yaml on every activation -- that
+    # happens unconditionally and cannot be switched off short of setting
+    # `configFile`. Every other key is now the application's alone.
 
     # Agent workspace is your home dir by default.
     workingDirectory = "/home/drew";
@@ -117,25 +109,25 @@ in
     # Messaging platform deps are a build-time extra on Nix (no runtime pip).
     extraDependencyGroups = [ "messaging" ];
 
-    # Secrets: merged into ~/.hermes/.env at activation time, so a rebuild is
-    # the only thing needed after an edit (plus a service restart). Never put
-    # keys in Nix expressions — they land in the world-readable /nix/store.
-    environmentFiles = [ envPath ];
-
-        # Let Hermes write its own config.yaml, so settings panes and
-        # `hermes config set` persist instead of being refused.
-        #
-        # The module hardcodes HERMES_MANAGED (baked into the systemd unit and the
-        # desktop wrapper via makeWrapper --set) and offers no opt-out option. The
-        # escape hatch is the false/0/no/off value read by
-        # _MANAGED_FALSE_VALUES (hermes_constants.py:779). It must go here rather
-        # than in environmentFiles because `environment` is the declarative option
-        # that survives regeneration of the per-host secrets file.
-        #
-        # ~/.hermes/.env is loaded with override=True at import time
-        # (env_loader.py:507), ahead of every is_managed() gate -- so this beats
-        # the systemd Environment= line. It also short-circuits the
-        # ~/.hermes/.managed marker, which the activation rewrites every time.
-        environment.HERMES_MANAGED = "false";
+    # No `environment` and no `environmentFiles`. See the note at the top of this
+    # file: the module rewrites ~/.hermes/.env on every activation, so anything
+    # not named here was destroyed on each rebuild.
+    #
+    # CONSEQUENCE -- you must add this line to ~/.hermes/.env yourself:
+    #
+    #   HERMES_MANAGED=false
+    #
+    # The module hardcodes HERMES_MANAGED=home-manager into the systemd unit and
+    # the desktop wrapper via makeWrapper --set, and also writes a ~/.hermes/.managed
+    # marker, with no option to opt out. Hermes refuses `hermes config set` and the
+    # settings panes while either says "managed". The false/0/no/off value read by
+    # _MANAGED_FALSE_VALUES (hermes_constants.py:779) is the escape hatch, and
+    # ~/.hermes/.env is loaded with override=True at import time (env_loader.py:507),
+    # ahead of every is_managed() gate -- so it beats the systemd Environment= line
+    # and short-circuits the marker.
+    #
+    # This used to be set through the `environment` option, which made it survive
+    # regeneration. Now that .env is Hermes-owned, that line is durable on its own:
+    # nothing rewrites the file, so it persists until Hermes itself edits it.
   };
 }
