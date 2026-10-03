@@ -30,6 +30,26 @@ let
   #   EOF
   #   chmod 0600 ~/.config/hermes/env
   #
+  # The gateway needs bot tokens here too, or it starts with no messaging
+  # platforms at all ("No messaging platforms enabled"):
+  #   TELEGRAM_BOT_TOKEN=<token from @BotFather>
+  #   DISCORD_BOT_TOKEN=<token from the Discord developer portal>
+  # config.yaml enables platforms.telegram and platforms.discord, but those
+  # are only the on/off switch — the credential is read from the environment
+  # (gateway/config_env.py:513), so a platform can be "enabled" with no token
+  # behind it and the gateway silently skips it.
+  #
+  # These belong in this file and NOT in ~/.hermes/.env, even though the GUI
+  # and `hermes setup` offer to save them there. The Desktop can write platform
+  # tokens to ~/.hermes/.env, but this module REWRITES that file from scratch on
+  # every activation — `install -m <mode> <base> .env` followed by appending
+  # each environmentFiles entry (moduleCommon.nix:770-777, called at
+  # moduleCommon.nix:882). Anything the GUI wrote there that is not in
+  # environmentFiles or `environment` is destroyed by the next rebuild, which
+  # is why the platforms go quiet after a reboot. The module says as much in
+  # the environmentFiles description: "Each activation writes .env again from
+  # the start."
+  #
   # The file is named unconditionally rather than guarded by
   # `builtins.pathExists`. Under flake evaluation in pure mode that builtin
   # cannot stat a path outside the Nix store and always returns false, so an
