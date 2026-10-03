@@ -47,6 +47,7 @@ in
     unzip
     zip
     lsof
+    yt-dlp
 
     # Desktop
     sone
